@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="HexGridView">
+        <attr name="gridRowCount" format="integer" />
+        <attr name="gridColumnCount" format="integer" />
+        <attr name="insetEvenLines" format="boolean" />
+        <attr name="enableEdgeLines" format="boolean" />
+        <attr name="fitMode" format="enum">
+            <enum name="fitColumns" value="0" />
+            <enum name="fitRows" value="1" />
+        </attr>
+        <attr name="crossMode" format="enum">
+            <enum name="alignCenter" value="0" />
+            <enum name="alignStart" value="1" />
+            <enum name="alignEnd" value="2" />
+            <enum name="scaleToFit" value="3" />
+        </attr>
+        <attr name="hexOrientation" format="enum">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
+        <attr name="cellStrokeWidth" format="dimension" />
+        <attr name="cellStrokeColor" format="color" />
+        <attr name="cellFillColor" format="color" />
+        <attr name="cellSelectColor" format="color" />
+        <attr name="cellIndicesShown" format="flags">
+            <flag name="none" value="0" />
+            <flag name="rows" value="1" />
+            <flag name="columns" value="2" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="HexGridView_Layout">
+        <attr name="layout_cellRowAndColumn" format="string" />
+        <attr name="layout_cellIsVisible" format="boolean" />
+        <attr name="layout_cellIsSelected" format="boolean" />
+        <attr name="layout_hexBackgroundEnabled" format="boolean" />
+        <attr name="layout_hexBackgroundColor" format="color" />
+        <attr name="layout_hexBackgroundInset" format="dimension" />
+    </declare-styleable>
+
+</resources>
