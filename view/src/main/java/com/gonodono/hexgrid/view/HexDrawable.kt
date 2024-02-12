@@ -10,6 +10,7 @@ import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
+import androidx.annotation.CallSuper
 import androidx.annotation.ColorInt
 
 /**
@@ -30,22 +31,32 @@ import androidx.annotation.ColorInt
  *
  * It is open to allow further customizations, like possibly using a
  * [Shader][android.graphics.Shader] with the [Paint][android.graphics.Paint]
- * instead of a solid color. However, it has the same behavior as the standard
- * platform Drawable classes, so if you override a necessary function without
- * calling the super function, it's liable to break something. There are no
- * CallSuper annotations or anything to warn you if you do.
+ * instead of a solid color.
  */
 open class HexDrawable(
     private val hexGridView: HexGridView,
     @ColorInt fillColor: Int = Color.WHITE
 ) : Drawable() {
 
+    /**
+     * This holds the hexagon shape set as the drawable's Outline.
+     *
+     * You should not modify this.
+     */
     protected val path = Path()
 
+    /**
+     * The local Paint object.
+     *
+     * By default, this is used only to paint the fill color.
+     */
     protected val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = fillColor
     }
 
+    /**
+     * The color used to fill the drawable's area.
+     */
     @get:ColorInt
     @setparam:ColorInt
     var fillColor: Int
@@ -56,10 +67,12 @@ open class HexDrawable(
             invalidateSelf()
         }
 
+    @CallSuper
     override fun onBoundsChange(bounds: Rect) {
         hexGridView.getHexagonPath(path, bounds)
     }
 
+    @CallSuper
     override fun getOutline(outline: Outline) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             outline.setPath(path)

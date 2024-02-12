@@ -47,7 +47,7 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
             ui.editColumns.setText(grid.columnCount.toString())
             ui.editRows.setText(grid.rowCount.toString())
             ui.editStrokeWidth.setText(
-                layoutSpecs.strokeWidth.toInt().toString()
+                strokeWidth.toInt().toString()
             )
             ui.switchInsetEvenLines.isChecked = grid.insetEvenLines
             ui.switchEnableEdgeLines.isChecked = grid.enableEdgeLines
@@ -57,7 +57,10 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
             ui.checkShowColumnIndices.isChecked = showColumnIndices
             ui.checkShowRowIndices.isChecked = showRowIndices
             ui.drawableView.background = HexGridDrawable(grid).also { d ->
-                d.layoutSpecs = layoutSpecs
+                d.fitMode = fitMode
+                d.crossMode = crossMode
+                d.hexOrientation = hexOrientation
+                d.strokeWidth = strokeWidth
                 d.strokeColor = strokeColor
                 d.fillColor = fillColor
                 d.selectColor = selectColor
@@ -147,7 +150,10 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
                 model.gridState.collect { state ->
                     ui.hexGrid.apply {
                         grid = state.grid
-                        layoutSpecs = state.layoutSpecs
+                        fitMode = state.fitMode
+                        crossMode = state.crossMode
+                        hexOrientation = state.hexOrientation
+                        strokeWidth = state.strokeWidth
                         strokeColor = state.strokeColor
                         fillColor = state.fillColor
                         selectColor = state.selectColor
@@ -156,7 +162,10 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
                     }
                     hexGridDrawable.apply {
                         grid = state.grid
-                        layoutSpecs = state.layoutSpecs
+                        fitMode = state.fitMode
+                        crossMode = state.crossMode
+                        hexOrientation = state.hexOrientation
+                        strokeWidth = state.strokeWidth
                         strokeColor = state.strokeColor
                         fillColor = state.fillColor
                         selectColor = state.selectColor
@@ -222,13 +231,13 @@ private fun GridHexGrid(
 ) {
     val state by model.gridState.collectAsStateWithLifecycle(DefaultGridState)
     val grid = state.grid.asImmutable()
-    val dp = state.layoutSpecs.strokeWidth /
+    val dp = state.strokeWidth /
             LocalContext.current.resources.displayMetrics.density
     HexGrid(
         grid = grid,
-        fitMode = state.layoutSpecs.fitMode,
-        crossMode = state.layoutSpecs.crossMode,
-        hexOrientation = state.layoutSpecs.hexOrientation,
+        fitMode = state.fitMode,
+        crossMode = state.crossMode,
+        hexOrientation = state.hexOrientation,
         strokeWidth = Dp(dp),
         colors = HexGridDefaults.colors(
             ComposeColor(state.strokeColor),

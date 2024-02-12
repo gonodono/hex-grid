@@ -62,7 +62,7 @@
   <div class="breadcrumbs"><a href="../../index.html">view</a><span class="delimiter">/</span><a href="../index.html">com.gonodono.hexgrid.view</a><span class="delimiter">/</span><span class="current">HexGridView</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Hex</span><wbr><span>Grid</span><wbr><span><span>View</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":view:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">HexGridView</a>&nbsp;<span><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-overloads/index.html"><span class="token annotation builtin">JvmOverloads</span></a>&nbsp;</span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">, </span></span><span class="parameter ">attrs<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/util/AttributeSet.html">AttributeSet</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="https://developer.android.com/reference/kotlin/android/view/ViewGroup.html">ViewGroup</a></div><p class="paragraph">The View version of the library's hex grid.</p><p class="paragraph">HexGridView is a ViewGroup that can hold one child View for each cell. The group recognizes special layout attributes on its children to allow cell assignment and initialization in the layout XML. For example:</p><div class="sample-container"><pre><code class="block lang-xml" theme="idea">&lt;com.gonodono.hexgrid.view.HexGridView …&gt;<br><br>    &lt;Button<br>        …<br>        app:layout_cellRowAndColumn="1,1"<br>        app:layout_cellIsSelected="true" /&gt;<br><br>&lt;/com.gonodono.hexgrid.view.HexGridView&gt;</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">If the library's <a href="../-cell-state-view/index.html">CellStateView</a> is used instead of a regular View, no actual View object is added to the HexGridView, and the element is used only for the attribute settings.</p><p class="paragraph">The class also offers the <a href="-view-provider/index.html">ViewProvider</a> interface as a way to assign Views in code instead. This method always overrides anything set in the layout XML for a given cell.</p><p class="paragraph">HexGridView offers its own <a href="-on-click-listener/index.html">OnClickListener</a> interface and corresponding property for click callbacks, and the drawn grid's cosmetic values are all available as direct properties; e.g., <a href="stroke-color.html">strokeColor</a> and <a href="show-row-indices.html">showRowIndices</a>. The View's <a href="../../../data/com.gonodono.hexgrid.data/-grid/index.html">Grid</a> and <a href="../../../data/com.gonodono.hexgrid.data/-layout-specs/index.html">LayoutSpecs</a> are both handled as whole objects, rather than having individual properties for everything.</p><p class="paragraph">A HexGridView's Grid is handled similarly to ListView's and RecyclerView's data sets: if the user modifies the Grid, the HexGridView needs to be notified to update itself. The only thing needed is a call to <a href="../../../view/com.gonodono.hexgrid.view/-hex-grid-view/invalidate.html">invalidate</a>, so that's left to the user, rather than having a pointless alias function that does nothing else. That is, if you change a State in the Grid, you need to call invalidate() on the HexGridView afterward.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":view:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">HexGridView</a>&nbsp;<span><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-overloads/index.html"><span class="token annotation builtin">JvmOverloads</span></a>&nbsp;</span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">, </span></span><span class="parameter ">attrs<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/util/AttributeSet.html">AttributeSet</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="https://developer.android.com/reference/kotlin/android/view/ViewGroup.html">ViewGroup</a></div><p class="paragraph">The View version of the library's hex grid.</p><p class="paragraph">HexGridView is a ViewGroup that can hold one child View for each cell. The group recognizes special layout attributes on its children to allow cell assignment and initialization in the layout XML. For example:</p><div class="sample-container"><pre><code class="block lang-xml" theme="idea">&lt;com.gonodono.hexgrid.view.HexGridView …&gt;<br><br>    &lt;Button<br>        …<br>        app:layout_cellRowAndColumn="1,1"<br>        app:layout_cellIsSelected="true" /&gt;<br><br>&lt;/com.gonodono.hexgrid.view.HexGridView&gt;</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">If the library's <a href="../-cell-state-view/index.html">CellStateView</a> is used instead of a regular View, no actual View object is added to the HexGridView, and the element is used only for the attribute settings.</p><p class="paragraph">The class also offers the <a href="-view-provider/index.html">ViewProvider</a> interface as a way to assign Views in code instead. This method always overrides anything set in the layout XML for a given cell.</p><p class="paragraph">HexGridView offers its own <a href="-on-click-listener/index.html">OnClickListener</a> interface and corresponding property for click callbacks, and the drawn grid's cosmetic values are all available as direct properties; e.g., <a href="stroke-color.html">strokeColor</a> and <a href="show-row-indices.html">showRowIndices</a>.</p><p class="paragraph">A HexGridView's Grid is handled similarly to ListView's and RecyclerView's data sets: if the user modifies the Grid, the HexGridView needs to be notified to update itself. The only thing needed is a call to <a href="../../../view/com.gonodono.hexgrid.view/-hex-grid-view/invalidate.html">invalidate</a>, so that's left to the user, rather than having a pointless alias function that does nothing else. That is, if you change a State in the Grid, you need to call invalidate() on the HexGridView afterward.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
@@ -152,6 +152,21 @@
               </div>
             </div>
           </div>
+<a data-name="613903444%2FProperties%2F-1931728498" anchor-label="crossMode" id="613903444%2FProperties%2F-1931728498" data-filterable-set=":view:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":view:dokkaHtmlPartial/release" data-filterable-set=":view:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="cross-mode.html"><span>cross</span><wbr><span><span>Mode</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="613903444%2FProperties%2F-1931728498"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":view:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="cross-mode.html">crossMode</a><span class="token operator">: </span><a href="../../../data/com.gonodono.hexgrid.data/-cross-mode/index.html">CrossMode</a></div><div class="brief "><p class="paragraph">The HexGridView's current <a href="../../../data/com.gonodono.hexgrid.data/-cross-mode/index.html">CrossMode</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="1556146519%2FProperties%2F-1931728498" anchor-label="fillColor" id="1556146519%2FProperties%2F-1931728498" data-filterable-set=":view:dokkaHtmlPartial/release"></a>
           <div class="table-row" data-filterable-current=":view:dokkaHtmlPartial/release" data-filterable-set=":view:dokkaHtmlPartial/release">
             <div class="main-subrow keyValue ">
@@ -167,6 +182,21 @@
               </div>
             </div>
           </div>
+<a data-name="1698659491%2FProperties%2F-1931728498" anchor-label="fitMode" id="1698659491%2FProperties%2F-1931728498" data-filterable-set=":view:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":view:dokkaHtmlPartial/release" data-filterable-set=":view:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="fit-mode.html"><span>fit</span><wbr><span><span>Mode</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1698659491%2FProperties%2F-1931728498"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":view:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="fit-mode.html">fitMode</a><span class="token operator">: </span><a href="../../../data/com.gonodono.hexgrid.data/-fit-mode/index.html">FitMode</a></div><div class="brief "><p class="paragraph">The HexGridView's current <a href="../../../data/com.gonodono.hexgrid.data/-fit-mode/index.html">FitMode</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="1486889405%2FProperties%2F-1931728498" anchor-label="grid" id="1486889405%2FProperties%2F-1931728498" data-filterable-set=":view:dokkaHtmlPartial/release"></a>
           <div class="table-row" data-filterable-current=":view:dokkaHtmlPartial/release" data-filterable-set=":view:dokkaHtmlPartial/release">
             <div class="main-subrow keyValue ">
@@ -177,22 +207,22 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":view:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="grid.html">grid</a><span class="token operator">: </span><a href="../../../data/com.gonodono.hexgrid.data/-grid/index.html">Grid</a></div><div class="brief "><p class="paragraph">The HexGridView's current <a href="../../../data/com.gonodono.hexgrid.data/-grid/index.html">Grid</a>, which defaults to an empty Grid. If the View has been inflated from an XML element specifying both app:gridRowCount and app:gridColumnCount, the Grid will be initialized with the appropriate attribute values.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":view:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="grid.html">grid</a><span class="token operator">: </span><a href="../../../data/com.gonodono.hexgrid.data/-grid/index.html">Grid</a></div><div class="brief "><p class="paragraph">The HexGridView's current <a href="../../../data/com.gonodono.hexgrid.data/-grid/index.html">Grid</a>, which defaults to an empty Grid.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1025990441%2FProperties%2F-1931728498" anchor-label="layoutSpecs" id="1025990441%2FProperties%2F-1931728498" data-filterable-set=":view:dokkaHtmlPartial/release"></a>
+<a data-name="1809067182%2FProperties%2F-1931728498" anchor-label="hexOrientation" id="1809067182%2FProperties%2F-1931728498" data-filterable-set=":view:dokkaHtmlPartial/release"></a>
           <div class="table-row" data-filterable-current=":view:dokkaHtmlPartial/release" data-filterable-set=":view:dokkaHtmlPartial/release">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="layout-specs.html"><span>layout</span><wbr><span><span>Specs</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1025990441%2FProperties%2F-1931728498"></span>
+                  <div><a href="hex-orientation.html"><span>hex</span><wbr><span><span>Orientation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1809067182%2FProperties%2F-1931728498"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":view:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="layout-specs.html">layoutSpecs</a><span class="token operator">: </span><a href="../../../data/com.gonodono.hexgrid.data/-layout-specs/index.html">LayoutSpecs</a></div><div class="brief "><p class="paragraph">The HexGridView's current <a href="../../../data/com.gonodono.hexgrid.data/-layout-specs/index.html">LayoutSpecs</a>.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":view:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="hex-orientation.html">hexOrientation</a><span class="token operator">: </span><a href="../../../data/com.gonodono.hexgrid.data/-hex-orientation/index.html">HexOrientation</a></div><div class="brief "><p class="paragraph">The HexGridView's current <a href="../../../data/com.gonodono.hexgrid.data/-hex-orientation/index.html">HexOrientation</a>.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -272,6 +302,21 @@
               </div>
             </div>
           </div>
+<a data-name="-2142142519%2FProperties%2F-1931728498" anchor-label="strokeWidth" id="-2142142519%2FProperties%2F-1931728498" data-filterable-set=":view:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":view:dokkaHtmlPartial/release" data-filterable-set=":view:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="stroke-width.html"><span>stroke</span><wbr><span><span>Width</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2142142519%2FProperties%2F-1931728498"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":view:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="stroke-width.html">strokeWidth</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a></div><div class="brief "><p class="paragraph">The HexGridView's current stroke width.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="-1972210355%2FProperties%2F-1931728498" anchor-label="viewProvider" id="-1972210355%2FProperties%2F-1931728498" data-filterable-set=":view:dokkaHtmlPartial/release"></a>
           <div class="table-row" data-filterable-current=":view:dokkaHtmlPartial/release" data-filterable-set=":view:dokkaHtmlPartial/release">
             <div class="main-subrow keyValue ">
@@ -346,7 +391,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":view:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="notify-views-invalidated.html"><span class="token function">notifyViewsInvalidated</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Causes the HexGridView to re-layout and redraw. This is used similarly to the notify methods in ListView's and RecyclerView's Adapters, to refresh the cell Views obtained from the <a href="-view-provider/index.html">ViewProvider</a>.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":view:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="notify-views-invalidated.html"><span class="token function">notifyViewsInvalidated</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Causes the HexGridView to re-layout and redraw.</p></div></div></div>
                 </div>
               </div>
             </div>

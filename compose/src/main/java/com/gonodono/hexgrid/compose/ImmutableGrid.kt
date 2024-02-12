@@ -68,10 +68,8 @@ fun MutableGrid.toImmutable(): ImmutableGrid = ImmutableGrid(copy(emptyMap()))
  * Wraps this [MutableGrid] in an [ImmutableGrid].
  *
  * Any changes made to the MutableGrid _will_ reflect in the ImmutableGrid, so
- * don't do that when using this in Compose.
- *
- * This functionality is useful when one is certain that the Grid will never be
- * modified, as it allows the internal state generation and verification to be
- * skipped.
+ * don't do that. This functionality is useful when one is certain that the Grid
+ * will never be modified afterward, as it allows the internal state generation
+ * and verification to be skipped.
  */
 fun MutableGrid.asImmutable(): ImmutableGrid = ImmutableGrid(this)

@@ -2,12 +2,11 @@ package com.gonodono.hexgrid.data
 
 
 /**
- * The mutable version of the library's [Grid] structure, which allows its
- * [Grid.State]s to be changed out, though the Grid's basic shape is actually
- * immutable.
+ * The mutable version of the library's [Grid] structure.
  *
- * That shape is defined by its row and column counts, the lines which are
- * inset, and whether edge lines are enabled.
+ * MutableGrid allows its [Grid.State]s to be changed out, though the Grid's
+ * basic shape is actually immutable. That shape is defined by its row and
+ * column counts, the lines which are inset, and whether edge lines are enabled.
  */
 class MutableGrid private constructor(
     override val rowCount: Int,
@@ -69,7 +68,7 @@ class MutableGrid private constructor(
      * The indexed set operator for MutableGrid.
      *
      * This is direct assignment, and it will result in Exceptions for invalid
-     * addresses. See [isValidAddress] and [findAddress].
+     * addresses. See [isValidAddress].
      */
     operator fun set(address: Grid.Address, state: Grid.State) {
         states[address] = state

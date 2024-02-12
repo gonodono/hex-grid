@@ -8,23 +8,28 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
 import androidx.core.graphics.withClip
 import com.gonodono.hexgrid.core.GridUi
+import com.gonodono.hexgrid.core.LayoutSpecs
+import com.gonodono.hexgrid.data.CrossMode
 import com.gonodono.hexgrid.data.EmptyGrid
+import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
-import com.gonodono.hexgrid.data.LayoutSpecs
+import com.gonodono.hexgrid.data.HexOrientation
 import kotlin.reflect.KMutableProperty0
 
 /**
- * The drawable version of the library's hex grid.
+ * The Drawable version of the library's hex grid.
  *
- * Similar in operation to the other versions, but this one doesn't support cell
- * content, and it's not inherently interactive.
+ * Similar in operation to the other versions, except:
+ * + This one doesn't support cell Views, because it's a [Drawable].
+ * + It's not inherently interactive; i.e., it has no click listener interface.
+ * + It can't wrap its content; it simply uses the bounds and mode as set.
  */
 class HexGridDrawable(grid: Grid? = null) : Drawable() {
 
     private val gridUi = GridUi()
 
     /**
-     * The HexGridDrawable's [Grid].
+     * The HexGridDrawable's current [Grid].
      */
     var grid: Grid = EmptyGrid
         set(value) {
@@ -35,15 +40,32 @@ class HexGridDrawable(grid: Grid? = null) : Drawable() {
         }
 
     /**
-     * The HexGridDrawable's current [LayoutSpecs].
+     * The HexGridDrawable's current [FitMode].
      */
-    var layoutSpecs: LayoutSpecs
-        get() = gridUi.layoutSpecs
-        set(value) {
-            if (gridUi.layoutSpecs == value) return
-            gridUi.layoutSpecs = value
-            invalidateSelf()
-        }
+    var fitMode: FitMode by changeSpecs(gridUi.layoutSpecs.fitMode) { specs, value ->
+        specs.copy(fitMode = value)
+    }
+
+    /**
+     * The HexGridDrawable's current [CrossMode].
+     */
+    var crossMode: CrossMode by changeSpecs(gridUi.layoutSpecs.crossMode) { specs, value ->
+        specs.copy(crossMode = value)
+    }
+
+    /**
+     * The HexGridDrawable's current [HexOrientation].
+     */
+    var hexOrientation: HexOrientation by changeSpecs(gridUi.layoutSpecs.hexOrientation) { specs, value ->
+        specs.copy(hexOrientation = value)
+    }
+
+    /**
+     * The HexGridDrawable's current stroke width for the cells' outline.
+     */
+    var strokeWidth: Float by changeSpecs(gridUi.layoutSpecs.strokeWidth) { specs, value ->
+        specs.copy(strokeWidth = value)
+    }
 
     /**
      * Color of the cells' outlines.
@@ -116,6 +138,14 @@ class HexGridDrawable(grid: Grid? = null) : Drawable() {
     override fun setAlpha(alpha: Int) {}
 
     override fun setColorFilter(colorFilter: ColorFilter?) {}
+
+    private fun <T> changeSpecs(
+        initialValue: T,
+        createSpecs: (current: LayoutSpecs, newValue: T) -> LayoutSpecs
+    ) = onChange(initialValue) { newValue ->
+        gridUi.layoutSpecs = createSpecs(gridUi.layoutSpecs, newValue)
+        invalidateSelf()
+    }
 
     private fun <T> invalidating(wrapped: KMutableProperty0<T>) =
         relayChange(wrapped, ::invalidateSelf)

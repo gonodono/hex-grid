@@ -11,6 +11,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asAndroidPath
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
@@ -21,11 +22,11 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import com.gonodono.hexgrid.core.GridUi
+import com.gonodono.hexgrid.core.LayoutSpecs
 import com.gonodono.hexgrid.data.CrossMode
 import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
 import com.gonodono.hexgrid.data.HexOrientation
-import com.gonodono.hexgrid.data.LayoutSpecs
 
 
 /**
@@ -33,12 +34,13 @@ import com.gonodono.hexgrid.data.LayoutSpecs
  *
  * @param grid The HexGrid's data set
  * @param modifier The Modifier to be applied to the grid
- * @param hexOrientation Orientation of the cell hexagon's major axis
+ * @param hexOrientation Orientation of a cell hexagon's major axis
  * @param fitMode Whether rows or columns determine the cells' size
  * @param crossMode Behavior for the other direction, rows or columns
  * @param strokeWidth Stroke width of the cell outline
  * @param colors The grid's three colors: line, fill, and select
  * @param indicesShown Design/debug flags to display cells' row and/or column
+ * @param clipToBounds Whether to clip the grid draw to the Composable's bounds
  * @param onGridTap Called with the Grid.Address when a tap hits successfully
  * @param onOutsideTap Called when the Composable is clicked outside of any cell
  * @param cellItems Each cell is allowed one (centered) Composable for content
@@ -53,6 +55,7 @@ fun HexGrid(
     strokeWidth: Dp = Dp.Hairline,
     colors: HexGridColors = HexGridDefaults.colors(),
     indicesShown: IndicesShown = HexGridDefaults.indicesShown(),
+    clipToBounds: Boolean = true,
     onGridTap: (Grid.Address) -> Unit = {},
     onOutsideTap: () -> Unit = {},
     cellItems: @Composable (HexGridItemScope.(Grid.Address) -> Unit)? = null
@@ -79,7 +82,13 @@ fun HexGrid(
 
     SubcomposeLayout(
         modifier
-            .drawBehind { gridUi.drawGrid(drawContext.canvas.nativeCanvas) }
+            .drawBehind {
+                if (clipToBounds) clipRect {
+                    gridUi.drawGrid(drawContext.canvas.nativeCanvas)
+                } else {
+                    gridUi.drawGrid(drawContext.canvas.nativeCanvas)
+                }
+            }
             .pointerInput(Unit) {
                 detectTapGestures { offset ->
                     val address = gridUi.resolveAddress(offset.x, offset.y)
@@ -190,7 +199,7 @@ data class HexGridColors internal constructor(
 )
 
 /**
- * The indices shown inside each cell.
+ * Flags for which indices are shown in each cell.
  *
  * See [HexGridDefaults.indicesShown] for the default values.
  */

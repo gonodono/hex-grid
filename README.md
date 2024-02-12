@@ -23,9 +23,9 @@ A basic hex grid component for Views and Compose that can be used as a layout, a
 
 + "Lines" is used as the umbrella term for rows and columns. Many options and calculations are the same for both, due to the inherent symmetries of staggered grids; e.g., insetting even rows is the same as insetting even columns, hence `insetEvenLines`.
 
-+ "Stroke" is used for the hexagon outline; i.e., those lines drawn by `Canvas#drawLine()`.
-
 + "Cross" is used to refer to the other, perpendicular set of lines. For example, if the current bit of code is handling rows, columns are the cross lines.
+
++ "Stroke" is used for the hexagon outline; i.e., those lines drawn by `Canvas#drawLine()`.
 
 
 ## Grid definitions
@@ -133,7 +133,7 @@ alt="Four example images showing each of the CrossModes' visual effect."
 width="50%" />
 </p>
 
-The `ScaleToFit` option will cause the hexagons to be stretched or shrunk irregularly in most cases, but it's hardly noticeable at small scales, so it's handy to fill out grids that just need a tiny adjustment, or if regular hexagons aren't a strict requirement anyway.
+The `ScaleToFit` option will cause the hexagons to be stretched or shrunk irregularly in most cases, but it's hardly noticeable at small scales, so it's handy to fill out grids that only need a tiny adjustment, or if regular hexagons aren't a strict requirement anyway.
 
 ### HexOrientation
 
@@ -171,7 +171,7 @@ alt="The two edge line setups, as described."
 width="40%" />
 </p>
 
-This feature is meant to be used only with grids that fully fill the containing component, since grids that don't fill can always just have more lines added in the regular fashion. However, nothing prohibits or prevents this option from being employed in any other setup.
+This feature is meant to be used only with grids that fully fill the containing component, since grids that don't fill can always have more lines added in the regular fashion. However, nothing prohibits or prevents this option from being employed in any other setup.
 
 Unfortunately, relatively thick stroke widths can cause a visual problem with edge lines, too, due to the library calculating the grid's layout so that the main rows and columns fit exactly to bounds, even accounting for the different line thickness at the two main axis vertices – the pointy ends – compared to the others.
 
@@ -190,7 +190,7 @@ Those are the same grid, but the one on the right has edge lines enabled, and yo
 
 ### XML setup
 
-`HexGridView` can be set up completely through its layout XML, and it recognizes several special attributes on itself and its children in order to allow for that. All attributes in the snippet below belong to the library, and are shown with their default values. I'm not a big fan of projects that just slap a common prefix and underscore on every custom attribute, so I've avoided that here, but several of them do share somewhat descriptive prefixes that have been added in an attempt to avoid name collisions with the platform and other standard libraries.
+`HexGridView` can be set up completely through its layout XML, and it recognizes several special attributes on itself and its children in order to allow for that. All attributes in the snippet below belong to the library, and are shown with their default values. I'm not a big fan of projects that slap a common prefix and underscore on every custom attribute, so I've avoided that here, but several of them do share somewhat descriptive prefixes that have been added in an attempt to avoid name collisions with the platform and other standard libraries.
 
 ```xml
 <com.gonodono.hexgrid.view.HexGridView
@@ -230,30 +230,18 @@ Any kind of normal child `View` can be used with `HexGridView`. The library also
 
 Setup in code is a little different than you might expect from the available attributes. As previously mentioned, the row count, the column count, which lines to inset, and whether to enable edge lines are the four things that define a `Grid`, and `HexGridView` handles those things altogether through its single `var grid: Grid` property, since changing any of them defines a new grid anyway.
 
-Additionally, the four layout definitions are packaged together here into the `LayoutSpecs` class, for the same reason: changing any of them requires a fresh layout.
-
-```kotlin
-class LayoutSpecs(
-    val fitMode: FitMode,
-    val crossMode: CrossMode,
-    val hexOrientation: HexOrientation,
-    val strokeWidth: Float
-)
-```
-
 The `View` version's implementation of `Grid` is `MutableGrid`, which allows (only) the `Grid.State`s to be changed for each of the predefined `Grid.Address`es. (`Mutable` probably isn't the most appropriate descriptor for this, but `Changeable` or something similar would be unwieldy and confusing.) To effect this functionality, `MutableGrid` has an additional `set` indexed accessor.
 
 ```kotlin
-val grid = MutableGrid(3, 3, insetEvenLines = true)
-val topAddress = Grid.Address(0, 1)
-grid[topAddress] = grid[topAddress].copy(isSelected = true)
-hexGridView.grid = grid
+val mutableGrid = MutableGrid(3, 3, insetEvenLines = true)
+mutableGrid.change(Grid.Address(0, 1), isSelected = true)
+hexGridView.grid = mutableGrid
 hexGridView.viewProvider = HexGridView.ViewProvider { address, current ->
-    val image = current as? ImageView ?: ImageView(this).apply {
+    val image = current as? ImageView ?: ImageView(context).apply {
         setImageResource(R.drawable.example)
     }
     image.imageTintList = when {
-        grid[address].isSelected -> ColorStateList.valueOf(Color.CYAN)
+        mutableGrid[address].isSelected -> ColorStateList.valueOf(Color.CYAN)
         else -> null
     }
     image
@@ -264,13 +252,12 @@ hexGridView.viewProvider = HexGridView.ViewProvider { address, current ->
 
 ```kotlin
 hexGridView.onClickListener = HexGridView.OnClickListener { address ->
-    val state = grid[address]
-    grid[address] = state.copy(isSelected = !state.isSelected)
+    mutableGrid.toggle(address)
     hexGridView.invalidate()
 }
 ```
 
-The `MutableGrid.toggle(address: Grid.Address)` extension function is available as a convenience to handle the state change altogether. If using that, the first two lines in the lambda would be just `grid.toggle(address)`. The `invalidate()` call is still required.
+The `MutableGrid.toggle(address: Grid.Address)` extension function replaces the `Grid.State` at `address` with a copy that has the opposite `isSelected` value. You can do it manually, if you like, but it's tedious.
 
 ### Drawable
 
@@ -333,7 +320,7 @@ The last thing to note here is the `getHexShape()` function that is defined in `
 
 ### Demo app
 
-The `demo` module contains a small app that demonstrates most everything in the library.
+The `demo` module contains a small, simple app that demonstrates most everything in the library.
 
 <p align="center">
 <img src="images/demo.png"
@@ -341,14 +328,13 @@ alt="Screenshots of the demo app's two pages."
 width="20%" />
 </p>
 
-### Grid collection
+### Grid's future
 
 I'm not terribly happy with `Grid`'s overall design, as it stands now, but I've been fiddling with it for too long, so I'm shoving it out the door as is. It may change significantly in the future, though I really try to not break existing things when that happens. Just a heads up.
 
-
 ### Touch handling
 
-Currently, when using a grid as a layout, the library does not attempt to alter the children's actual shapes, nor does it attempt to redirect touch events. If you have children whose rectangular bounds overlap, and you set your own touch/click listeners on those children, they are going to behave like in any other layout: the one on top, z-order-wise, wins.
+Currently, when using a grid as a layout, the library does not attempt to alter the children's actual shapes, nor does it attempt to redirect touch events. If you have children whose rectangular bounds overlap, and you set your own touch/click listeners on those children, they are going to behave like in any other layout: the one on top at the touch point, z-order-wise, wins.
 
 <p align="center">
 <img src="images/overlap.png"
@@ -360,7 +346,7 @@ If you do need your own listeners, it's best to ensure that the touchable/clicka
 
 ### Degenerate grid cases
 
-Since the coordinate system here skips every other cross index in a given line, grids with a row count and/or column count of 1 can behave unexpectedly. I wouldn't consider these particular setups as "grids", really, but rather than have weird lower bounds for indices, or specialized behavior for only a handful of cases, I'll just explain what you should expect to see.
+Since the coordinate system here skips every other cross index in a given line, grids with a row count and/or column count of 1 can behave unexpectedly. I wouldn't consider these particular setups as "grids", really, but rather than have weird lower bounds for indices, or specialized behavior for only a handful of cases, I'll explain what you should expect to see.
 
 #### 1xN and Nx1 grids
 
@@ -386,7 +372,7 @@ width="40%" />
 
 As previously mentioned, however, `insetEvenLines` changes the valid coordinate set, so (0,0) doesn't even exist when that option is enabled, and a 1x1 grid with even lines inset is empty, as is illustrated by the second image above.
 
-The third image shows that second 1x1 grid with `enableEdgeLines` set to `true`. You can see that (0,0) would be directly in the middle there, and the library just obligingly adds lines on all sides of the empty grid. This setup likely isn't useful to anyone, but the library doesn't prohibit it.
+The third image shows that second 1x1 grid with `enableEdgeLines` set to `true`. You can see that (0,0) would be directly in the middle there, and the library obligingly adds lines on all sides of the empty grid. This setup likely isn't useful to anyone, but the library doesn't prohibit it.
 
 #### 1x2 and 2x1 grids
 

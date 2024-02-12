@@ -53,7 +53,7 @@ interface Grid {
      * The indexed get operator for Grid.
      *
      * This is a direct accessor, and it will result in Exceptions for invalid
-     * addresses. See [isValidAddress] and [findAddress].
+     * addresses. See [isValidAddress].
      */
     operator fun get(address: Address): State
 
@@ -93,8 +93,7 @@ interface Grid {
      * is returned. If the list is empty, an exact copy is returned as a new
      * instance.
      *
-     * Invalid Addresses will cause Exceptions. See [isValidAddress] and
-     * [findAddress].
+     * Invalid Addresses will cause Exceptions. See [isValidAddress].
      */
     fun copy(changes: Map<Address, State>): Grid
 
@@ -104,8 +103,7 @@ interface Grid {
      *
      * If it does not cause a change, the same instance is returned.
      *
-     * Invalid Addresses will cause Exceptions. See [isValidAddress] and
-     * [findAddress].
+     * Invalid Addresses will cause Exceptions. See [isValidAddress].
      */
     fun copy(address: Address, change: State): Grid
 
@@ -146,10 +144,7 @@ interface Grid {
 }
 
 /**
- * An empty Grid implementation for use as an initial value, a reset value, etc.
- *
- * This would be more appropriate as a named object, but then it would be far
- * too easy to inadvertently import its members elsewhere.
+ * An empty Grid instance for use as an initial value, a reset value, etc.
  */
 val EmptyGrid: Grid = object : Grid {
 

@@ -67,15 +67,12 @@ class LayoutFragment : Fragment(R.layout.fragment_layout) {
             ui.hexGrid.notifyViewsInvalidated()
         }
         ui.groupCrossMode.setOnCheckedChangeListener { _, checkedId ->
-            val newMode = when (checkedId) {
+            ui.hexGrid.crossMode = when (checkedId) {
                 ui.radioCenter.id -> CrossMode.AlignCenter
                 ui.radioStart.id -> CrossMode.AlignStart
                 ui.radioEnd.id -> CrossMode.AlignEnd
                 else -> CrossMode.ScaleToFit
             }.also { crossMode = it }
-            ui.hexGrid.apply {
-                layoutSpecs = layoutSpecs.copy(crossMode = newMode)
-            }
         }
 
         val mutableGrid = LayoutGrid.copy(emptyMap())

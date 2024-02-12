@@ -2,10 +2,11 @@ package com.gonodono.hexgrid.demo.page
 
 import android.graphics.Color
 import androidx.lifecycle.ViewModel
-import com.gonodono.hexgrid.data.DefaultLayoutSpecs
+import com.gonodono.hexgrid.data.CrossMode
+import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid.Address
 import com.gonodono.hexgrid.data.Grid.State
-import com.gonodono.hexgrid.data.LayoutSpecs
+import com.gonodono.hexgrid.data.HexOrientation
 import com.gonodono.hexgrid.data.MutableGrid
 import com.gonodono.hexgrid.data.toggled
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,71 +40,62 @@ internal class GridViewModel : ViewModel() {
         grid.newGrid(enableEdgeLines = value)
     }
 
-    var fitMode by changeSpecs(DefaultGridState.layoutSpecs.fitMode) { specs, value ->
-        specs.copy(fitMode = value)
+    var fitMode by changeState(DefaultGridState.fitMode) { state, value ->
+        state.copy(fitMode = value)
     }
-    var crossMode by changeSpecs(DefaultGridState.layoutSpecs.crossMode) { specs, value ->
-        specs.copy(crossMode = value)
+    var crossMode by changeState(DefaultGridState.crossMode) { state, value ->
+        state.copy(crossMode = value)
     }
-    var hexOrientation by changeSpecs(DefaultGridState.layoutSpecs.hexOrientation) { specs, value ->
-        specs.copy(hexOrientation = value)
+    var hexOrientation by changeState(DefaultGridState.hexOrientation) { state, value ->
+        state.copy(hexOrientation = value)
     }
-    var strokeWidth by changeSpecs(DefaultGridState.layoutSpecs.strokeWidth) { specs, value ->
-        specs.copy(strokeWidth = value)
+    var strokeWidth by changeState(DefaultGridState.strokeWidth) { state, value ->
+        state.copy(strokeWidth = value)
     }
 
-    var strokeColor by doOnChange(DefaultGridState.strokeColor) { value ->
-        _gridState.value = _gridState.value.copy(strokeColor = value)
+    var strokeColor by changeState(DefaultGridState.strokeColor) { state, value ->
+        state.copy(strokeColor = value)
     }
-    var fillColor by doOnChange(DefaultGridState.fillColor) { value ->
-        _gridState.value = _gridState.value.copy(fillColor = value)
+    var fillColor by changeState(DefaultGridState.fillColor) { state, value ->
+        state.copy(fillColor = value)
     }
-    var selectColor by doOnChange(DefaultGridState.selectColor) { value ->
-        _gridState.value = _gridState.value.copy(selectColor = value)
+    var selectColor by changeState(DefaultGridState.selectColor) { state, value ->
+        state.copy(selectColor = value)
     }
-    var showRowIndices by doOnChange(DefaultGridState.showRowIndices) { value ->
-        _gridState.value = _gridState.value.copy(showRowIndices = value)
+    var showRowIndices by changeState(DefaultGridState.showRowIndices) { state, value ->
+        state.copy(showRowIndices = value)
     }
-    var showColumnIndices by doOnChange(DefaultGridState.showColumnIndices) { value ->
-        _gridState.value = _gridState.value.copy(showColumnIndices = value)
+    var showColumnIndices by changeState(DefaultGridState.showColumnIndices) { state, value ->
+        state.copy(showColumnIndices = value)
     }
 
     private fun <T> changeGrid(
         initialValue: T,
-        createGrid: (MutableGrid, newValue: T) -> MutableGrid
-    ) = doOnChange(initialValue) { value ->
-        val currentState = _gridState.value
-        _gridState.value =
-            currentState.copy(grid = createGrid(currentState.grid, value))
+        createGrid: (current: MutableGrid, newValue: T) -> MutableGrid
+    ) = changeState(initialValue) { current, value ->
+        current.copy(grid = createGrid(current.grid, value))
     }
 
-    private fun <T> changeSpecs(
+    private fun <T> changeState(
         initialValue: T,
-        createSpecs: (LayoutSpecs, newValue: T) -> LayoutSpecs
-    ) = doOnChange(initialValue) { value ->
-        val currentState = _gridState.value
-        _gridState.value = currentState.copy(
-            layoutSpecs = createSpecs(currentState.layoutSpecs, value)
-        )
-    }
-
-    private fun <T> doOnChange(
-        initialValue: T,
-        onChange: (newValue: T) -> Unit
+        createState: (current: GridState, newValue: T) -> GridState
     ) = object : ReadWriteProperty<Any?, T> {
         private var value = initialValue
         override fun getValue(thisRef: Any?, property: KProperty<*>): T = value
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
             if (this.value == value) return
             this.value = value
-            onChange(value)
+            _gridState.value = createState(_gridState.value, value)
         }
     }
 }
 
 internal data class GridState(
     val grid: MutableGrid,
-    val layoutSpecs: LayoutSpecs,
+    val fitMode: FitMode,
+    val crossMode: CrossMode,
+    val hexOrientation: HexOrientation,
+    val strokeWidth: Float,
     val strokeColor: Int,
     val fillColor: Int,
     val selectColor: Int,
@@ -121,7 +113,10 @@ internal val DefaultGridState = GridState(
             Address(2, 3) to State(isSelected = true),
         )
     ),
-    layoutSpecs = DefaultLayoutSpecs,
+    fitMode = FitMode.FitColumns,
+    crossMode = CrossMode.AlignCenter,
+    hexOrientation = HexOrientation.Horizontal,
+    strokeWidth = 0F,
     strokeColor = Color.BLUE,
     fillColor = Color.CYAN,
     selectColor = Color.MAGENTA,

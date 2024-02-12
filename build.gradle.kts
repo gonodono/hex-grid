@@ -25,12 +25,16 @@ tasks.dokkaHtmlMultiModule {
 }
 
 subprojects {
-    if (name == "data" || name == "view" || name == "compose") {
+    if (name in listOf("data", "view", "compose")) {
         apply(plugin = "org.jetbrains.dokka")
         tasks.withType<DokkaTaskPartial>().configureEach {
             outputDirectory.set(file("$buildDir/docs"))
             pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {
-                suppressInheritedMembers = true
+                if (this@subprojects.name == "view") {
+                    suppressInheritedMembers = true
+                } else {
+                    suppressObviousFunctions = true
+                }
                 footerMessage = footer()
             }
         }

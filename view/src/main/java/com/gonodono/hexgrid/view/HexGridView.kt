@@ -17,11 +17,11 @@ import androidx.annotation.ColorInt
 import androidx.core.graphics.withClip
 import androidx.core.view.children
 import com.gonodono.hexgrid.core.GridUi
+import com.gonodono.hexgrid.core.LayoutSpecs
 import com.gonodono.hexgrid.data.CrossMode
 import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
 import com.gonodono.hexgrid.data.HexOrientation
-import com.gonodono.hexgrid.data.LayoutSpecs
 import com.gonodono.hexgrid.data.MutableGrid
 import com.gonodono.hexgrid.view.HexGridView.OnClickListener
 import com.gonodono.hexgrid.view.HexGridView.ViewProvider
@@ -57,8 +57,6 @@ import kotlin.reflect.KMutableProperty0
  * HexGridView offers its own [OnClickListener] interface and corresponding
  * property for click callbacks, and the drawn grid's cosmetic values are all
  * available as direct properties; e.g., [strokeColor] and [showRowIndices].
- * The View's [Grid] and [LayoutSpecs] are both handled as whole objects,
- * rather than having individual properties for everything.
  *
  * A HexGridView's Grid is handled similarly to ListView's and
  * RecyclerView's data sets: if the user modifies the Grid, the HexGridView
@@ -167,8 +165,9 @@ class HexGridView @JvmOverloads constructor(
     }
 
     /**
-     * The HexGridView's current [Grid], which defaults to an empty Grid. If
-     * the View has been inflated from an XML element specifying both
+     * The HexGridView's current [Grid], which defaults to an empty Grid.
+     *
+     * If the View has been inflated from an XML element specifying both
      * app:gridRowCount and app:gridColumnCount, the Grid will be
      * initialized with the appropriate attribute values.
      *
@@ -191,16 +190,32 @@ class HexGridView @JvmOverloads constructor(
         }
 
     /**
-     * The HexGridView's current [LayoutSpecs].
+     * The HexGridView's current [FitMode].
      */
-    var layoutSpecs: LayoutSpecs
-        get() = gridUi.layoutSpecs
-        set(value) {
-            if (layoutSpecs == value) return
-            gridUi.layoutSpecs = value
-            invalidate()
-            requestLayout()
-        }
+    var fitMode: FitMode by changeSpecs(gridUi.layoutSpecs.fitMode) { specs, value ->
+        specs.copy(fitMode = value)
+    }
+
+    /**
+     * The HexGridView's current [CrossMode].
+     */
+    var crossMode: CrossMode by changeSpecs(gridUi.layoutSpecs.crossMode) { specs, value ->
+        specs.copy(crossMode = value)
+    }
+
+    /**
+     * The HexGridView's current [HexOrientation].
+     */
+    var hexOrientation: HexOrientation by changeSpecs(gridUi.layoutSpecs.hexOrientation) { specs, value ->
+        specs.copy(hexOrientation = value)
+    }
+
+    /**
+     * The HexGridView's current stroke width.
+     */
+    var strokeWidth: Float by changeSpecs(gridUi.layoutSpecs.strokeWidth) { specs, value ->
+        specs.copy(strokeWidth = value)
+    }
 
     /**
      * Color of the cells' outlines.
@@ -293,9 +308,11 @@ class HexGridView @JvmOverloads constructor(
     }
 
     /**
-     * Causes the HexGridView to re-layout and redraw. This is used similarly
-     * to the notify methods in ListView's and RecyclerView's Adapters, to
-     * refresh the cell Views obtained from the [ViewProvider].
+     * Causes the HexGridView to re-layout and redraw.
+     *
+     * This is used similarly to the notify methods in ListView's and
+     * RecyclerView's Adapters, to refresh the cell Views obtained from the
+     * [ViewProvider].
      */
     fun notifyViewsInvalidated() {
         requestLayout()
@@ -554,6 +571,15 @@ class HexGridView @JvmOverloads constructor(
         constructor(width: Int, height: Int) : super(width, height)
         constructor(source: ViewGroup.LayoutParams) : super(source)
         constructor(source: MarginLayoutParams) : super(source)
+    }
+
+    private fun <T> changeSpecs(
+        initialValue: T,
+        createSpecs: (current: LayoutSpecs, newValue: T) -> LayoutSpecs
+    ) = onChange(initialValue) { newValue ->
+        gridUi.layoutSpecs = createSpecs(gridUi.layoutSpecs, newValue)
+        requestLayout()
+        invalidate()
     }
 
     private fun <T> invalidating(wrapped: KMutableProperty0<T>) =

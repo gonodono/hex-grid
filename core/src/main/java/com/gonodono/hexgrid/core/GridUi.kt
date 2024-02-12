@@ -12,11 +12,10 @@ import android.util.Size
 import androidx.core.graphics.toRectF
 import androidx.core.graphics.withMatrix
 import com.gonodono.hexgrid.data.CrossMode
-import com.gonodono.hexgrid.data.DefaultLayoutSpecs
 import com.gonodono.hexgrid.data.EmptyGrid
 import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
-import com.gonodono.hexgrid.data.LayoutSpecs
+import com.gonodono.hexgrid.data.HexOrientation
 import com.gonodono.hexgrid.data.isHorizontal
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -422,6 +421,13 @@ class GridUi {
 
 private inline val LayoutSpecs.isHexHorizontal
     get() = hexOrientation.isHorizontal
+
+private val DefaultLayoutSpecs = LayoutSpecs(
+    FitMode.FitColumns,
+    CrossMode.AlignCenter,
+    HexOrientation.Horizontal,
+    0F
+)
 
 private class MeasureData {
     var isFitColumns: Boolean = false
