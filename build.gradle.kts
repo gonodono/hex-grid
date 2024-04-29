@@ -4,23 +4,15 @@ import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import java.time.Year
 
 plugins {
-    id("com.android.library") version "8.2.2" apply false
-    id("com.android.application") version "8.2.2" apply false
-    id("org.jetbrains.kotlin.android") version "1.9.22" apply false
-    id("org.jetbrains.dokka") version "1.9.10"
+    alias(libs.plugins.application) apply false
+    alias(libs.plugins.library) apply false
+    alias(libs.plugins.kotlin) apply false
+    alias(libs.plugins.dokka)
 }
 
 buildscript {
     dependencies {
-        classpath("org.jetbrains.dokka:dokka-base:1.9.10")
-    }
-}
-
-tasks.dokkaHtmlMultiModule {
-    outputDirectory.set(file("docs"))
-    pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {
-        customAssets = listOf(file("images/logo-icon.svg"))
-        footerMessage = footer()
+        classpath(libs.dokka.base)
     }
 }
 
@@ -28,7 +20,8 @@ subprojects {
     if (name in listOf("data", "view", "compose")) {
         apply(plugin = "org.jetbrains.dokka")
         tasks.withType<DokkaTaskPartial>().configureEach {
-            outputDirectory.set(file("$buildDir/docs"))
+            val build = project.layout.buildDirectory.get()
+            outputDirectory.set(file("$build/docs"))
             pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {
                 if (this@subprojects.name == "view") {
                     suppressInheritedMembers = true
@@ -38,6 +31,14 @@ subprojects {
                 footerMessage = footer()
             }
         }
+    }
+}
+
+tasks.dokkaHtmlMultiModule {
+    outputDirectory.set(file("docs"))
+    pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {
+        customAssets = listOf(file("images/logo-icon.svg"))
+        footerMessage = footer()
     }
 }
 
