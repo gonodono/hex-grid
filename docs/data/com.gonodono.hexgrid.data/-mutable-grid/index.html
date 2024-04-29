@@ -1,0 +1,363 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>MutableGrid</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            Hex Grid
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":data:dokkaHtmlPartial/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="data::com.gonodono.hexgrid.data/MutableGrid///PointingToDeclaration//862080361">
+  <div class="breadcrumbs"><a href="../../index.html">data</a><span class="delimiter">/</span><a href="../index.html">com.gonodono.hexgrid.data</a><span class="delimiter">/</span><span class="current">MutableGrid</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Mutable</span><wbr><span><span>Grid</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">MutableGrid</a> : <a href="../-grid/index.html">Grid</a></div><p class="paragraph">The mutable version of the library's <a href="../-grid/index.html">Grid</a> structure.</p><p class="paragraph">MutableGrid allows its <a href="../-grid/-state/index.html">Grid.State</a>s to be changed out, though the Grid's basic shape is actually immutable. That shape is defined by its row and column counts, the lines which are inset, and whether edge lines are enabled.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-1470449958%2FConstructors%2F862080361" anchor-label="MutableGrid" id="-1470449958%2FConstructors%2F862080361" data-filterable-set=":data:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":data:dokkaHtmlPartial/release" data-filterable-set=":data:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-mutable-grid.html"><span>Mutable</span><wbr><span><span>Grid</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1470449958%2FConstructors%2F862080361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">rowCount<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">columnCount<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">insetEvenLines<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">enableEdgeLines<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">initial<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="../-grid/-address/index.html">Grid.Address</a><span class="token punctuation">, </span><a href="../-grid/-state/index.html">Grid.State</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-1841765805%2FProperties%2F862080361" anchor-label="columnCount" id="-1841765805%2FProperties%2F862080361" data-filterable-set=":data:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":data:dokkaHtmlPartial/release" data-filterable-set=":data:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="column-count.html"><span>column</span><wbr><span><span>Count</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1841765805%2FProperties%2F862080361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="column-count.html">columnCount</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">The number of linear columns in the <a href="../-grid/index.html">Grid</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1067048979%2FProperties%2F862080361" anchor-label="enableEdgeLines" id="-1067048979%2FProperties%2F862080361" data-filterable-set=":data:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":data:dokkaHtmlPartial/release" data-filterable-set=":data:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="enable-edge-lines.html"><span>enable</span><wbr><span>Edge</span><wbr><span><span>Lines</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1067048979%2FProperties%2F862080361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="enable-edge-lines.html">enableEdgeLines</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Whether edge lines are enabled.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1111562534%2FProperties%2F862080361" anchor-label="insetEvenLines" id="1111562534%2FProperties%2F862080361" data-filterable-set=":data:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":data:dokkaHtmlPartial/release" data-filterable-set=":data:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="inset-even-lines.html"><span>inset</span><wbr><span>Even</span><wbr><span><span>Lines</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1111562534%2FProperties%2F862080361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="inset-even-lines.html">insetEvenLines</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Whether the even rows and columns are inset, or the odd ones.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-763798375%2FProperties%2F862080361" anchor-label="rowCount" id="-763798375%2FProperties%2F862080361" data-filterable-set=":data:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":data:dokkaHtmlPartial/release" data-filterable-set=":data:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="row-count.html"><span>row</span><wbr><span><span>Count</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-763798375%2FProperties%2F862080361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="row-count.html">rowCount</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">The number of linear rows in the <a href="../-grid/index.html">Grid</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1572472301%2FProperties%2F862080361" anchor-label="size" id="1572472301%2FProperties%2F862080361" data-filterable-set=":data:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":data:dokkaHtmlPartial/release" data-filterable-set=":data:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="size.html"><span><span>size</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1572472301%2FProperties%2F862080361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="size.html">size</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">The total cell count, named <a href="size.html">size</a> for consistency with other collections.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-1119734948%2FFunctions%2F862080361" anchor-label="change" id="-1119734948%2FFunctions%2F862080361" data-filterable-set=":data:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":data:dokkaHtmlPartial/release" data-filterable-set=":data:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../change.html"><span><span>change</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1119734948%2FFunctions%2F862080361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html">MutableGrid</a><span class="token punctuation">.</span><a href="../change.html"><span class="token function">change</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">address<span class="token operator">: </span><a href="../-grid/-address/index.html">Grid.Address</a><span class="token punctuation">, </span></span><span class="parameter ">isVisible<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span>this[address].isVisible<span class="token punctuation">, </span></span><span class="parameter ">isSelected<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span>this[address].isSelected</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Updates the <a href="../-grid/-state/index.html">Grid.State</a> at the given <a href="../-grid/-address/index.html">Grid.Address</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-213958003%2FFunctions%2F862080361" anchor-label="copy" id="-213958003%2FFunctions%2F862080361" data-filterable-set=":data:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":data:dokkaHtmlPartial/release" data-filterable-set=":data:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="copy.html"><span><span>copy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-213958003%2FFunctions%2F862080361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="copy.html"><span class="token function">copy</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">changes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="../-grid/-address/index.html">Grid.Address</a><span class="token punctuation">, </span><a href="../-grid/-state/index.html">Grid.State</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">MutableGrid</a></div><div class="brief "><p class="paragraph">Returns a new, modified instance of this <a href="../-grid/index.html">Grid</a> if <a href="copy.html">changes</a> actually causes any changes.</p></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="copy.html"><span class="token function">copy</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">address<span class="token operator">: </span><a href="../-grid/-address/index.html">Grid.Address</a><span class="token punctuation">, </span></span><span class="parameter ">change<span class="token operator">: </span><a href="../-grid/-state/index.html">Grid.State</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">MutableGrid</a></div><div class="brief "><p class="paragraph">Returns a modified copy of this <a href="../-grid/index.html">Grid</a> if <a href="copy.html">change</a> actually causes a change.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="117866739%2FFunctions%2F862080361" anchor-label="equals" id="117866739%2FFunctions%2F862080361" data-filterable-set=":data:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":data:dokkaHtmlPartial/release" data-filterable-set=":data:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="equals.html"><span><span>equals</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="117866739%2FFunctions%2F862080361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">operator override </span><span class="token keyword">fun </span><a href="equals.html"><span class="token function">equals</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="247792046%2FFunctions%2F862080361" anchor-label="findAddress" id="247792046%2FFunctions%2F862080361" data-filterable-set=":data:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":data:dokkaHtmlPartial/release" data-filterable-set=":data:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="find-address.html"><span>find</span><wbr><span><span>Address</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="247792046%2FFunctions%2F862080361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="find-address.html"><span class="token function">findAddress</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">row<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">column<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-grid/-address/index.html">Grid.Address</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Returns the appropriate <a href="../-grid/-address/index.html">Grid.Address</a> if <a href="find-address.html">row</a> and <a href="find-address.html">column</a> are valid coordinates.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-467129757%2FFunctions%2F862080361" anchor-label="forEach" id="-467129757%2FFunctions%2F862080361" data-filterable-set=":data:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":data:dokkaHtmlPartial/release" data-filterable-set=":data:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="for-each.html"><span>for</span><wbr><span><span>Each</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-467129757%2FFunctions%2F862080361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="for-each.html"><span class="token function">forEach</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">action<span class="token operator">: </span><span class="token punctuation">(</span><a href="../-grid/-address/index.html">Grid.Address</a><span class="token punctuation">, </span><a href="../-grid/-state/index.html">Grid.State</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Iterator function for Grid.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="874662527%2FFunctions%2F862080361" anchor-label="get" id="874662527%2FFunctions%2F862080361" data-filterable-set=":data:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":data:dokkaHtmlPartial/release" data-filterable-set=":data:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get.html"><span><span>get</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="874662527%2FFunctions%2F862080361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">operator override </span><span class="token keyword">fun </span><a href="get.html"><span class="token function">get</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">address<span class="token operator">: </span><a href="../-grid/-address/index.html">Grid.Address</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-grid/-state/index.html">Grid.State</a></div><div class="brief "><p class="paragraph">The indexed get operator for Grid.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="590494355%2FFunctions%2F862080361" anchor-label="hashCode" id="590494355%2FFunctions%2F862080361" data-filterable-set=":data:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":data:dokkaHtmlPartial/release" data-filterable-set=":data:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="hash-code.html"><span>hash</span><wbr><span><span>Code</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="590494355%2FFunctions%2F862080361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="hash-code.html"><span class="token function">hashCode</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1578170805%2FFunctions%2F862080361" anchor-label="isLineInset" id="-1578170805%2FFunctions%2F862080361" data-filterable-set=":data:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":data:dokkaHtmlPartial/release" data-filterable-set=":data:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-line-inset.html"><span>is</span><wbr><span>Line</span><wbr><span><span>Inset</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1578170805%2FFunctions%2F862080361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="is-line-inset.html"><span class="token function">isLineInset</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">index<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Returns whether the given line – row or column – is inset, per the <a href="inset-even-lines.html">insetEvenLines</a> property.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="770449235%2FFunctions%2F862080361" anchor-label="isValidAddress" id="770449235%2FFunctions%2F862080361" data-filterable-set=":data:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":data:dokkaHtmlPartial/release" data-filterable-set=":data:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-valid-address.html"><span>is</span><wbr><span>Valid</span><wbr><span><span>Address</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="770449235%2FFunctions%2F862080361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="is-valid-address.html"><span class="token function">isValidAddress</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">row<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">column<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Returns true if <a href="is-valid-address.html">row</a> and <a href="is-valid-address.html">column</a> are valid coordinates for the current grid specifications.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-594949192%2FFunctions%2F862080361" anchor-label="set" id="-594949192%2FFunctions%2F862080361" data-filterable-set=":data:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":data:dokkaHtmlPartial/release" data-filterable-set=":data:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set.html"><span><span>set</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-594949192%2FFunctions%2F862080361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">operator </span><span class="token keyword">fun </span><a href="set.html"><span class="token function">set</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">address<span class="token operator">: </span><a href="../-grid/-address/index.html">Grid.Address</a><span class="token punctuation">, </span></span><span class="parameter ">state<span class="token operator">: </span><a href="../-grid/-state/index.html">Grid.State</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The indexed set operator for MutableGrid.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-904422784%2FFunctions%2F862080361" anchor-label="toggle" id="-904422784%2FFunctions%2F862080361" data-filterable-set=":data:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":data:dokkaHtmlPartial/release" data-filterable-set=":data:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../toggle.html"><span><span>toggle</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-904422784%2FFunctions%2F862080361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html">MutableGrid</a><span class="token punctuation">.</span><a href="../toggle.html"><span class="token function">toggle</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">address<span class="token operator">: </span><a href="../-grid/-address/index.html">Grid.Address</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Toggles the <a href="../-grid/-state/is-selected.html">Grid.State.isSelected</a> value at the given <a href="../-grid/-address/index.html">Grid.Address</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="412328290%2FFunctions%2F862080361" anchor-label="toString" id="412328290%2FFunctions%2F862080361" data-filterable-set=":data:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":data:dokkaHtmlPartial/release" data-filterable-set=":data:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-string.html"><span>to</span><wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="412328290%2FFunctions%2F862080361"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":data:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="to-string.html"><span class="token function">toString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Mike M.</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
