@@ -27,7 +27,6 @@ import com.gonodono.hexgrid.view.HexGridView.OnClickListener
 import com.gonodono.hexgrid.view.HexGridView.ViewProvider
 import kotlin.reflect.KMutableProperty0
 
-
 /**
  * The View version of the library's hex grid.
  *
@@ -402,43 +401,31 @@ class HexGridView @JvmOverloads constructor(
             }
         }
         views.values.forEach { view ->
-            val params = view?.layoutParams as? LayoutParams
-            params?.apply {
-                if (hexBackgroundEnabled) {
-                    val background = view.background as? HexDrawable
-                        ?: generateHexDrawable().also { view.background = it }
-                    background.fillColor = hexBackgroundColor
-                } else {
-                    view.background = null
-                }
+            val params = view?.layoutParams as? LayoutParams ?: return@forEach
+            if (params.hexBackgroundEnabled) {
+                val background = view.background as? HexDrawable
+                    ?: generateHexDrawable().also { view.background = it }
+                background.fillColor = params.hexBackgroundColor
+            } else {
+                view.background = null
             }
         }
-
         children.forEach { child ->
-            (child.layoutParams as? LayoutParams)?.let { params ->
-                val bounds = tmpBounds
-                val inset = when {
-                    params.hexBackgroundEnabled -> params.hexBackgroundInset
-                    else -> 0F
-                }
-                gridUi.getCellItemBounds(params.address, inset, bounds)
-
-                child.measure(
-                    childMeasureSpec(params.width, bounds.width()),
-                    childMeasureSpec(params.height, bounds.height())
-                )
-
-                val left =
-                    bounds.left + (bounds.width() - child.measuredWidth) / 2
-                val top =
-                    bounds.top + (bounds.height() - child.measuredHeight) / 2
-                child.layout(
-                    left,
-                    top,
-                    left + child.measuredWidth,
-                    top + child.measuredHeight
-                )
+            val params = child.layoutParams as? LayoutParams ?: return@forEach
+            val bounds = tmpBounds
+            val inset = when {
+                params.hexBackgroundEnabled -> params.hexBackgroundInset
+                else -> 0F
             }
+            gridUi.getCellItemBounds(params.address, inset, bounds)
+            val childWidth = childMeasureSpec(params.width, bounds.width())
+            val childHeight = childMeasureSpec(params.height, bounds.height())
+            child.measure(childWidth, childHeight)
+            val left = bounds.left + (bounds.width() - child.measuredWidth) / 2
+            val top = bounds.top + (bounds.height() - child.measuredHeight) / 2
+            val right = left + child.measuredWidth
+            val bottom = top + child.measuredHeight
+            child.layout(left, top, right, bottom)
         }
     }
 

@@ -5,13 +5,23 @@ import android.util.AttributeSet
 import android.view.View
 
 /**
- * A dummy View that allows Grid.State properties to be set through child
- * Views of a HexGridView without adding an actual View instance at runtime.
+ * A dummy View that allows [Grid.State][com.gonodono.hexgrid.data.Grid.State]
+ * properties to be set through child elements of a [HexGridView] in layout
+ * XML, without adding an actual View instance at runtime.
  *
- * The View's XML attributes are used for the initial property values, and the
- * View object itself is discarded.
+ * ```xml
+ * <com.gonodono.hexgrid.view.HexGridView …>
  *
- * Usable only through layout XML, as it requires a non-null [AttributeSet].
+ *     <com.gonodono.hexgrid.view.CellStateView
+ *         …
+ *         app:layout_cellRowAndColumn="1,1"
+ *         app:layout_cellIsSelected="true" />
+ *
+ * </com.gonodono.hexgrid.view.HexGridView>
+ * ```
+
+ * The XML attributes are used for the initial property values, and the
+ * CellStateView object itself is discarded.
  */
 class CellStateView(
     context: Context,

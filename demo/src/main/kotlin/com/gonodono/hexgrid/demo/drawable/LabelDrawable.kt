@@ -5,18 +5,45 @@ import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.Paint
 import android.graphics.PixelFormat
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 
-class LabelDrawable(private val text: String) : Drawable() {
+class LabelDrawable(
+    private val title: String,
+    private val textSize: Float
+) : Drawable() {
 
-    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.GRAY
-        textAlign = Paint.Align.CENTER
-        textSize = 80F
-    }
+    private val paint =
+        Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.GRAY }
 
-    override fun draw(canvas: Canvas) {
-        canvas.drawText(text, bounds.exactCenterX(), 90F, paint)
+    var label: String = ""
+        set(value) {
+            if (field == value) return
+            field = value
+            invalidateSelf()
+        }
+
+    override fun draw(canvas: Canvas) = paint.let { paint ->
+        val textBounds = tmpRect
+
+        paint.textSize = textSize
+        val margin = textSize / 2
+        paint.getTextBounds(title, 0, title.length, textBounds)
+        canvas.drawText(
+            title,
+            margin - textBounds.left,
+            margin - textBounds.top,
+            paint
+        )
+
+        paint.textSize = 0.75F * textSize
+        paint.getTextBounds(label, 0, label.length, textBounds)
+        canvas.drawText(
+            label,
+            bounds.width() - textBounds.width() - margin,
+            margin - textBounds.top,
+            paint
+        )
     }
 
     @Suppress("OVERRIDE_DEPRECATION")
@@ -25,4 +52,6 @@ class LabelDrawable(private val text: String) : Drawable() {
     override fun setAlpha(alpha: Int) {}
 
     override fun setColorFilter(colorFilter: ColorFilter?) {}
+
+    private val tmpRect = Rect()
 }

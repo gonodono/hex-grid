@@ -1,6 +1,5 @@
 package com.gonodono.hexgrid.data
 
-
 /**
  * Possible options for the orientation of the cell hexagons.
  */

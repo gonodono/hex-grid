@@ -1,6 +1,5 @@
 package com.gonodono.hexgrid.data
 
-
 /**
  * Convenience to concisely check an Address against individual indices.
  */
@@ -26,7 +25,7 @@ fun MutableGrid.change(
  * Invalid Addresses will result in Exceptions. See [Grid.isValidAddress].
  */
 fun MutableGrid.toggle(address: Grid.Address) {
-    change(address, isSelected = !this[address].isSelected)
+    this.change(address, isSelected = !this[address].isSelected)
 }
 
 /**
@@ -41,7 +40,7 @@ inline fun <reified T : Grid> T.changed(
     address: Grid.Address,
     isVisible: Boolean = this[address].isVisible,
     isSelected: Boolean = this[address].isSelected
-): T = copy(address, Grid.State(isVisible, isSelected)) as T
+): T = this.copy(address, Grid.State(isVisible, isSelected)) as T
 
 /**
  * Returns a modified copy of the [Grid] with the [Grid.State.isSelected] value
@@ -50,4 +49,4 @@ inline fun <reified T : Grid> T.changed(
  * Invalid Addresses will result in Exceptions. See [Grid.isValidAddress].
  */
 inline fun <reified T : Grid> T.toggled(address: Grid.Address): T =
-    changed(address, isSelected = !this[address].isSelected)
+    this.changed(address, isSelected = !this[address].isSelected)

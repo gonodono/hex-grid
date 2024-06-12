@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,17 +35,12 @@ import com.gonodono.hexgrid.demo.databinding.FragmentLayoutBinding
 import com.gonodono.hexgrid.demo.databinding.LayoutItemBinding
 import com.gonodono.hexgrid.demo.drawable.LabelDrawable
 import com.gonodono.hexgrid.view.HexGridView
-import com.google.android.material.snackbar.Snackbar
 import android.graphics.Color as AndroidColor
-
 
 class LayoutFragment : Fragment(R.layout.fragment_layout) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val ui = FragmentLayoutBinding.bind(view)
-
-        ui.hexGrid.background = LabelDrawable("Views")
-        ui.composeView.background = LabelDrawable("Compose")
 
         var showStroke by mutableStateOf(true)
         var showIcons by mutableStateOf(true)
@@ -75,7 +71,7 @@ class LayoutFragment : Fragment(R.layout.fragment_layout) {
             }.also { crossMode = it }
         }
 
-        val mutableGrid = LayoutGrid.copy(emptyMap())
+        val mutableGrid = LayoutGrid.copy()
         ui.hexGrid.grid = mutableGrid
         ui.hexGrid.viewProvider = HexGridView.ViewProvider { address, current ->
             val item = when {
@@ -99,34 +95,42 @@ class LayoutFragment : Fragment(R.layout.fragment_layout) {
             item.root
         }
 
-        fun toast(grid: Grid, address: Grid.Address, anchor: View? = null) {
+        fun LabelDrawable.showStats(grid: Grid) {
             val (selected, visible) = grid.stats()
-            Snackbar.make(
-                ui.root,
-                "$address – Selected: $selected/$visible",
-                Snackbar.LENGTH_SHORT
-            ).apply {
-                if (anchor != null) anchorView = anchor
-                show()
-            }
+            label = "$selected/$visible"
+        }
+
+        val size = resources.getDimension(R.dimen.label_size)
+        val viewLabel = LabelDrawable("View", size).also { drawable ->
+            ui.hexGrid.background = drawable
+            drawable.showStats(LayoutGrid)
+        }
+        val composeLabel = LabelDrawable("Compose", size).also { drawable ->
+            ui.composeView.background = drawable
+            drawable.showStats(LayoutGrid)
         }
 
         ui.hexGrid.onClickListener = HexGridView.OnClickListener { address ->
             mutableGrid.toggle(address)
             ui.hexGrid.invalidate()
-            toast(mutableGrid, address, ui.groupCrossMode)
+            viewLabel.showStats(mutableGrid)
         }
 
         ui.composeView.apply {
             setViewCompositionStrategy(DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                LayoutHexGrid(
-                    crossMode,
-                    showStroke,
-                    showIcons,
-                    showBackgrounds,
-                    ::toast
-                )
+                // TODO https://issuetracker.google.com/issues/336842920
+                CompositionLocalProvider(
+                    androidx.lifecycle.compose.LocalLifecycleOwner provides
+                            androidx.compose.ui.platform.LocalLifecycleOwner.current
+                ) {
+                    LayoutHexGrid(
+                        crossMode,
+                        showStroke,
+                        showIcons,
+                        showBackgrounds
+                    ) { composeLabel.showStats(it) }
+                }
             }
         }
     }
@@ -138,7 +142,7 @@ private fun LayoutHexGrid(
     showStroke: Boolean,
     showIcons: Boolean,
     showBackgrounds: Boolean,
-    toast: (Grid, Grid.Address) -> Unit
+    showStats: (Grid) -> Unit
 ) {
     var immutableGrid by remember {
         mutableStateOf(LayoutGrid.toImmutable())
@@ -153,7 +157,7 @@ private fun LayoutHexGrid(
         colors = HexGridDefaults.colors(strokeColor = strokeColor),
         onGridTap = { address ->
             immutableGrid = immutableGrid.toggled(address)
-            toast(immutableGrid, address)
+            showStats(immutableGrid)
         }
     ) { address ->
         val color = when {

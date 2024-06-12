@@ -1,11 +1,11 @@
 package com.gonodono.hexgrid.data
 
-
 /**
  * The library's specialized state collection that allows indexing by the
  * particular address system used here.
  */
 interface Grid {
+
     /**
      * The number of linear rows in the [Grid].
      *
@@ -50,12 +50,20 @@ interface Grid {
     val size: Int
 
     /**
-     * The indexed get operator for Grid.
+     * The Address-indexed get operator for Grid.
      *
      * This is a direct accessor, and it will result in Exceptions for invalid
      * addresses. See [isValidAddress].
      */
     operator fun get(address: Address): State
+
+    /**
+     * The Int-indexed get operator for Grid.
+     *
+     * This is a direct accessor, and it will result in Exceptions for invalid
+     * addresses. See [isValidAddress].
+     */
+    operator fun get(row: Int, column: Int): State
 
     /**
      * Returns whether the given line – row or column – is inset, per the
@@ -89,13 +97,13 @@ interface Grid {
      * Returns a new, modified instance of this [Grid] if [changes] actually
      * causes any changes.
      *
-     * If the list is non-empty and causes no changes at all, the same instance
-     * is returned. If the list is empty, an exact copy is returned as a new
-     * instance.
+     * If the map is non-empty and causes no changes at all, the same Grid
+     * instance is returned. If the map is empty, an exact copy is returned as a
+     * new instance.
      *
      * Invalid Addresses will cause Exceptions. See [isValidAddress].
      */
-    fun copy(changes: Map<Address, State>): Grid
+    fun copy(changes: Map<Address, State> = emptyMap()): Grid
 
     /**
      * Returns a modified copy of this [Grid] if [change] actually causes a
@@ -159,6 +167,10 @@ val EmptyGrid: Grid = object : Grid {
     override val size: Int = 0
 
     override fun get(address: Grid.Address): Grid.State {
+        error("EmptyGrid is empty")
+    }
+
+    override fun get(row: Int, column: Int): Grid.State {
         error("EmptyGrid is empty")
     }
 

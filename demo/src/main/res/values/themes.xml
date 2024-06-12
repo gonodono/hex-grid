@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Theme.Demo" parent="@style/Theme.MaterialComponents.Light.NoActionBar">
-        <item name="materialButtonStyle">?borderlessButtonStyle</item>
+        <item name="editTextStyle">@style/Widget.Demo.EditText</item>
+        <item name="materialButtonStyle">?materialButtonOutlinedStyle</item>
     </style>
+
 </resources>

@@ -1,6 +1,5 @@
 package com.gonodono.hexgrid.data
 
-
 /**
  * The mutable version of the library's [Grid] structure.
  *
@@ -64,14 +63,26 @@ class MutableGrid private constructor(
 
     override fun get(address: Grid.Address): Grid.State = states[address]
 
+    override fun get(row: Int, column: Int): Grid.State = states[row, column]
+
     /**
-     * The indexed set operator for MutableGrid.
+     * The Address-indexed set operator for MutableGrid.
      *
      * This is direct assignment, and it will result in Exceptions for invalid
      * addresses. See [isValidAddress].
      */
     operator fun set(address: Grid.Address, state: Grid.State) {
         states[address] = state
+    }
+
+    /**
+     * The Int-indexed set operator for MutableGrid.
+     *
+     * This is direct assignment, and it will result in Exceptions for invalid
+     * addresses. See [isValidAddress].
+     */
+    operator fun set(row: Int, column: Int, state: Grid.State) {
+        states[row, column] = state
     }
 
     override fun isLineInset(index: Int): Boolean =
@@ -254,11 +265,18 @@ private class States private constructor(
         newRows
     }
 
-    operator fun get(address: Grid.Address) =
+    operator fun get(address: Grid.Address): Grid.State =
         rows[address.row - minimumIndex][address.column]
+
+    operator fun get(row: Int, column: Int): Grid.State =
+        rows[row - minimumIndex][column]
 
     operator fun set(address: Grid.Address, state: Grid.State) {
         rows[address.row - minimumIndex][address.column] = state
+    }
+
+    operator fun set(row: Int, column: Int, state: Grid.State) {
+        rows[row - minimumIndex][column] = state
     }
 
     fun contentEquals(other: States) = rows.contentEquals(other.rows)

@@ -6,11 +6,18 @@
     android:layout_height="match_parent"
     android:divider="?dividerHorizontal"
     android:orientation="vertical"
-    android:showDividers="middle"
-    tools:ignore="HardcodedText,ContentDescription">
+    android:showDividers="beginning|middle"
+    tools:ignore="HardcodedText">
 
     <com.gonodono.hexgrid.view.HexGridView
         android:id="@+id/hex_grid"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:contentDescription="HexGridView" />
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
@@ -85,11 +92,5 @@
             android:text="Scale" />
 
     </RadioGroup>
-
-    <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/compose_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
 
 </LinearLayout>

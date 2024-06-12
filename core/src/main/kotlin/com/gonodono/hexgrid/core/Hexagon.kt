@@ -4,8 +4,8 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
-import android.graphics.PointF
 import android.graphics.RectF
+import androidx.core.graphics.withTranslation
 import kotlin.math.sqrt
 
 class Hexagon(var isHorizontal: Boolean) {
@@ -23,50 +23,39 @@ class Hexagon(var isHorizontal: Boolean) {
     var halfMinor = 0F
         private set
 
+    private val path = Path()
+
     // Determined by orientation
-    private val vertices = List(6) { PointF() }
-
-    private val shapePath = Path()
-
-    private val tmpPath = Path()
+    private val vertices = FloatArray(12)
 
     fun setSideLength(side: Float) {
         if (this.side == side) return
         this.side = side
 
-        minor = sqrt(3F) * side
-        halfSide = side / 2F
-        halfMinor = minor / 2F
+        val minor = (sqrt(3F) * side).also { minor = it }
+        val halfMinor = (minor / 2F).also { halfMinor = it }
+        val halfSide = (side / 2F).also { halfSide = it }
 
-        // Unordered coordinates, symmetric across y=x
-        val coordinatePairs = listOf(
-            Pair(0F, halfMinor),
-            Pair(halfSide, 0F),
-            Pair(3F * halfSide, 0F),
-            Pair(2F * side, halfMinor),
-            Pair(3F * halfSide, minor),
-            Pair(halfSide, minor)
+        // Unordered coordinate pairs, symmetric across y=x.
+        val coordinatePairs = arrayOf(
+            arrayOf(0F, halfMinor),
+            arrayOf(halfSide, 0F),
+            arrayOf(3F * halfSide, 0F),
+            arrayOf(2F * side, halfMinor),
+            arrayOf(3F * halfSide, minor),
+            arrayOf(halfSide, minor)
         )
         val v = vertices
-        v.forEachIndexed { index, point ->
-            val pair = coordinatePairs[index]
+        coordinatePairs.forEachIndexed { index, (c1, c2) ->
             if (isHorizontal) {
-                point.set(pair.first, pair.second)
+                v[2 * index] = c1
+                v[2 * index + 1] = c2
             } else {
-                point.set(pair.second, pair.first)
+                v[2 * index] = c2
+                v[2 * index + 1] = c1
             }
         }
-        shapePath.apply {
-            rewind()
-            moveTo(v[0].x, v[0].y)
-            lineTo(v[1].x, v[1].y)
-            lineTo(v[2].x, v[2].y)
-            lineTo(v[3].x, v[3].y)
-            lineTo(v[4].x, v[4].y)
-            lineTo(v[5].x, v[5].y)
-            lineTo(v[0].x, v[0].y)
-            close()
-        }
+        path.run { rewind(); getPathBuilder(IDENTITY_MATRIX)() }
     }
 
     fun draw(
@@ -77,41 +66,37 @@ class Hexagon(var isHorizontal: Boolean) {
         strokeColor: Int,
         fillColor: Int
     ) {
-        val drawPath = tmpPath.also { path ->
-            shapePath.offset(bounds.left, bounds.top, path)
-        }
-        paint.style = Paint.Style.FILL
-        paint.color = fillColor
-        canvas.drawPath(drawPath, paint)
+        canvas.withTranslation(bounds.left, bounds.top) {
+            paint.style = Paint.Style.FILL
+            paint.color = fillColor
+            drawPath(path, paint)
 
-        paint.style = Paint.Style.STROKE
-        paint.strokeWidth = strokeWidth
-        paint.color = strokeColor
-        canvas.drawPath(drawPath, paint)
+            paint.style = Paint.Style.STROKE
+            paint.strokeWidth = strokeWidth
+            paint.color = strokeColor
+            drawPath(path, paint)
+        }
     }
 
     fun getPath(outPath: Path, matrix: Matrix) {
-        shapePath.transform(matrix, outPath)
+        path.transform(matrix, outPath)
     }
 
-    // I'm assuming that this is cheaper than creating a new
-    // Path instance every time, but I've not confirmed that.
     fun getPathBuilder(matrix: Matrix): Path.() -> Unit {
-        val v = FloatArray(12)
-        vertices.forEachIndexed { index, pointF ->
-            v[2 * index] = pointF.x
-            v[2 * index + 1] = pointF.y
-        }
-        matrix.mapPoints(v)
+        val vf = tmpArray
+        matrix.mapPoints(vf, vertices)
         return {
-            moveTo(v[0], v[1])
-            lineTo(v[2], v[3])
-            lineTo(v[4], v[5])
-            lineTo(v[6], v[7])
-            lineTo(v[8], v[9])
-            lineTo(v[10], v[11])
-            lineTo(v[0], v[1])
-            close()
+            moveTo(vf[0], vf[1])
+            lineTo(vf[2], vf[3])
+            lineTo(vf[4], vf[5])
+            lineTo(vf[6], vf[7])
+            lineTo(vf[8], vf[9])
+            lineTo(vf[10], vf[11])
+            lineTo(vf[0], vf[1])
         }
     }
+
+    private val tmpArray = FloatArray(12)
 }
+
+private val IDENTITY_MATRIX = Matrix()

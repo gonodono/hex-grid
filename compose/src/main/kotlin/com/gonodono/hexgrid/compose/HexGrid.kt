@@ -28,7 +28,6 @@ import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
 import com.gonodono.hexgrid.data.HexOrientation
 
-
 /**
  * The Compose version of the library's hex grid.
  *
@@ -56,8 +55,8 @@ fun HexGrid(
     colors: HexGridColors = HexGridDefaults.colors(),
     indicesShown: IndicesShown = HexGridDefaults.indicesShown(),
     clipToBounds: Boolean = true,
-    onGridTap: (Grid.Address) -> Unit = {},
-    onOutsideTap: () -> Unit = {},
+    onGridTap: ((Grid.Address) -> Unit)? = null,
+    onOutsideTap: (() -> Unit)? = null,
     cellItems: @Composable (HexGridItemScope.(Grid.Address) -> Unit)? = null
 ) {
     val density = LocalDensity.current
@@ -92,7 +91,10 @@ fun HexGrid(
             .pointerInput(Unit) {
                 detectTapGestures { offset ->
                     val address = gridUi.resolveAddress(offset.x, offset.y)
-                    if (address != null) onGridTap(address) else onOutsideTap()
+                    when (address) {
+                        null -> onOutsideTap?.invoke()
+                        else -> onGridTap?.invoke(address)
+                    }
                 }
             }
     ) { constraints ->
@@ -106,9 +108,7 @@ fun HexGrid(
             constraints.maxHeight
         )
 
-        if (cellItems == null) {
-            layout(uiSize.width, uiSize.height) {}
-        } else {
+        if (cellItems != null) {
             val items = mutableListOf<Pair<Placeable, Rect>>()
             grid.forEach { address, _ ->
                 val item = subcompose(address) {
@@ -128,12 +128,13 @@ fun HexGrid(
             }
             layout(uiSize.width, uiSize.height) {
                 items.forEach { (item, bounds) ->
-                    item.place(
-                        bounds.left + (bounds.width() - item.width) / 2,
-                        bounds.top + (bounds.height() - item.height) / 2
-                    )
+                    val x = bounds.left + (bounds.width() - item.width) / 2
+                    val y = bounds.top + (bounds.height() - item.height) / 2
+                    item.place(x, y)
                 }
             }
+        } else {
+            layout(uiSize.width, uiSize.height) {}
         }
     }
 }
@@ -214,13 +215,16 @@ private class HexGridItemScopeImpl(
     density: Density
 ) : HexGridItemScope, Density by density {
 
+    private var address = Grid.Address.Zero
+
     private val itemBounds = Rect()
 
-    private var address = Grid.Address.Zero
+    private var boundsEmpty = true
 
     fun prepare(address: Grid.Address) {
         this.address = address
         itemBounds.setEmpty()
+        boundsEmpty = true
     }
 
     override fun getHexShape(inset: Dp): Shape {
@@ -228,6 +232,7 @@ private class HexGridItemScopeImpl(
             val bounds = tmpBounds
             getCellItemBounds(address, inset.toPx(), bounds)
             itemBounds.set(bounds)
+            boundsEmpty = false
             bounds.offsetTo(0, 0)
             getHexagonPathBuilder(bounds)
         }
@@ -235,9 +240,9 @@ private class HexGridItemScopeImpl(
     }
 
     fun copyBounds(): Rect = itemBounds.let { bounds ->
-        if (bounds.isEmpty) gridUi.getCellItemBounds(address, 0F, bounds)
+        if (boundsEmpty) gridUi.getCellItemBounds(address, 0F, bounds)
         Rect(bounds)
     }
-}
 
-private val tmpBounds = Rect()
+    private val tmpBounds = Rect()
+}

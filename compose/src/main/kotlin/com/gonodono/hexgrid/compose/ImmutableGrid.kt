@@ -4,11 +4,10 @@ import androidx.compose.runtime.Immutable
 import com.gonodono.hexgrid.data.Grid
 import com.gonodono.hexgrid.data.MutableGrid
 
-
 /**
  * The immutable version of [Grid].
  *
- * This class simply wraps a [MutableGrid] and hides its only mutator.
+ * This class simply wraps a [MutableGrid] and hides its mutators.
  */
 @Immutable
 class ImmutableGrid internal constructor(
@@ -62,7 +61,7 @@ class ImmutableGrid internal constructor(
 /**
  * Copies this [MutableGrid] and wraps the new instance in an [ImmutableGrid].
  */
-fun MutableGrid.toImmutable(): ImmutableGrid = ImmutableGrid(copy(emptyMap()))
+fun MutableGrid.toImmutable(): ImmutableGrid = ImmutableGrid(this.copy())
 
 /**
  * Wraps this [MutableGrid] in an [ImmutableGrid].

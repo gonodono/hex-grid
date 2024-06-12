@@ -429,8 +429,8 @@ HexGrid(
 ```
 
 As you can see above, Compose's `Grid` implementation is `ImmutableGrid`, which
-is really just a wrapper around `MutableGrid` that hides the `set` operator, and
-is marked `@Immutable`. In `onGridTap()`, the selected state is toggled by
+is really just a wrapper around `MutableGrid` that hides the `set` operators,
+and is marked `@Immutable`. In `onGridTap()`, the selected state is toggled by
 copying the existing `ImmutableGrid` and replacing the `Grid.State` at the
 given `address` with one that has the opposite state. The `toggled()` extension
 function is a convenience to handle the copy/replace, and we simply set the
@@ -461,6 +461,9 @@ in the library.
 alt="Screenshots of the demo app's two pages."
 width="25%" />
 </p>
+
+It was designed and tested on only a few large phone screens, so it might not
+look that great on other formats. Just a heads up.
 
 ### Grid's future
 

@@ -22,7 +22,6 @@ import kotlin.math.floor
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
-
 class GridUi {
 
     private val hexagon = Hexagon(DefaultLayoutSpecs.isHexHorizontal)
@@ -146,10 +145,9 @@ class GridUi {
             fitDimension = maxHeight - fitLineThickness
         }
 
-        val hexagonSide = if (isFitMajor) {
-            fitDimension * 2 / (3 * fitCount + 1)
-        } else {
-            fitDimension * 2 / sqrt(3F) / (fitCount + 1)
+        val hexagonSide = when {
+            isFitMajor -> fitDimension * 2 / (3 * fitCount + 1)
+            else -> fitDimension * 2 / sqrt(3F) / (fitCount + 1)
         }
         with(hexagon) {
             setSideLength(hexagonSide)
@@ -161,10 +159,9 @@ class GridUi {
                 stepSize.set(halfMinor, 3 * halfSide)
             }
         }
-        val crossDimension = if (isFitMajor) {
-            hexagonSide * sqrt(3F) * (crossCount + 1) / 2
-        } else {
-            hexagonSide * (3 * crossCount + 1) / 2
+        val crossDimension = when {
+            isFitMajor -> hexagonSide * sqrt(3F) / 2 * (crossCount + 1)
+            else -> hexagonSide * (3 * crossCount + 1) / 2
         }
 
         val marginHorizontal: Float

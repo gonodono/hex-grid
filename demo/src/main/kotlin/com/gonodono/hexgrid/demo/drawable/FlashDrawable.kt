@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
 
-
 class FlashDrawable(private val flashColor: Int) : Drawable() {
 
     private val handler = Handler(Looper.getMainLooper())

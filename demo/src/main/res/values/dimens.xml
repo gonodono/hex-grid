@@ -2,4 +2,5 @@
 <resources>
     <dimen name="hex_inset">5dp</dimen>
     <dimen name="hex_elevation">4dp</dimen>
+    <dimen name="label_size">20sp</dimen>
 </resources>

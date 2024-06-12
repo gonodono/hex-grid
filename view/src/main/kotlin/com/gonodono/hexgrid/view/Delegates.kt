@@ -4,7 +4,6 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty
 
-
 internal fun <T> onChange(
     initialValue: T,
     onChange: (newValue: T) -> Unit
@@ -36,13 +35,13 @@ private class RelayChangeProperty<T>(
     private val onChange: () -> Unit
 ) : ReadWriteProperty<Any?, T> {
 
-    private fun getWrapped() = wrapped.getValue(null, wrapped)
+    private fun getWrapped() = wrapped.get()
 
     override fun getValue(thisRef: Any?, property: KProperty<*>) = getWrapped()
 
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         if (getWrapped() == value) return
-        wrapped.setValue(null, wrapped, value)
+        wrapped.set(value)
         onChange()
     }
 }

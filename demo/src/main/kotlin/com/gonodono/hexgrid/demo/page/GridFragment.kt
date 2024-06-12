@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
@@ -34,7 +35,6 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import kotlin.reflect.KMutableProperty0
 import androidx.compose.ui.graphics.Color as ComposeColor
-
 
 class GridFragment : Fragment(R.layout.fragment_grid) {
 
@@ -70,7 +70,7 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
         }
 
         val hexGridDrawable = ui.drawableView.background as HexGridDrawable
-        val foregroundFlasher = FlashDrawable(0xC0FF00C0.toInt()).also {
+        val foregroundFlasher = FlashDrawable(0xAAFF00FF.toInt()).also {
             ui.drawableView.foreground = it
         }
         ui.drawableView.setOnClickListener {
@@ -83,7 +83,7 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
         }
 
         val backgroundFlasher = FlashDrawable(Color.LTGRAY).also {
-            ui.switcher.background = it
+            ui.animator.background = it
         }
         ui.hexGrid.onClickListener =
             object : HexGridView.OnClickListener {
@@ -138,7 +138,7 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
             model.showColumnIndices = isChecked
         }
         ui.frameworkSelect.setOnCheckedChangeListener { _, checkedId ->
-            ui.switcher.displayedChild = when (checkedId) {
+            ui.animator.displayedChild = when (checkedId) {
                 ui.viewSelection.id -> 0
                 ui.composeSelection.id -> 1
                 else -> 2
@@ -178,49 +178,16 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
 
         ui.composeView.apply {
             setViewCompositionStrategy(DisposeOnViewTreeLifecycleDestroyed)
-            setContent { GridHexGrid(model, backgroundFlasher::flash) }
+            setContent {
+                // TODO https://issuetracker.google.com/issues/336842920
+                CompositionLocalProvider(
+                    androidx.lifecycle.compose.LocalLifecycleOwner provides
+                            androidx.compose.ui.platform.LocalLifecycleOwner.current
+                ) {
+                    GridHexGrid(model, backgroundFlasher::flash)
+                }
+            }
         }
-    }
-
-    private fun <T : Enum<T>> showChoiceDialog(
-        enum: Class<T>,
-        property: KMutableProperty0<T>
-    ) {
-        val values = enum.enumConstants!!
-        AlertDialog.Builder(requireContext())
-            .setSingleChoiceItems(
-                values.map { it.name }.toTypedArray<String>(),
-                values.indexOf(property.getValue(null, property))
-            ) { dialog, which ->
-                property.setValue(null, property, values[which])
-                dialog.dismiss()
-            }
-            .show()
-    }
-
-    @SuppressLint("DefaultLocale")
-    private fun showColorDialog(
-        property: KMutableProperty0<Int>,
-        button: Button
-    ) {
-        val fields = Color::class.java.declaredFields.sortedBy { it.name }
-        val values = fields.map { it.get(null) as Int }.toTypedArray()
-        @Suppress("DEPRECATION") val names =
-            fields.map { it.name.lowercase().capitalize() }
-        AlertDialog.Builder(requireContext())
-            .setSingleChoiceItems(
-                names.toTypedArray<String>(),
-                values.indexOf(property.getValue(null, property))
-            ) { dialog, which ->
-                property.setValue(null, property, values[which])
-                button.setSwatchColor(values[which])
-                dialog.dismiss()
-            }
-            .show()
-    }
-
-    private fun Button.setSwatchColor(color: Int) {
-        compoundDrawablesRelative[2]?.setTint(color)
     }
 }
 
@@ -250,4 +217,45 @@ private fun GridHexGrid(
         onGridTap = { model.toggleSelected(it) },
         onOutsideTap = onOutsideTap
     )
+}
+
+private fun <T : Enum<T>> Fragment.showChoiceDialog(
+    enum: Class<T>,
+    property: KMutableProperty0<T>
+) {
+    val values = enum.enumConstants!!
+    AlertDialog.Builder(requireContext())
+        .setSingleChoiceItems(
+            values.map { it.name }.toTypedArray<String>(),
+            values.indexOf(property.get())
+        ) { dialog, which ->
+            property.set(values[which])
+            dialog.dismiss()
+        }
+        .show()
+}
+
+@SuppressLint("DefaultLocale")
+private fun Fragment.showColorDialog(
+    property: KMutableProperty0<Int>,
+    button: Button
+) {
+    val fields = Color::class.java.fields.sortedBy { it.name }
+    val values = fields.map { it.get(null) as Int }.toTypedArray()
+    @Suppress("DEPRECATION") val names =
+        fields.map { it.name.lowercase().capitalize() }
+    AlertDialog.Builder(requireContext())
+        .setSingleChoiceItems(
+            names.toTypedArray<String>(),
+            values.indexOf(property.get())
+        ) { dialog, which ->
+            property.set(values[which])
+            button.setSwatchColor(values[which])
+            dialog.dismiss()
+        }
+        .show()
+}
+
+private fun Button.setSwatchColor(color: Int) {
+    compoundDrawablesRelative[2]?.setTint(color)
 }

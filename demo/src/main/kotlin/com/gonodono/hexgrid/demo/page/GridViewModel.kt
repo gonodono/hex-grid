@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-
 internal class GridViewModel : ViewModel() {
 
     private val _gridState = MutableStateFlow(DefaultGridState)
