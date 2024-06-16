@@ -3,16 +3,34 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
-        android:allowBackup="true"
         android:icon="@drawable/ic_hex_shield"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.Demo">
+        android:supportsRtl="true">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".library.LibraryActivity"
             android:exported="true"
+            android:label="@string/label_library"
+            android:noHistory="true"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.Demo.Library"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".examples.ExamplesActivity"
+            android:exported="true"
+            android:label="@string/label_constraint_layout"
+            android:noHistory="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Demo.Examples"
             tools:ignore="DiscouragedApi,LockedOrientationActivity">
 
             <intent-filter>

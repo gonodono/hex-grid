@@ -1,10 +1,10 @@
-package com.gonodono.hexgrid.demo.page
+package com.gonodono.hexgrid.demo.library
 
 import android.os.Bundle
 import android.view.View
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Surface
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -33,7 +33,7 @@ import com.gonodono.hexgrid.data.toggled
 import com.gonodono.hexgrid.demo.R
 import com.gonodono.hexgrid.demo.databinding.FragmentLayoutBinding
 import com.gonodono.hexgrid.demo.databinding.LayoutItemBinding
-import com.gonodono.hexgrid.demo.drawable.LabelDrawable
+import com.gonodono.hexgrid.demo.internal.LabelDrawable
 import com.gonodono.hexgrid.view.HexGridView
 import android.graphics.Color as AndroidColor
 
@@ -95,19 +95,14 @@ class LayoutFragment : Fragment(R.layout.fragment_layout) {
             item.root
         }
 
-        fun LabelDrawable.showStats(grid: Grid) {
-            val (selected, visible) = grid.stats()
-            label = "$selected/$visible"
-        }
-
         val size = resources.getDimension(R.dimen.label_size)
-        val viewLabel = LabelDrawable("View", size).also { drawable ->
-            ui.hexGrid.background = drawable
-            drawable.showStats(LayoutGrid)
+        val viewLabel = LabelDrawable("View", size).also {
+            ui.hexGrid.background = it
+            it.showStats(LayoutGrid)
         }
-        val composeLabel = LabelDrawable("Compose", size).also { drawable ->
-            ui.composeView.background = drawable
-            drawable.showStats(LayoutGrid)
+        val composeLabel = LabelDrawable("Compose", size).also {
+            ui.composeView.background = it
+            it.showStats(LayoutGrid)
         }
 
         ui.hexGrid.onClickListener = HexGridView.OnClickListener { address ->
@@ -174,7 +169,7 @@ private fun LayoutHexGrid(
         }
         Surface(
             color = color,
-            elevation = elevation,
+            shadowElevation = elevation,
             shape = shape,
             modifier = Modifier.fillMaxSize()
         ) {
@@ -189,14 +184,14 @@ private fun LayoutHexGrid(
 
 private val LayoutGrid = MutableGrid(3, 5, insetEvenLines = true)
 
-private fun Grid.stats(): Pair<Int, Int> {
+private fun LabelDrawable.showStats(grid: Grid) {
     var selected = 0
     var visible = 0
-    forEach { _, state ->
+    grid.forEach { _, state ->
         if (state.isSelected) selected++
         if (state.isVisible) visible++
     }
-    return selected to visible
+    info = "$selected/$visible"
 }
 
 private fun colorFor(address: Grid.Address) =

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="@drawable/divider"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:showDividers="middle"
+    tools:ignore="HardcodedText">
+
+    <com.gonodono.hexgrid.demo.internal.DualPaneView
+        android:id="@+id/dual_pane_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:foreground="@drawable/border"
+        android:inAnimation="@anim/slide_in_top"
+        android:outAnimation="@anim/slide_out_bottom">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/constraint_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/center"
+        android:layout_width="58dp"
+        android:layout_height="50dp"
+        android:background="@drawable/hexagon"
+        android:backgroundTint="#CCCCCC"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/hex_0"
+        android:layout_width="58dp"
+        android:layout_height="50dp"
+        android:background="@drawable/hexagon"
+        android:backgroundTint="#FF0000"
+        app:layout_constraintCircle="@+id/center"
+        app:layout_constraintCircleAngle="0"
+        app:layout_constraintCircleRadius="54dp"
+        tools:ignore="MissingConstraints" />
+
+    <View
+                android:id="@+id/hex_1"
+                android:layout_width="58dp"
+                android:layout_height="50dp"
+                android:background="@drawable/hexagon"
+                android:backgroundTint="#FFFF00"
+                app:layout_constraintCircle="@+id/center"
+                app:layout_constraintCircleAngle="60"
+                app:layout_constraintCircleRadius="54dp"
+                tools:ignore="MissingConstraints" />
+
+            <View
+                android:id="@+id/hex_2"
+                android:layout_width="58dp"
+                android:layout_height="50dp"
+                android:background="@drawable/hexagon"
+                android:backgroundTint="#00FF00"
+                app:layout_constraintCircle="@+id/center"
+                app:layout_constraintCircleAngle="120"
+                app:layout_constraintCircleRadius="54dp"
+                tools:ignore="MissingConstraints" />
+
+            <View
+                android:id="@+id/hex_3"
+                android:layout_width="58dp"
+                android:layout_height="50dp"
+                android:background="@drawable/hexagon"
+                android:backgroundTint="#00FFFF"
+                app:layout_constraintCircle="@+id/center"
+                app:layout_constraintCircleAngle="180"
+                app:layout_constraintCircleRadius="54dp"
+                tools:ignore="MissingConstraints" />
+
+            <View
+                android:id="@+id/hex_4"
+                android:layout_width="58dp"
+                android:layout_height="50dp"
+                android:background="@drawable/hexagon"
+                android:backgroundTint="#0000FF"
+                app:layout_constraintCircle="@+id/center"
+                app:layout_constraintCircleAngle="240"
+                app:layout_constraintCircleRadius="54dp"
+                tools:ignore="MissingConstraints" />
+
+            <View
+                android:id="@+id/hex_5"
+                android:layout_width="58dp"
+                android:layout_height="50dp"
+                android:background="@drawable/hexagon"
+                android:backgroundTint="#FF00FF"
+                app:layout_constraintCircle="@+id/center"
+                app:layout_constraintCircleAngle="300"
+                app:layout_constraintCircleRadius="54dp"
+                tools:ignore="MissingConstraints" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/compose_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.gonodono.hexgrid.demo.internal.DualPaneView>
+
+    <RadioGroup
+        android:id="@+id/group_orientation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radio_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Horizontal" />
+
+        <RadioButton
+            android:id="@+id/radio_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="Vertical" />
+
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/group_framework"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="4dp">
+
+        <RadioButton
+            android:id="@+id/radio_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="View"
+            android:textAppearance="?android:textAppearanceMedium" />
+
+        <RadioButton
+            android:id="@+id/radio_compose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="Compose"
+            android:textAppearance="?android:textAppearanceMedium" />
+
+    </RadioGroup>
+
+</LinearLayout>

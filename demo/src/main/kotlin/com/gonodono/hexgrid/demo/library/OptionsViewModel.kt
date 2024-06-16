@@ -1,4 +1,4 @@
-package com.gonodono.hexgrid.demo.page
+package com.gonodono.hexgrid.demo.library
 
 import android.graphics.Color
 import androidx.lifecycle.ViewModel
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-internal class GridViewModel : ViewModel() {
+internal class OptionsViewModel : ViewModel() {
 
     private val _gridState = MutableStateFlow(DefaultGridState)
 

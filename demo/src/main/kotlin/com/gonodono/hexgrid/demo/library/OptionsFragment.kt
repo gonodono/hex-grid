@@ -1,4 +1,4 @@
-package com.gonodono.hexgrid.demo.page
+package com.gonodono.hexgrid.demo.library
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -27,8 +27,9 @@ import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
 import com.gonodono.hexgrid.data.HexOrientation
 import com.gonodono.hexgrid.demo.R
-import com.gonodono.hexgrid.demo.databinding.FragmentGridBinding
-import com.gonodono.hexgrid.demo.drawable.FlashDrawable
+import com.gonodono.hexgrid.demo.databinding.FragmentOptionsBinding
+import com.gonodono.hexgrid.demo.internal.FlashDrawable
+import com.gonodono.hexgrid.demo.internal.LabelDrawable
 import com.gonodono.hexgrid.view.HexGridDrawable
 import com.gonodono.hexgrid.view.HexGridView
 import com.google.android.material.snackbar.Snackbar
@@ -36,19 +37,17 @@ import kotlinx.coroutines.launch
 import kotlin.reflect.KMutableProperty0
 import androidx.compose.ui.graphics.Color as ComposeColor
 
-class GridFragment : Fragment(R.layout.fragment_grid) {
+class OptionsFragment : Fragment(R.layout.fragment_options) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val ui = FragmentGridBinding.bind(view)
+        val ui = FragmentOptionsBinding.bind(view)
 
-        val model: GridViewModel by viewModels()
+        val model: OptionsViewModel by viewModels()
 
         with(DefaultGridState) {
             ui.editColumns.setText(grid.columnCount.toString())
             ui.editRows.setText(grid.rowCount.toString())
-            ui.editStrokeWidth.setText(
-                strokeWidth.toInt().toString()
-            )
+            ui.editStrokeWidth.setText(strokeWidth.toInt().toString())
             ui.switchInsetEvenLines.isChecked = grid.insetEvenLines
             ui.switchEnableEdgeLines.isChecked = grid.enableEdgeLines
             ui.buttonStrokeColor.setSwatchColor(strokeColor)
@@ -76,11 +75,16 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
         ui.drawableView.setOnClickListener {
             foregroundFlasher.flash()
             Snackbar.make(
-                ui.frameworkSelect,
+                ui.groupFramework,
                 "Drawable is not interactive",
                 Snackbar.LENGTH_SHORT
-            ).setAnchorView(ui.frameworkSelect).show()
+            ).setAnchorView(ui.groupFramework).show()
         }
+
+        val countLabel = LabelDrawable(
+            null,
+            resources.getDimension(R.dimen.label_size)
+        ).also { ui.animator.foreground = it }
 
         val backgroundFlasher = FlashDrawable(Color.LTGRAY).also {
             ui.animator.background = it
@@ -137,10 +141,10 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
         ui.checkShowColumnIndices.setOnCheckedChangeListener { _, isChecked ->
             model.showColumnIndices = isChecked
         }
-        ui.frameworkSelect.setOnCheckedChangeListener { _, checkedId ->
+        ui.groupFramework.setOnCheckedChangeListener { _, checkedId ->
             ui.animator.displayedChild = when (checkedId) {
-                ui.viewSelection.id -> 0
-                ui.composeSelection.id -> 1
+                ui.radioView.id -> 0
+                ui.radioCompose.id -> 1
                 else -> 2
             }
         }
@@ -172,6 +176,9 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
                         showColumnIndices = state.showColumnIndices
                         showRowIndices = state.showRowIndices
                     }
+                    var selected = 0
+                    state.grid.forEach { _, s -> if (s.isSelected) selected++ }
+                    countLabel.info = "$selected/${state.grid.size}"
                 }
             }
         }
@@ -193,7 +200,7 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
 
 @Composable
 private fun GridHexGrid(
-    model: GridViewModel,
+    model: OptionsViewModel,
     onOutsideTap: () -> Unit
 ) {
     val state by model.gridState.collectAsStateWithLifecycle(DefaultGridState)

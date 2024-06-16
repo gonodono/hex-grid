@@ -10,10 +10,10 @@
     android:showDividers="middle">
 
     <TextView
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="15dp"
-        android:text="@string/welcome_header"
         android:textAlignment="center" />
 
     <ScrollView
@@ -29,9 +29,9 @@
         android:scrollbarStyle="outsideInset">
 
         <TextView
+            android:id="@+id/text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/welcome"
             android:textAppearance="?android:textAppearanceMedium"
             tools:ignore="RtlSymmetry" />
 

@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Demo" parent="@style/Theme.MaterialComponents.Light.NoActionBar">
-        <item name="editTextStyle">@style/Widget.Demo.EditText</item>
+    <style name="Theme.Demo" parent="@style/Theme.Material3.Light.NoActionBar">
         <item name="materialButtonStyle">?materialButtonOutlinedStyle</item>
+    </style>
+
+    <style name="Theme.Demo.Examples">
+        <item name="radioButtonStyle">@style/Widget.Demo.RadioButton</item>
+    </style>
+
+    <style name="Theme.Demo.Library">
+        <item name="editTextStyle">@style/Widget.Demo.EditText</item>
     </style>
 
 </resources>

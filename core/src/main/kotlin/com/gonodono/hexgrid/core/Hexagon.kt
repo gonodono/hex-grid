@@ -38,13 +38,14 @@ class Hexagon(var isHorizontal: Boolean) {
 
         // Unordered coordinate pairs, symmetric across y=x.
         val coordinatePairs = arrayOf(
-            arrayOf(0F, halfMinor),
-            arrayOf(halfSide, 0F),
-            arrayOf(3F * halfSide, 0F),
-            arrayOf(2F * side, halfMinor),
-            arrayOf(3F * halfSide, minor),
-            arrayOf(halfSide, minor)
+            floatArrayOf(0F, halfMinor),
+            floatArrayOf(halfSide, 0F),
+            floatArrayOf(3F * halfSide, 0F),
+            floatArrayOf(2F * side, halfMinor),
+            floatArrayOf(3F * halfSide, minor),
+            floatArrayOf(halfSide, minor)
         )
+
         val v = vertices
         coordinatePairs.forEachIndexed { index, (c1, c2) ->
             if (isHorizontal) {

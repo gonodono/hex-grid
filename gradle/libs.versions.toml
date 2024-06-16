@@ -1,15 +1,16 @@
 [versions]
-agp = "8.4.2"
-kotlin = "1.9.24"
+agp = "8.5.0"
+kotlin = "2.0.0"
 dokka = "1.9.20"
 
 activityKtx = "1.9.0"
 appcompat = "1.7.0"
-compose = "2024.05.00"
+compose = "2024.06.00"
 constraintlayout = "2.1.4"
+constraintLayoutCompose = "1.0.1"
 coreKtx = "1.13.1"
-fragmentKtx = "1.7.1"
-lifecycle = "2.8.1"
+fragmentKtx = "1.8.0"
+lifecycle = "2.8.2"
 materialcomponents = "1.12.0"
 
 [libraries]
@@ -25,7 +26,8 @@ compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
-compose-material = { group = "androidx.compose.material", name = "material" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintLayoutCompose" }
 
 lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle" }
 lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
@@ -39,4 +41,5 @@ dokka-base = { module = "org.jetbrains.dokka:dokka-base", version.ref = "dokka" 
 application = { id = "com.android.application", version.ref = "agp" }
 library = { id = "com.android.library", version.ref = "agp" }
 kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }

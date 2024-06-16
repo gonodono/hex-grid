@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="5dp"
+    tools:ignore="HardcodedText">
+
+    <ViewAnimator
+        android:id="@+id/animator"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:inAnimation="@anim/slide_in_top"
+        android:outAnimation="@anim/slide_out_bottom"
+        app:layout_constraintBottom_toTopOf="@id/group_framework"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.gonodono.hexgrid.view.HexGridView
+            android:id="@+id/hex_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="HexGridView" />
+
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/compose_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <View
+            android:id="@+id/drawable_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </ViewAnimator>
+
+    <!-- Not sure how to do this all in ConstraintLayout. Is it possible to -->
+    <!-- wrap_content chains? Or "push" Guidelines toward one side somehow? -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioGroup
+            android:id="@+id/group_framework"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RadioButton
+                android:id="@+id/radio_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="View" />
+
+            <RadioButton
+                android:id="@+id/radio_compose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="Compose" />
+
+            <RadioButton
+                android:id="@+id/drawable_selection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="10dp"
+                android:text="Drawable" />
+
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/label_rows"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/edit_rows"
+            android:text="Row count"
+            app:layout_constraintBottom_toBottomOf="@id/edit_rows"
+            app:layout_constraintEnd_toStartOf="@id/edit_rows"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/edit_rows" />
+
+        <EditText
+            android:id="@+id/edit_rows"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:digits="0123456789"
+            android:ems="2"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:maxLength="2"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@id/edit_columns"
+            app:layout_constraintEnd_toStartOf="@id/vertical"
+            app:layout_constraintTop_toBottomOf="@id/group_framework" />
+
+        <TextView
+            android:id="@+id/label_columns"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/edit_columns"
+            android:text="Column count"
+            app:layout_constraintBottom_toBottomOf="@id/edit_columns"
+            app:layout_constraintEnd_toStartOf="@id/edit_columns"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/edit_columns" />
+
+        <EditText
+            android:id="@+id/edit_columns"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:digits="0123456789"
+            android:ems="2"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:maxLength="2"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@id/switch_inset_even_lines"
+            app:layout_constraintEnd_toStartOf="@id/vertical"
+            app:layout_constraintTop_toBottomOf="@id/edit_rows" />
+
+        <TextView
+            android:id="@+id/label_inset_even_lines"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/switch_inset_even_lines"
+            android:text="Inset even lines"
+            app:layout_constraintBottom_toBottomOf="@id/switch_inset_even_lines"
+            app:layout_constraintEnd_toStartOf="@id/switch_inset_even_lines"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/switch_inset_even_lines" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_inset_even_lines"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            app:layout_constraintBottom_toTopOf="@id/switch_enable_edge_lines"
+            app:layout_constraintEnd_toStartOf="@id/vertical"
+            app:layout_constraintTop_toBottomOf="@id/edit_rows" />
+
+        <TextView
+            android:id="@+id/label_enable_edge_cells"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/switch_enable_edge_lines"
+            android:text="Enable edge lines"
+            app:layout_constraintBottom_toBottomOf="@id/switch_enable_edge_lines"
+            app:layout_constraintEnd_toStartOf="@id/switch_enable_edge_lines"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/switch_enable_edge_lines" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_enable_edge_lines"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            app:layout_constraintBottom_toTopOf="@id/button_fit_mode"
+            app:layout_constraintEnd_toStartOf="@id/vertical"
+            app:layout_constraintTop_toBottomOf="@id/switch_inset_even_lines" />
+
+        <Button
+            android:id="@+id/button_fit_mode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="FitMode"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toTopOf="@id/button_cross_mode"
+            app:layout_constraintEnd_toStartOf="@id/vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/switch_enable_edge_lines" />
+
+        <Button
+            android:id="@+id/button_cross_mode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="CrossMode"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toTopOf="@id/button_hex_orientation"
+            app:layout_constraintEnd_toStartOf="@id/vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button_fit_mode" />
+
+        <Button
+            android:id="@+id/button_hex_orientation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="HexOrientation"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button_cross_mode" />
+
+        <View
+            android:id="@+id/vertical"
+            android:layout_width="10dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/group_framework" />
+
+        <TextView
+            android:id="@+id/label_stroke_width"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/edit_stroke_width"
+            android:text="Stroke width"
+            app:layout_constraintBottom_toBottomOf="@id/edit_stroke_width"
+            app:layout_constraintEnd_toStartOf="@id/edit_stroke_width"
+            app:layout_constraintStart_toEndOf="@id/vertical"
+            app:layout_constraintTop_toTopOf="@id/edit_stroke_width" />
+
+        <EditText
+            android:id="@+id/edit_stroke_width"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:digits="0123456789"
+            android:ems="2"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:maxLength="2"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@id/button_stroke_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/group_framework" />
+
+        <Button
+            android:id="@+id/button_stroke_color"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/color_swatch"
+            android:paddingEnd="10dp"
+            android:text="Stroke color"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toTopOf="@id/button_fill_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/vertical"
+            app:layout_constraintTop_toBottomOf="@id/edit_stroke_width"
+            tools:ignore="RtlSymmetry" />
+
+        <Button
+            android:id="@+id/button_fill_color"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/color_swatch"
+            android:paddingEnd="10dp"
+            android:text="Fill color"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toTopOf="@id/button_select_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/vertical"
+            app:layout_constraintTop_toBottomOf="@id/button_stroke_color"
+            tools:ignore="RtlSymmetry" />
+
+        <Button
+            android:id="@+id/button_select_color"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/color_swatch"
+            android:paddingEnd="10dp"
+            android:text="Select color"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toTopOf="@id/check_show_row_indices"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/vertical"
+            app:layout_constraintTop_toBottomOf="@id/button_fill_color"
+            tools:ignore="RtlSymmetry" />
+
+        <CheckBox
+            android:id="@+id/check_show_row_indices"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Show row indices"
+            app:layout_constraintBottom_toTopOf="@id/check_show_column_indices"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/vertical"
+            app:layout_constraintTop_toBottomOf="@id/button_select_color" />
+
+        <CheckBox
+            android:id="@+id/check_show_column_indices"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Show column indices"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/vertical"
+            app:layout_constraintTop_toBottomOf="@id/check_show_row_indices" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

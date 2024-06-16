@@ -1,6 +1,14 @@
 <resources>
+
     <string name="app_name">Hex Grid Demo</string>
-    <string name="welcome_header">Welcome to the\n<big><b><u>Hex Grid Demo</u></b></big></string>
-    <string name="welcome">• The demo comprises a tabbed layout with two pages, Layout and Grid. The Layout page shows grids with children, in both Views and Compose. The Grid page demonstrates all of the available options and interaction modes for both types, along with a Drawable version that\'s also included in the library.\n\n• The View and Compose grids on both pages are clickable to toggle cells\' selected states.\n\n• On the Grid page, changing any of the first four properties – row count, column count, inset lines, and edge lines – will clear the selected states.\n\n• When designing the app\'s UI, only a few large phone screens were targeted and tested. I can\'t really guarantee that it\'ll look that great on any other setups. Just FYI.</string>
+    <string name="label_library">Hex Grid: Library</string>
+    <string name="label_constraint_layout">Hex Grid: Examples</string>
+
+    <string name="welcome_library_header">Welcome to the\n<big><b><u>Hex Grid Library Demo</u></b></big></string>
+    <string name="welcome_library">• The demo has a tabbed layout with two pages: Layout and Options. The Layout page shows grids with children, in both Views and Compose. The Options page demonstrates all of the available settings and interaction modes for both types, along with a Drawable version that\'s also included in the library.\n\n• The View and Compose grids on both pages are clickable to toggle cells\' selected states.\n\n• On the Options page, changing any of the first four properties – row count, column count, inset lines, and edge lines – will clear the selected states.\n\n• When designing the app\'s UI, only a few large phone screens were targeted and tested. I can\'t really guarantee that it\'ll look that great on any other setups. Just FYI.</string>
+    <string name="welcome_examples_header">Welcome to the\n<big><b><u>Hex Grid Examples App</u></b></big></string>
+    <string name="welcome_examples">• The app has a tabbed layout with two pages: Shield and Grid. Both pages have examples using ConstraintLayout in each framework, View and Compose.\n\n• The Shield page demonstrates a static View setup in layout XML, along with runtime setups in both frameworks that automatically adjust for the orientation and container width.\n\n• The Grid page shows dynamically generated grids in each framework, along with options for orientation and container fit. \"Fit columns\" and \"Fit rows\" resize the same 4x5 grid. The \"Fit hex\" option calculates the maximum number of (natural) rows and columns from a pre-defined hexagon size and the container\'s size.</string>
+
     <string name="hide_welcome">Don\'t show this again.</string>
+
 </resources>

@@ -6,6 +6,10 @@
         <item name="android:minHeight">48dp</item>
     </style>
 
+    <style name="Widget.Demo.RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:minHeight">48dp</item>
+    </style>
+
     <style name="TextAppearance.Demo.Tab" parent="TextAppearance.Design.Tab">
         <item name="textAllCaps">false</item>
     </style>

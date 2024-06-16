@@ -407,9 +407,9 @@ class GridUi {
         }
     }
 
-    private val tmpBoundsF = RectF()
-
     private val tmpBounds = Rect()
+
+    private val tmpBoundsF = RectF()
 
     private val tmpMatrix = Matrix()
 

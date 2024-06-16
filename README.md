@@ -1,9 +1,71 @@
-# Hex Grid for Android
+# Hex Grids for Android
 
-A basic hex grid component for Views and Compose that can be used as a layout, a
-clickable/selectable grid control, or a combination of the two.
+Implementations of UI layouts and controls arranged as hex grids, also known as
+hexagonal grids, hex maps, beehive layouts, honeycombs, etc.
 
-## Contents
++ [**Examples**](#examples)
+
+  A couple of different ways to assemble hex grids using `ConstraintLayout` in
+  both Views and Compose.
+
++ [**Library**](#library)
+
+  A full-blown library with custom components usable as layouts and/or controls
+  in both frameworks.
+
+<br />
+
+<p align="center">
+<img src="images/banner.png"
+alt="Screenshot of Android Studio's editor showing a ConstraintLayout hex grid."
+width="40%" />
+</p>
+
+<br />
+
+
+## Examples
+
+In order to avoid having to mess with two separate modules and apps, the
+`ConstraintLayout` examples are just hosted in their own launcher `Activity` in
+the `demo` app. The relevant code is wholly contained within
+[the `examples` subpackage][examples], in two formats: Shield and Grid.
+
+The Shield examples show a simple setup of seven cells, with one in the center
+circled by the others. The View version is initialized from a layout resource
+that illustrates how such an arrangement can be specified in XML. Both versions
+have runtime routines that resize the content to fit the container's width, and
+that rearrange the children upon changing the hex orientation.
+
+The Grid examples demonstrate how to generate grids dynamically, taking into
+consideration the available space and either the desired number of rows/columns,
+or a specific cell size.
+
+All of the example use [common calculations][calculator] derived from the
+inherent geometry of regular hexagons. This is currently the only section that
+has any real docs, since everything else is pretty basic View and Composable
+stuff.
+
+Using existing components and APIs certainly has its advantages; e.g., reduced
+overhead, familiarity, etc. However, this approach does have its downsides, too.
+For example, all of the hexagon components are actually still rectangular in
+shape, as far as the frameworks are concerned, so touch handling doesn't really
+work in the overlapping areas.
+
+Also, you might have a hard time getting things lined up precisely, since we're
+basically relaying data through intermediate painters using `LayoutParams` and
+`Dp` values, while trying to get them to draw to the `Canvas` with pixel-level
+precision. This probably isn't an issue for most layouts, but it could be a
+problem for other uses, like image editors or game grids.
+
+If you need that precision, or accurate touch feedback, or any of the other
+conveniences and amenities that come with dedicated components, you might give
+the library a try.
+
+<br />
+
+
+## Library
 
 + [Conventions and terminology](#conventions-and-terminology)
 + [Grid definitions](#grid-definitions)
@@ -14,7 +76,8 @@ clickable/selectable grid control, or a combination of the two.
 + [Download](#download)
 + [Documentation](https://gonodono.github.io/hex-grid)
 
-## Conventions and terminology
+
+### Conventions and terminology
 
 + Everything in the library is row-major. Grid coordinates are always
   in (`row`,`column`) order, and grid sizes are always `rowCount`x`columnCount`.
@@ -34,7 +97,8 @@ clickable/selectable grid control, or a combination of the two.
 + "Stroke" is used for the hexagon outline; i.e., those lines drawn
   by `Canvas#drawLine()`.
 
-## Grid definitions
+
+### Grid definitions
 
 Though it's intuitive to define rows and columns as contiguous cells, that would
 mean that, depending on the hexagon's orientation, one type would end up a
@@ -137,9 +201,10 @@ grid.forEach { address, state ->
 val currentState = grid[firstSelected!!]
 ```
 
-## Layout definitions
 
-### FitMode
+### Layout definitions
+
+#### FitMode
 
 The library bases its measurements and layouts on regular hexagons, and like any
 regular polygon, the size in one Cartesian dimension determines the size in the
@@ -153,7 +218,8 @@ affinity for portrait, the default value is `FitColumns`, and the width must
 have a fixed or maximum value in that mode. In `FitRows` mode, the height must
 have a fixed or maximum value.
 
-### CrossMode
+
+#### CrossMode
 
 The `CrossMode` enum specifies how to layout the cross lines if the component
 has a fixed size in that direction: either aligned to the start, center, or end,
@@ -174,11 +240,12 @@ irregularly in most cases, but it's hardly noticeable at small scales, so it's
 handy to fill out grids that only need a tiny adjustment, or if regular hexagons
 aren't a strict requirement anyway.
 
-### HexOrientation
 
-The next layout option is the custom enum `HexOrientation`, with
-values `Horizontal` and `Vertical`, and it simply determines in which direction
-a major axis is aligned.
+#### HexOrientation
+
+The next layout option is the custom enum `HexOrientation`, with values
+`Horizontal` and `Vertical`, and it determines in which direction a major axis
+is aligned.
 
 <p align="center">
 <img src="images/hex_orientation.png"
@@ -186,7 +253,8 @@ alt="Two single hexagons, one with its major axis horizontal, and the other with
 width="40%" />
 </p>
 
-### Stroke width
+
+#### Stroke width
 
 The last setting which affects the grid's layout is the stroke width of the line
 that draws the hexagons. As the stroke width increases, the actual grid outline
@@ -211,7 +279,8 @@ It is important to note that, no matter the stroke width, the current
 implementation resolves cell hits with respect to an infinitesimal outline. That
 is, the stroke width doesn't shrink a cell's hit area at all.
 
-### That last Grid definition: Edge lines
+
+#### That last Grid definition: Edge lines
 
 In all of the example images so far, the grids have fit completely inside the
 containing component's bounds, which causes partial "holes" on the sides where
@@ -253,13 +322,15 @@ you can see how the out-of-bounds cells are inset by a noticeable measure. This
 could be remedied by adding an option to halve the stroke width consideration
 when edge lines are enabled.
 
-## Views
+
+### Views
 
 `HexGridView` is the `View` version of the library's grid UI. It's actually
 a `ViewGroup`, and is designed to allow adding children either in layout XML, or
 in code through a specialized interface.
 
-### XML setup
+
+#### XML setup
 
 `HexGridView` can be set up completely through its layout XML, and it recognizes
 several special attributes on itself and its children in order to allow for
@@ -313,9 +384,10 @@ Any kind of normal child `View` can be used with `HexGridView`. The library also
 offers the custom `CellStateView`, which can be used to apply `cell` attributes
 to the grid without adding an actual `View` instance at runtime. Since no child
 is added, the `hexBackground` attributes are useless on a `<CellStateView>`. The
-XML above is just for show.
+XML above is only for show.
 
-### Code setup
+
+#### Code setup
 
 Setup in code is a little different than you might expect from the available
 attributes. As previously mentioned, the row count, the column count, which
@@ -324,10 +396,10 @@ a `Grid`, and `HexGridView` handles those things altogether through its
 single `var grid: Grid` property, since changing any of them defines a new grid
 anyway.
 
-The `View` version's implementation of `Grid` is `MutableGrid`, which allows (
-only) the `Grid.State`s to be changed for each of the predefined `Grid.Address`
-es. (`Mutable` probably isn't the most appropriate descriptor for this,
-but `Changeable` or something similar would be unwieldy and confusing.) To
+The `View` version's implementation of `Grid` is `MutableGrid`, which allows
+(only) the `Grid.State`s to be changed for each of the predefined
+`Grid.Address`es. (`Mutable` probably isn't the most appropriate descriptor for
+this, but `Changeable` or something similar would be unwieldy and confusing.) To
 effect this functionality, `MutableGrid` has an additional `set` indexed
 accessor.
 
@@ -366,7 +438,8 @@ The `MutableGrid.toggle(address: Grid.Address)` extension function replaces
 the `Grid.State` at `address` with a copy that has the opposite `isSelected`
 value. You can do it manually, if you like, but it's tedious.
 
-### Drawable
+
+#### Drawable
 
 The library also includes the `HexGridDrawable` class in the `view` package to
 allow a non-interactive version of the hex grid to be used wherever a `Drawable`
@@ -382,7 +455,8 @@ differences:
 NB: Don't confuse `HexGridDrawable` with `HexDrawable`. The latter is for use
 only with `HexGridView`, to provide shaped backgrounds for its child items.
 
-## Compose
+
+### Compose
 
 The library's `Composable` version is named `HexGrid`, and it has all of the
 same features and functionalities as the `View` version, except that its `Grid`
@@ -429,12 +503,11 @@ HexGrid(
 ```
 
 As you can see above, Compose's `Grid` implementation is `ImmutableGrid`, which
-is really just a wrapper around `MutableGrid` that hides the `set` operators,
-and is marked `@Immutable`. In `onGridTap()`, the selected state is toggled by
-copying the existing `ImmutableGrid` and replacing the `Grid.State` at the
-given `address` with one that has the opposite state. The `toggled()` extension
-function is a convenience to handle the copy/replace, and we simply set the
-return as the new `grid`.
+is a wrapper around `MutableGrid` that hides the `set` operators, and is marked
+`@Immutable`. In `onGridTap()`, the selected state is toggled by copying the
+existing `ImmutableGrid` and replacing the `Grid.State` at the given `address`
+with one that has the opposite state. The `toggled()` extension function is a
+convenience to handle the copy/replace, and we set its return as the new `grid`.
 
 The `copy()` functions in `Grid` are meant mainly for this usage, though they're
 available for `MutableGrid` too, obviously. They have similar semantics to
@@ -449,9 +522,10 @@ This provides similar functionality to `HexGridView`'s `HexDrawable` background
 for its child items, though it's up to the user here to apply the `Shape`
 wherever is appropriate.
 
-## General notes
 
-### Demo app
+### General notes
+
+#### Demo app
 
 The `demo` module contains a small, simple app that demonstrates most everything
 in the library.
@@ -465,14 +539,17 @@ width="25%" />
 It was designed and tested on only a few large phone screens, so it might not
 look that great on other formats. Just a heads up.
 
-### Grid's future
+
+#### Grid's future
 
 I'm not terribly happy with `Grid`'s overall design, as it stands now, but I've
 been fiddling with it for too long, so I'm shoving it out the door as is. It may
 change significantly in the future, though I really try to not break existing
-things when that happens. Just a heads up.
+things when that happens.
 
-### Touch handling
+
+
+#### Touch handling
 
 Currently, when using a grid as a layout, the library does not attempt to alter
 the children's actual shapes, nor does it attempt to redirect touch events. If
@@ -489,7 +566,8 @@ width="25%" />
 If you do need your own listeners, it's best to ensure that the
 touchable/clickable children lie completely within their cell's bounds.
 
-### Degenerate grid cases
+
+#### Degenerate grid cases
 
 Since the coordinate system here skips every other cross index in a given line,
 grids with a row count and/or column count of 1 can behave unexpectedly. I
@@ -497,7 +575,8 @@ wouldn't consider these particular setups as "grids", really, but rather than
 have weird lower bounds for indices, or specialized behavior for only a handful
 of cases, I'll explain what you should expect to see.
 
-#### 1xN and Nx1 grids
+
+##### 1xN and Nx1 grids
 
 Firstly, cells in lines that are in the same direction as the hex's orientation
 do not touch each other, so a single line looks like unconnected hexagons, as
@@ -514,7 +593,8 @@ that line away from the component's edge, as you can see in the second image
 above. The inset option does affect the other type, too – i.e., where the hex
 orientation is perpendicular – like is shown in the last image above.
 
-#### 1x1 grids
+
+##### 1x1 grids
 
 A default grid with one row and one column is what you'd think it should be,
 like in the first image here:
@@ -534,7 +614,8 @@ You can see that (0,0) would be directly in the middle there, and the library
 obligingly adds lines on all sides of the empty grid. This setup likely isn't
 useful to anyone, but the library doesn't prohibit it.
 
-#### 1x2 and 2x1 grids
+
+##### 1x2 and 2x1 grids
 
 Grids with one row or column and two of the other are also peculiar because the
 single line in one direction means that the second line in the other doesn't
@@ -553,14 +634,16 @@ with edge lines enabled might seem incorrect at first, since the previously
 missing column appears out of nowhere, but it's not that column that's been
 added; rather, it's two new rows, one above and one below.
 
-## Download
+
+### Download
 
 I've configured the library to be published, so you can get a compiled version
 through [JitPack](https://jitpack.io). The repo's page
 is [here](https://jitpack.io/#gonodono/hex-grid), and it has instructions toward
 the bottom on how to add JitPack and the library's dependency to your project.
 
-## License
+
+### License
 
 MIT License
 
@@ -583,3 +666,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+  [examples]: https://github.com/gonodono/hex-grid/tree/main/demo/src/main/kotlin/com/gonodono/hexgrid/demo/examples
+
+  [calculator]: https://github.com/gonodono/hex-grid/tree/main/demo/src/main/kotlin/com/gonodono/hexgrid/demo/examples/internal/HexGridCalculator.kt

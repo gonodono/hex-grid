@@ -1,4 +1,4 @@
-package com.gonodono.hexgrid.demo.drawable
+package com.gonodono.hexgrid.demo.internal
 
 import android.graphics.Canvas
 import android.graphics.Color
