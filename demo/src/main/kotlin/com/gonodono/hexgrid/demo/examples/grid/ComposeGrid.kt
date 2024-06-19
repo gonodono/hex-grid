@@ -1,23 +1,18 @@
 package com.gonodono.hexgrid.demo.examples.grid
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
@@ -27,44 +22,48 @@ import com.gonodono.hexgrid.demo.examples.internal.HexGridCalculator.naturalRowT
 import com.gonodono.hexgrid.demo.examples.internal.Hexagon
 import com.gonodono.hexgrid.demo.examples.internal.MARGIN_DP
 
+@Preview(showBackground = true)
 @Composable
-internal fun HexGrid(fitMode: FitMode, isHorizontal: Boolean) {
-    var availableSize by remember { mutableStateOf(IntSize.Zero) }
-    val density = LocalDensity.current
-    val data = remember(fitMode, isHorizontal, availableSize, density) {
-        calculateGridData(
-            fitMode = fitMode,
-            isHorizontal = isHorizontal,
-            availableWidth = availableSize.width,
-            availableHeight = availableSize.height,
-            marginDp = MARGIN_DP,
-            density = density.density
-        )
-    }
-    val dpSize = with(density) {
-        Size(data.hexWidth, data.hexHeight).toDpSize()
-    }
-    val radius = with(density) { data.radius.toDp() }
-    val isLtr = LocalLayoutDirection.current == LayoutDirection.Ltr
-
-    Box(
+internal fun HexGrid(
+    fitMode: FitMode = FitMode.FitHex,
+    isHorizontal: Boolean = false
+) {
+    BoxWithConstraints(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(1.dp)  // To match View's padding, 'cause stroke clipping.
-            .onSizeChanged { availableSize = it }
+        modifier = Modifier.fillMaxSize()
     ) {
+        val width = constraints.maxWidth
+        val height = constraints.maxHeight
+        val density = LocalDensity.current
+        val data = remember(fitMode, isHorizontal, width, height, density) {
+            calculateGridData(
+                fitMode = fitMode,
+                isHorizontal = isHorizontal,
+                availableWidth = width,
+                availableHeight = height,
+                marginDp = MARGIN_DP,
+                density = density.density
+            )
+        }
+        val dpSize = with(density) {
+            Size(data.hexWidth, data.hexHeight).toDpSize()
+        }
+        val radius = with(density) { data.radius.toDp() }
+        val isLtr = LocalLayoutDirection.current == LayoutDirection.Ltr
+
         ConstraintLayout {
             val refs = mutableListOf<ConstrainedLayoutReference>()
             for (row in 0..<data.rowCount) {
                 for (column in 0..<data.columnCount) {
                     val index = row * data.columnCount + column
                     val ref = createRef().also { refs += it }
+                    val total = data.rowCount * data.columnCount
                     val color = lerp(
-                        Color.Blue,
-                        Color.Magenta,
-                        index.toFloat() / (data.rowCount * data.columnCount)
+                        start = Color.Blue,
+                        stop = Color.Magenta,
+                        fraction = index.toFloat() / total
                     )
+
                     Hexagon(
                         ref = ref,
                         size = dpSize,

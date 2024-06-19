@@ -25,14 +25,14 @@ import com.gonodono.hexgrid.demo.examples.internal.MARGIN_DP
 @Preview(showBackground = true)
 @Composable
 fun HexShield(isHorizontal: Boolean = true) {
-    var intSize by remember { mutableStateOf(IntSize.Zero) }
+    var availableSize by remember { mutableStateOf(IntSize.Zero) }
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
-            .onSizeChanged { intSize = it }
+            .onSizeChanged { availableSize = it }
     ) {
         val margin = MARGIN_DP * LocalDensity.current.density
-        val available = intSize.width.toFloat()
+        val available = availableSize.width.toFloat()
         val (hexWidth, hexHeight) = hexSizeForLineCount(
             lineCount = if (isHorizontal) 3 else 5,
             available = available,

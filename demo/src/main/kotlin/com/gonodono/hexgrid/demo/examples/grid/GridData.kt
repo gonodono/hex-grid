@@ -15,6 +15,8 @@ internal data class GridData(
     val radius: Int,
 )
 
+internal enum class FitMode { FitColumns, FitRows, FitHex }
+
 internal fun calculateGridData(
     fitMode: FitMode,
     isHorizontal: Boolean,
@@ -76,8 +78,6 @@ internal fun calculateGridData(
 
     return GridData(rowCount, columnCount, hexWidth, hexHeight, radius)
 }
-
-internal enum class FitMode { FitColumns, FitRows, FitHex }
 
 private const val ROW_COUNT = 4
 

@@ -84,7 +84,7 @@ class Hexagon(var isHorizontal: Boolean) {
     }
 
     fun getPathBuilder(matrix: Matrix): Path.() -> Unit {
-        val vf = tmpArray
+        val vf = FloatArray(12)
         matrix.mapPoints(vf, vertices)
         return {
             moveTo(vf[0], vf[1])
@@ -96,8 +96,6 @@ class Hexagon(var isHorizontal: Boolean) {
             lineTo(vf[0], vf[1])
         }
     }
-
-    private val tmpArray = FloatArray(12)
 }
 
 private val IDENTITY_MATRIX = Matrix()

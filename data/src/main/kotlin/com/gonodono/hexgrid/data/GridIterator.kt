@@ -17,7 +17,7 @@ internal class GridIterator<T>(
     override fun hasNext() = minorIterator?.hasNext() == true
 
     override fun next(): T {
-        val iterator = minorIterator ?: error("Iterator empty")
+        val iterator = minorIterator ?: throw NoSuchElementException()
         val nextValue = iterator.next()
         if (!iterator.hasNext()) minorIterator = nextIterator()
         return nextValue

@@ -7,7 +7,7 @@ import kotlin.math.sqrt
 
 /**
  * The HexGridCalculator object is just for namespacing. It's otherwise useless.
- * Indeed, all of the examples here statically import the functions directly.
+ * Indeed, all of the examples here just import the functions directly.
  *
  * The sides of a hexagon are called edges here, to prevent confusion between
  * Side and Size, and between the hexagon sides and the rectangular cell sides.
@@ -119,16 +119,16 @@ internal object HexGridCalculator {
      * examples, when beginning a row, this returns the proper angle relative to
      * the start hexagon in the previous row to start the current one.
      *
-     * A "natural" row comprises contiguous cells, rather than collinear ones
-     * that some other functions require. These grids are built in this fashion
-     * in order to keep the examples relatively simple, but there's no way to
-     * simplify certain calculations.
-     *
      * To explain, that sequence constrains the first hexagon to the top-start
      * corner, then fills in that row to the end by linking each new hexagon to
      * the previous one. A new row is started by linking its first hexagon to
      * the first one in the row above, then its neighbors are filled out to the
      * end as before.
+     *
+     * A "natural" row comprises contiguous cells, rather than collinear ones
+     * that some other functions require. These grids are built in this fashion
+     * in order to keep the examples relatively simple, but there's no way to
+     * simplify certain calculations.
      *
      * [isHorizontal] specifies the hexagon's orientation, [isLtr] corresponds
      * to [LAYOUT_DIRECTION_LTR][android.view.View.LAYOUT_DIRECTION_LTR], and
@@ -151,16 +151,16 @@ internal object HexGridCalculator {
      * examples, when building out a row, this returns the proper angle relative
      * to the previous hexagon in the current row to place the current hexagon.
      *
-     * A "natural" row comprises contiguous cells, rather than collinear ones
-     * that some other functions require. These grids are built in this fashion
-     * in order to keep the examples relatively simple, but there's no way to
-     * simplify certain calculations.
-     *
      * To explain, that sequence constrains the first hexagon to the top-start
      * corner, then fills in that row to the end by linking each new hexagon to
      * the previous one. A new row is started by linking its first hexagon to
      * the first one in the row above, then its neighbors are filled out to the
      * end as before.
+     *
+     * A "natural" row comprises contiguous cells, rather than collinear ones
+     * that some other functions require. These grids are built in this fashion
+     * in order to keep the examples relatively simple, but there's no way to
+     * simplify certain calculations.
      *
      * [isHorizontal] specifies the hexagon's orientation, [isLtr] corresponds
      * to [LAYOUT_DIRECTION_LTR][android.view.View.LAYOUT_DIRECTION_LTR], and

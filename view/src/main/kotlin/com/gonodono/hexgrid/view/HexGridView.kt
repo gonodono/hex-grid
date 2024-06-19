@@ -9,6 +9,7 @@ import android.graphics.Path
 import android.graphics.Rect
 import android.os.Build
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -151,8 +152,8 @@ class HexGridView @JvmOverloads constructor(
                         R.styleable.HexGridView_cellSelectColor,
                         Color.GRAY
                     )
-                    showRowIndices = shown and FlagRows != 0
-                    showColumnIndices = shown and FlagColumns != 0
+                    showRowIndices = shown and FLAG_ROWS != 0
+                    showColumnIndices = shown and FLAG_COLUMNS != 0
                 }
             }
 
@@ -328,12 +329,18 @@ class HexGridView @JvmOverloads constructor(
             super.addView(null, index, params)
             return
         }
-        check(params is LayoutParams) {
-            "Child must have HexGridView.LayoutParams"
+        if (params !is LayoutParams) {
+            if (BuildConfig.DEBUG) {
+                Log.w(TAG, "Child must have HexGridView.LayoutParams")
+            }
+            return
         }
         val address = params.address
-        check(grid.isValidAddress(address.row, address.column)) {
-            "Child LayoutParams must have a valid Grid.Address"
+        if (!grid.isValidAddress(address.row, address.column)) {
+            if (BuildConfig.DEBUG) {
+                Log.w(TAG, "Child LayoutParams must have a valid Grid.Address")
+            }
+            return
         }
         applyLayoutParamsState(params)
         if (child !is CellStateView) {
@@ -592,14 +599,16 @@ class HexGridView @JvmOverloads constructor(
     private val tmpBounds = Rect()
 }
 
-// These flags correspond to the indicesShown attr enum values.
-
-private const val FlagRows = 1
-
-private const val FlagColumns = 2
-
 private fun Grid.isDifferentShape(other: Grid): Boolean =
     rowCount != other.rowCount ||
             columnCount != other.columnCount ||
             insetEvenLines != other.insetEvenLines ||
             enableEdgeLines != other.enableEdgeLines
+
+// These flags correspond to the indicesShown attr enum values.
+
+private const val FLAG_ROWS = 1
+
+private const val FLAG_COLUMNS = 2
+
+private const val TAG = "HexGridView"

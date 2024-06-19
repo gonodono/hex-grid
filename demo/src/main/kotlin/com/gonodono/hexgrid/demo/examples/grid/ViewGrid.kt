@@ -27,24 +27,22 @@ internal fun ConstraintLayout.hexGrid(
 
     val density = context.resources.displayMetrics.density
     val data = calculateGridData(
-        fitMode = fitMode,
-        isHorizontal = isHorizontal,
-        availableWidth = availableWidth,
-        availableHeight = availableHeight,
-        marginDp = MARGIN_DP,
-        density = density
+        fitMode,
+        isHorizontal,
+        availableWidth,
+        availableHeight,
+        MARGIN_DP,
+        density
     )
 
-    with(data) {
-        buildGrid(
-            rowCount,
-            columnCount,
-            hexWidth,
-            hexHeight,
-            radius,
-            isHorizontal
-        )
-    }
+    buildGrid(
+        data.rowCount,
+        data.columnCount,
+        data.hexWidth,
+        data.hexHeight,
+        data.radius,
+        isHorizontal
+    )
 }
 
 private fun ConstraintLayout.buildGrid(
@@ -81,21 +79,15 @@ private fun ConstraintLayout.buildGrid(
                 column == 0 -> {
                     params.circleConstraint = viewId - columnCount
                     params.circleRadius = radius
-                    params.circleAngle = naturalRowStartAngle(
-                        isHorizontal = isHorizontal,
-                        isLtr = isLtr,
-                        row = row
-                    )
+                    params.circleAngle =
+                        naturalRowStartAngle(isHorizontal, isLtr, row)
                 }
 
                 else -> {
                     params.circleConstraint = viewId - 1
                     params.circleRadius = radius
-                    params.circleAngle = naturalRowTailAngle(
-                        isHorizontal = isHorizontal,
-                        isLtr = isLtr,
-                        column = column
-                    )
+                    params.circleAngle =
+                        naturalRowTailAngle(isHorizontal, isLtr, column)
                 }
             }
             val view = TextView(context).apply {

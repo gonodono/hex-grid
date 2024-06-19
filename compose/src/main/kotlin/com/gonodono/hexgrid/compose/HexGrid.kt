@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.gonodono.hexgrid.core.GridUi
 import com.gonodono.hexgrid.core.LayoutSpecs
 import com.gonodono.hexgrid.data.CrossMode
@@ -150,8 +151,11 @@ interface HexGridItemScope {
     /**
      * Returns a [Shape] identical to the grid's current cell hexagon, shrunk
      * by [inset] on each side.
+     *
+     * This may be called at most once per scope invocation. Any further calls
+     * will result in an Exception.
      */
-    fun getHexShape(inset: Dp): Shape
+    fun getHexShape(inset: Dp = 0.dp): Shape
 }
 
 /**
@@ -228,6 +232,9 @@ private class HexGridItemScopeImpl(
     }
 
     override fun getHexShape(inset: Dp): Shape {
+        check(boundsEmpty) {
+            "getHexShape() may be called only once per scope invocation."
+        }
         val build = with(gridUi) {
             val bounds = tmpBounds
             getCellItemBounds(address, inset.toPx(), bounds)

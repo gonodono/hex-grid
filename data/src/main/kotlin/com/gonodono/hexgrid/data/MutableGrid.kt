@@ -61,9 +61,15 @@ class MutableGrid private constructor(
         }
     }
 
-    override fun get(address: Grid.Address): Grid.State = states[address]
+    override fun get(address: Grid.Address): Grid.State {
+        checkAddress(address.row, address.column)
+        return states[address]
+    }
 
-    override fun get(row: Int, column: Int): Grid.State = states[row, column]
+    override fun get(row: Int, column: Int): Grid.State {
+        checkAddress(row, column)
+        return states[row, column]
+    }
 
     /**
      * The Address-indexed set operator for MutableGrid.
@@ -72,6 +78,7 @@ class MutableGrid private constructor(
      * addresses. See [isValidAddress].
      */
     operator fun set(address: Grid.Address, state: Grid.State) {
+        checkAddress(address.row, address.column)
         states[address] = state
     }
 
@@ -82,7 +89,14 @@ class MutableGrid private constructor(
      * addresses. See [isValidAddress].
      */
     operator fun set(row: Int, column: Int, state: Grid.State) {
+        checkAddress(row, column)
         states[row, column] = state
+    }
+
+    private fun checkAddress(row: Int, column: Int) {
+        check(isValidAddress(row, column)) {
+            "Invalid Address ($row, $column) for $this"
+        }
     }
 
     override fun isLineInset(index: Int): Boolean =
@@ -102,6 +116,7 @@ class MutableGrid private constructor(
         } else {
             statesCopy = null
             changes.forEach { (address, state) ->
+                checkAddress(address.row, address.column)
                 if (this[address] != state) {
                     val copy = statesCopy
                         ?: states.copyOf().also { statesCopy = it }
@@ -127,22 +142,25 @@ class MutableGrid private constructor(
     override fun copy(
         address: Grid.Address,
         change: Grid.State
-    ): MutableGrid = when {
-        this[address] != change -> {
-            val statesCopy = states.copyOf()
-            statesCopy[address] = change
-            MutableGrid(
-                rowCount,
-                columnCount,
-                insetEvenLines,
-                enableEdgeLines,
-                null,
-                addresses,
-                statesCopy
-            )
-        }
+    ): MutableGrid {
+        checkAddress(address.row, address.column)
+        return when {
+            this[address] != change -> {
+                val statesCopy = states.copyOf()
+                statesCopy[address] = change
+                MutableGrid(
+                    rowCount,
+                    columnCount,
+                    insetEvenLines,
+                    enableEdgeLines,
+                    null,
+                    addresses,
+                    statesCopy
+                )
+            }
 
-        else -> this
+            else -> this
+        }
     }
 
     override fun forEach(action: (Grid.Address, Grid.State) -> Unit) {
@@ -260,7 +278,9 @@ private class States private constructor(
             Row(start, size)
         }
         initial?.forEach { (address, state) ->
-            newRows[address.row][address.column] = state
+            if (isValidAddress(address.row, address.column)) {
+                newRows[address.row][address.column] = state
+            }
         }
         newRows
     }

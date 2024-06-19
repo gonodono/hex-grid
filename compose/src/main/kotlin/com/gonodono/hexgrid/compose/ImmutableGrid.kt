@@ -30,6 +30,11 @@ class ImmutableGrid internal constructor(
         )
     )
 
+    /**
+     * Copies and returns the wrapped [MutableGrid].
+     */
+    fun toMutableGrid(): MutableGrid = grid.copy()
+
     override fun copy(changes: Map<Grid.Address, Grid.State>): ImmutableGrid {
         val copy = grid.copy(changes)
         return if (copy !== grid) ImmutableGrid(copy) else this

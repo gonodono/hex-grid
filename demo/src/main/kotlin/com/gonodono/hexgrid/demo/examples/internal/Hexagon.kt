@@ -17,6 +17,11 @@ import androidx.constraintlayout.compose.ConstrainScope
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayoutScope
 
+/**
+ * This is the Compose version's analog of [HexagonDrawable], and it has the
+ * same behavior: regular hexagons are not enforced, and the vertices are simply
+ * placed around the edges with the same proportional spacing.
+ */
 @Composable
 internal fun ConstraintLayoutScope.Hexagon(
     ref: ConstrainedLayoutReference,

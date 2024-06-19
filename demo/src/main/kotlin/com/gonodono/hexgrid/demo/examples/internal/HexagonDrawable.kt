@@ -14,6 +14,10 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
 
+/**
+ * [HexagonDrawable] uses only basic arithmetic, but it doesn't enforce regular
+ * hexagons. It's left up to the user to set properly proportioned bounds.
+ */
 class HexagonDrawable(isHorizontal: Boolean = true) : Drawable() {
 
     private val hexagon = Path()
@@ -28,6 +32,22 @@ class HexagonDrawable(isHorizontal: Boolean = true) : Drawable() {
 
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
+    /**
+     * Since this class doesn't enforce regular hexagons, the real dimensions
+     * may not even be in the right relation to each other; i.e., the normally
+     * shorter one may actually be the longer dimension.
+     *
+     * This routine simply  places the vertices along the edges with the same
+     * spacing as regular hexagons.
+     *
+     * + The "short" sides each have one vertex right in the middle.
+     *
+     * + The "long" sides each have one vertex at a quarter length, and another
+     *   at three-quarters.
+     *
+     * Knowing that, it's just a matter of divvying up the respective lengths,
+     * and then connecting the dots.
+     */
     override fun onBoundsChange(bounds: Rect) {
         val major = when {
             isHorizontal -> bounds.width().toFloat()
@@ -62,10 +82,19 @@ class HexagonDrawable(isHorizontal: Boolean = true) : Drawable() {
         path.close()
     }
 
+    /**
+     * This is currently geared toward a fill style, as the draw does not
+     * account for possible stroke widths at the bounds (which for the "pointy"
+     * ends are 2/√3 times the actual width, by the way).
+     */
     override fun draw(canvas: Canvas) {
         canvas.drawPath(hexagon, paint)
     }
 
+    /**
+     * This allows the `android:backgroundTint` attribute to be applied. This is
+     * very simplistic, currently, and it does not account for state.
+     */
     override fun setTintList(tint: ColorStateList?) {
         paint.colorFilter = if (tint == null) {
             null
