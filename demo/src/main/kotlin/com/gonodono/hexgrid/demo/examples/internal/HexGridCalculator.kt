@@ -25,10 +25,10 @@ internal object HexGridCalculator {
      */
     fun hexSizeForLineCount(
         lineCount: Int,
+        isHorizontal: Boolean,
         available: Float,
         margin: Float,
-        isMajor: Boolean,
-        isHorizontal: Boolean
+        isMajor: Boolean
     ): SizeF = hexSizeForHexEdge(
         hexEdgeForLineCount(lineCount, available, margin, isMajor),
         isHorizontal

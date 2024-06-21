@@ -1,6 +1,5 @@
 package com.gonodono.hexgrid.demo.examples.shield
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,6 +20,7 @@ import androidx.core.util.component2
 import com.gonodono.hexgrid.demo.examples.internal.HexGridCalculator.hexSizeForLineCount
 import com.gonodono.hexgrid.demo.examples.internal.Hexagon
 import com.gonodono.hexgrid.demo.examples.internal.MARGIN_DP
+import com.gonodono.hexgrid.demo.examples.internal.rememberHexagonShape
 
 @Preview(showBackground = true)
 @Composable
@@ -35,21 +35,22 @@ fun HexShield(isHorizontal: Boolean = true) {
         val available = availableSize.width.toFloat()
         val (hexWidth, hexHeight) = hexSizeForLineCount(
             lineCount = if (isHorizontal) 3 else 5,
+            isHorizontal = isHorizontal,
             available = available,
             margin = margin,
-            isMajor = isHorizontal,
-            isHorizontal = isHorizontal
+            isMajor = isHorizontal
         )
-        val dpSize = with(LocalDensity.current) {
-            Size(hexWidth, hexHeight).toDpSize()
-        }
+
+        val size = Size(hexWidth, hexHeight)
+        val dpSize = with(LocalDensity.current) { size.toDpSize() }
+        val shape = rememberHexagonShape(isHorizontal, size)
 
         val center = createRef()
         Hexagon(
             ref = center,
             size = dpSize,
-            modifier = { shape -> background(Color.LightGray, shape) },
-            isHorizontal = isHorizontal
+            shape = shape,
+            backgroundColor = Color.LightGray
         ) {
             start.linkTo(parent.start)
             top.linkTo(parent.top)
@@ -57,14 +58,14 @@ fun HexShield(isHorizontal: Boolean = true) {
             bottom.linkTo(parent.bottom)
         }
 
-        val shortEdge = if (isHorizontal) dpSize.height else dpSize.width
-        val radius = shortEdge + MARGIN_DP.dp
+        val shortSide = if (isHorizontal) dpSize.height else dpSize.width
+        val radius = shortSide + MARGIN_DP.dp
         repeat(6) { index ->
             Hexagon(
                 ref = createRef(),
                 size = dpSize,
-                modifier = { shape -> background(Colors[index], shape) },
-                isHorizontal = isHorizontal
+                shape = shape,
+                backgroundColor = Colors[index]
             ) {
                 val angle = (60F * index) + if (isHorizontal) 0F else 30F
                 circular(other = center, angle = angle, distance = radius)

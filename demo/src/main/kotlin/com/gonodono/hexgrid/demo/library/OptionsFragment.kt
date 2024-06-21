@@ -21,7 +21,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.gonodono.hexgrid.compose.HexGrid
 import com.gonodono.hexgrid.compose.HexGridDefaults
-import com.gonodono.hexgrid.compose.asImmutable
+import com.gonodono.hexgrid.compose.ShownIndices
+import com.gonodono.hexgrid.compose.asImmutableGrid
 import com.gonodono.hexgrid.data.CrossMode
 import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
@@ -204,7 +205,7 @@ private fun GridHexGrid(
     onOutsideTap: () -> Unit
 ) {
     val state by model.gridState.collectAsStateWithLifecycle(DefaultGridState)
-    val grid = state.grid.asImmutable()
+    val grid = state.grid.asImmutableGrid()
     val dp = state.strokeWidth /
             LocalContext.current.resources.displayMetrics.density
     HexGrid(
@@ -218,9 +219,12 @@ private fun GridHexGrid(
             ComposeColor(state.fillColor),
             ComposeColor(state.selectColor)
         ),
-        indicesShown = HexGridDefaults.indicesShown(
-            state.showRowIndices, state.showColumnIndices
-        ),
+        shownIndices = when {
+            state.showRowIndices && state.showColumnIndices -> ShownIndices.Both
+            state.showColumnIndices -> ShownIndices.Columns
+            state.showRowIndices -> ShownIndices.Rows
+            else -> ShownIndices.None
+        },
         onGridTap = { model.toggleSelected(it) },
         onOutsideTap = onOutsideTap
     )

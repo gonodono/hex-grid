@@ -16,22 +16,27 @@ fun ConstraintLayout.hexShield(isHorizontal: Boolean) {
     val margin = MARGIN_DP * resources.displayMetrics.density
     val (hexWidth, hexHeight) = hexSizeForLineCount(
         lineCount = if (isHorizontal) 3 else 5,
+        isHorizontal = isHorizontal,
         available = available,
         margin = margin,
-        isMajor = isHorizontal,
-        isHorizontal = isHorizontal
+        isMajor = isHorizontal
     )
+
+    val childWidth = hexWidth.roundToInt()
+    val childHeight = hexHeight.roundToInt()
+    val shortSide = if (isHorizontal) hexHeight else hexWidth
+    val radius = (shortSide + margin).roundToInt()
+
     children.forEach { child ->
         (child.background as HexagonDrawable).isHorizontal = isHorizontal
         child.updateLayoutParams<ConstraintLayout.LayoutParams> {
-            width = hexWidth.roundToInt()
-            height = hexHeight.roundToInt()
+            width = childWidth
+            height = childHeight
             if (child.id == R.id.center) return@forEach
             val name = resources.getResourceEntryName(child.id)
             val index = name.split("_")[1].toIntOrNull() ?: return@forEach
             circleAngle = (60F * index) + if (isHorizontal) 0F else 30F
-            val dimension = if (isHorizontal) hexHeight else hexWidth
-            circleRadius = (dimension + margin).roundToInt()
+            circleRadius = radius
         }
     }
 }

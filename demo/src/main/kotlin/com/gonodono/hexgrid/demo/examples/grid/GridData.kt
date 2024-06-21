@@ -73,8 +73,8 @@ internal fun calculateGridData(
     }
 
     val (hexWidth, hexHeight) = hexSizeForHexEdge(hexEdge, isHorizontal)
-    val shortEdge = if (isHorizontal) hexHeight else hexWidth
-    val radius = (shortEdge + margin).roundToInt()
+    val shortSide = if (isHorizontal) hexHeight else hexWidth
+    val radius = (shortSide + margin).roundToInt()
 
     return GridData(rowCount, columnCount, hexWidth, hexHeight, radius)
 }

@@ -1,8 +1,9 @@
 package com.gonodono.hexgrid.demo.examples.grid
 
-import androidx.compose.foundation.border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import com.gonodono.hexgrid.demo.examples.internal.HexGridCalculator.naturalRowS
 import com.gonodono.hexgrid.demo.examples.internal.HexGridCalculator.naturalRowTailAngle
 import com.gonodono.hexgrid.demo.examples.internal.Hexagon
 import com.gonodono.hexgrid.demo.examples.internal.MARGIN_DP
+import com.gonodono.hexgrid.demo.examples.internal.rememberHexagonShape
 
 @Preview(showBackground = true)
 @Composable
@@ -45,9 +47,10 @@ internal fun HexGrid(
                 density = density.density
             )
         }
-        val dpSize = with(density) {
-            Size(data.hexWidth, data.hexHeight).toDpSize()
-        }
+
+        val size = Size(data.hexWidth, data.hexHeight)
+        val dpSize = with(LocalDensity.current) { size.toDpSize() }
+        val shape = rememberHexagonShape(isHorizontal, size)
         val radius = with(density) { data.radius.toDp() }
         val isLtr = LocalLayoutDirection.current == LayoutDirection.Ltr
 
@@ -67,9 +70,9 @@ internal fun HexGrid(
                     Hexagon(
                         ref = ref,
                         size = dpSize,
-                        modifier = { shape -> border(2.dp, color, shape) },
-                        isHorizontal = isHorizontal,
-                        text = (index + 1).toString()
+                        shape = shape,
+                        borderStroke = BorderStroke(2.dp, color),
+                        content = { Text(text = (index + 1).toString()) }
                     ) {
                         when {
                             row == 0 && column == 0 -> {

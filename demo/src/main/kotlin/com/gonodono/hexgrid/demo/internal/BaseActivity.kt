@@ -23,6 +23,7 @@ abstract class BaseActivity(
         setContentView(ui.root)
 
         ui.viewPager.adapter = PageAdapter()
+        ui.viewPager.offscreenPageLimit = 1
         TabLayoutMediator(ui.tabLayout, ui.viewPager) { tab, position ->
             tab.text = pages[position].second
         }.attach()

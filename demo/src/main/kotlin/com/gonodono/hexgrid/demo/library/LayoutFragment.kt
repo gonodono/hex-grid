@@ -24,7 +24,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.gonodono.hexgrid.compose.HexGrid
 import com.gonodono.hexgrid.compose.HexGridDefaults
-import com.gonodono.hexgrid.compose.toImmutable
+import com.gonodono.hexgrid.compose.toImmutableGrid
 import com.gonodono.hexgrid.data.CrossMode
 import com.gonodono.hexgrid.data.Grid
 import com.gonodono.hexgrid.data.MutableGrid
@@ -140,7 +140,7 @@ private fun LayoutHexGrid(
     showStats: (Grid) -> Unit
 ) {
     var immutableGrid by remember {
-        mutableStateOf(LayoutGrid.toImmutable())
+        mutableStateOf(LayoutGrid.toImmutableGrid())
     }
     val strokeColor = when {
         showStroke -> Color.Black

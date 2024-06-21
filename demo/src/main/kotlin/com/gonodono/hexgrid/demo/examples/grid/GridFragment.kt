@@ -45,11 +45,6 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        hexGrid()
-    }
-
     private fun hexGrid() = with(ui) {
         // The target size is coming from the container, so it's passed in.
         constraintLayout.hexGrid(

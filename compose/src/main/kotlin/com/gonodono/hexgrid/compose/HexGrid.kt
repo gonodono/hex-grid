@@ -39,7 +39,7 @@ import com.gonodono.hexgrid.data.HexOrientation
  * @param crossMode Behavior for the other direction, rows or columns
  * @param strokeWidth Stroke width of the cell outline
  * @param colors The grid's three colors: line, fill, and select
- * @param indicesShown Design/debug flags to display cells' row and/or column
+ * @param shownIndices Design/debug flags to display cells' row and/or column
  * @param clipToBounds Whether to clip the grid draw to the Composable's bounds
  * @param onGridTap Called with the Grid.Address when a tap hits successfully
  * @param onOutsideTap Called when the Composable is clicked outside of any cell
@@ -54,7 +54,7 @@ fun HexGrid(
     hexOrientation: HexOrientation = HexOrientation.Horizontal,
     strokeWidth: Dp = Dp.Hairline,
     colors: HexGridColors = HexGridDefaults.colors(),
-    indicesShown: IndicesShown = HexGridDefaults.indicesShown(),
+    shownIndices: ShownIndices = ShownIndices.None,
     clipToBounds: Boolean = true,
     onGridTap: ((Grid.Address) -> Unit)? = null,
     onOutsideTap: (() -> Unit)? = null,
@@ -74,8 +74,8 @@ fun HexGrid(
         this.strokeColor = colors.strokeColor.toArgb()
         this.fillColor = colors.fillColor.toArgb()
         this.selectColor = colors.selectColor.toArgb()
-        this.showRowIndices = indicesShown.rows
-        this.showColumnIndices = indicesShown.columns
+        this.showRowIndices = shownIndices.showRows
+        this.showColumnIndices = shownIndices.showColumns
     }
 
     val scope = remember(density) { HexGridItemScopeImpl(gridUi, density) }
@@ -178,17 +178,6 @@ object HexGridDefaults {
         fillColor: Color = Color.Transparent,
         selectColor: Color = Color.Gray
     ): HexGridColors = HexGridColors(strokeColor, fillColor, selectColor)
-
-    /**
-     * The values for which indices are displayed in each cell.
-     *
-     * Both are false by default, since it's intended mainly for design and
-     * debugging.
-     */
-    fun indicesShown(
-        rows: Boolean = false,
-        columns: Boolean = false
-    ): IndicesShown = IndicesShown(rows, columns)
 }
 
 /**
@@ -204,15 +193,32 @@ data class HexGridColors internal constructor(
 )
 
 /**
- * Flags for which indices are shown in each cell.
- *
- * See [HexGridDefaults.indicesShown] for the default values.
+ * Options for which indices are drawn in each grid cell.
  */
-@Immutable
-data class IndicesShown internal constructor(
-    internal val rows: Boolean,
-    internal val columns: Boolean
-)
+enum class ShownIndices(
+    internal val showRows: Boolean,
+    internal val showColumns: Boolean
+) {
+    /**
+     * No indices are drawn.
+     */
+    None(false, false),
+
+    /**
+     * Both row and column indices are drawn in each cell.
+     */
+    Both(true, true),
+
+    /**
+     * Only the row index is drawn in each cell.
+     */
+    Rows(true, false),
+
+    /**
+     * Only the column index is drawn in each cell.
+     */
+    Columns(false, true)
+}
 
 private class HexGridItemScopeImpl(
     private val gridUi: GridUi,

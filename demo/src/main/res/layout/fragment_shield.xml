@@ -5,10 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:divider="@drawable/divider"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:showDividers="middle"
     tools:ignore="HardcodedText">
 
     <com.gonodono.hexgrid.demo.internal.DualPaneView
@@ -130,6 +128,11 @@
             android:text="Vertical" />
 
     </RadioGroup>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/divider" />
 
     <RadioGroup
         android:id="@+id/group_framework"

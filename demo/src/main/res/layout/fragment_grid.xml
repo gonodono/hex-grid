@@ -4,17 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:divider="@drawable/divider"
     android:gravity="center"
     android:orientation="vertical"
-    android:showDividers="middle"
     tools:ignore="HardcodedText">
 
     <com.gonodono.hexgrid.demo.internal.DualPaneView
         android:id="@+id/dual_pane_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
         android:layout_weight="1"
         android:foreground="@drawable/border">
 
@@ -25,7 +22,7 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:gravity="center"
-            android:padding="1dp"> <!-- ViewPager2 clips; inset for stroke. -->
+            android:padding="1dp"> <!-- Inset to avoid clipping the stroke. -->
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint_layout"
@@ -64,6 +61,11 @@
 
     </RadioGroup>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/divider" />
+
     <RadioGroup
         android:id="@+id/group_fit_mode"
         android:layout_width="wrap_content"
@@ -92,6 +94,11 @@
             android:text="Fit hex" />
 
     </RadioGroup>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/divider" />
 
     <RadioGroup
         android:id="@+id/group_framework"

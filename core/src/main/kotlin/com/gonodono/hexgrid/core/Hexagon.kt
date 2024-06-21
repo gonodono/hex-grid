@@ -36,26 +36,23 @@ class Hexagon(var isHorizontal: Boolean) {
         val halfMinor = (minor / 2F).also { halfMinor = it }
         val halfSide = (side / 2F).also { halfSide = it }
 
-        // Unordered coordinate pairs, symmetric across y=x.
-        val coordinatePairs = arrayOf(
-            floatArrayOf(0F, halfMinor),
-            floatArrayOf(halfSide, 0F),
-            floatArrayOf(3F * halfSide, 0F),
-            floatArrayOf(2F * side, halfMinor),
-            floatArrayOf(3F * halfSide, minor),
-            floatArrayOf(halfSide, minor)
-        )
-
         val v = vertices
-        coordinatePairs.forEachIndexed { index, (c1, c2) ->
-            if (isHorizontal) {
-                v[2 * index] = c1
-                v[2 * index + 1] = c2
-            } else {
-                v[2 * index] = c2
-                v[2 * index + 1] = c1
-            }
+        if (isHorizontal) {
+            v[0] = 0F; v[1] = halfMinor
+            v[2] = halfSide; v[3] = 0F
+            v[4] = 3F * halfSide; v[5] = 0F
+            v[6] = 2F * side; v[7] = halfMinor
+            v[8] = 3F * halfSide; v[9] = minor
+            v[10] = halfSide; v[11] = minor
+        } else {
+            v[0] = halfMinor; v[1] = 0F
+            v[2] = 0F; v[3] = halfSide
+            v[4] = 0F; v[5] = 3F * halfSide
+            v[6] = halfMinor; v[7] = 2F * side
+            v[8] = minor; v[9] = 3F * halfSide
+            v[10] = minor; v[11] = halfSide
         }
+
         path.run { rewind(); getPathBuilder(IDENTITY_MATRIX)() }
     }
 

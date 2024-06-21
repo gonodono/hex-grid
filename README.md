@@ -18,8 +18,10 @@ hexagonal grids, hex maps, beehive layouts, honeycombs, etc.
 
 ## Examples
 
-+ [Code][examples]
 + [Wiki][examples-wiki]
++ [Code][examples]
+
+<br />
 
 The `ConstraintLayout` examples are currently hosted in their own launcher
 `Activity` in the `demo` app, simply to avoid having to mess with multiple apps.
@@ -62,7 +64,6 @@ the library a try.
 
 ## Library
 
-+ Intro
 + [Views](#views)
 + [Compose](#compose)
 + [Notes](#notes)
@@ -89,7 +90,7 @@ width="60%" />
 </p>
 <p align="center">
 <sup><em>On the left is <code>library.xml</code>. On the right, the
-<code>Library()</code> Composable.</em></sup>
+<code>Library</code> Composable.</em></sup>
 </p>
 
 
@@ -121,18 +122,15 @@ width="60%" />
         android:gravity="center"
         android:text="🐝"
         android:textSize="50sp"
-        app:layout_cellIsVisible="false"
         app:layout_cellRowAndColumn="2,1"
+        app:layout_cellIsVisible="false"
         app:layout_hexBackgroundColor="#FFDDDDDD"
-        app:layout_hexBackgroundEnabled="true"
         app:layout_hexBackgroundInset="15dp"
         tools:ignore="HardcodedText,TextContrastCheck" />
 
 </com.gonodono.hexgrid.view.HexGridView>
 ```
 </details>
-
-<br />
 
 `HexGridView` is a `ViewGroup`, and it allows children to be added in the
 layout. It has several local and child attributes available to allow
@@ -159,7 +157,7 @@ hexGridView.viewProvider = HexGridView.ViewProvider { address, current ->
 ```
 
 The `view` package also contains `HexGridDrawable` in order to allow these grids
-to be displayed wherever `Drawable`s can be used. It lacks several of the main
+to be displayed wherever Drawables can be used. It lacks several of the main
 components' features – like wrapping to the content and hosting children – but
 it uses the same core data and draw modules, so it will otherwise look and
 behave identically.
@@ -168,7 +166,7 @@ behave identically.
 ### Compose
 
 <details>
-  <summary><code>@Composable Library()</code></summary>
+  <summary><code>@Composable Library</code></summary>
 
 ```kotlin
 import androidx.compose.foundation.background
@@ -225,8 +223,6 @@ fun Library() {
 ```
 </details>
 
-<br />
-
 The library's Composable version is named `HexGrid`, and it has basically all of
 the same features and functionalities as the `View` version. Since it has to be
 done in code, we have to define the grid's shape and states using the library's
@@ -235,9 +231,9 @@ which is really just a wrapper around View's `MutableGrid` that hides the
 mutators.
 
 A custom collection is used here because of the unusual coordinate system, which
-is actually not unique to this library, but which I can't really expect anyone
-to keep track of in their heads, especially since the valid coordinate pairs
-change depending on which lines are inset. Further information on `Grid` and its
+is actually not unique to this library, but which I can't really expect users to
+keep track of on their own, especially since the valid coordinate pairs change
+depending on which lines are inset. Further information on `Grid` and its
 properties can be found on [its wiki page][grid-wiki]
 
 Lastly here, the `getHexShape()` function shown in the `border()` modifer in the
@@ -268,7 +264,7 @@ look that great on other formats. Just a heads up.
 #### The library's future
 
 The custom components are currently in the process of evolving from casual
-examples that were published just for convenience, to an actual, maintained
+examples that were published just for convenience, to an actual maintained
 library-type dealy, so many things are going to change, some pretty drastically.
 Because of that, this recent revision and release are mostly just small patches
 to keep this version working in the interim, in case the update takes too long.
@@ -282,6 +278,8 @@ I've configured the library to be published, so you can get a compiled version
 through [JitPack](https://jitpack.io). The repo's page
 is [here](https://jitpack.io/#gonodono/hex-grid), and it has instructions toward
 the bottom on how to add JitPack and the library's dependency to your project.
+
+<br />
 
 
 ## License
@@ -311,7 +309,7 @@ SOFTWARE.
 
   [examples]: https://github.com/gonodono/hex-grid/tree/main/demo/src/main/kotlin/com/gonodono/hexgrid/demo/examples
 
-  [examples-wiki]: https://github.com/gonodono/hex-grid/wiki/Examples
+  [examples-wiki]: https://github.com/gonodono/hex-grid/wiki/Intro
 
   [wiki]: https://github.com/gonodono/hex-grid/wiki
 

@@ -4,7 +4,6 @@ import android.animation.ArgbEvaluator
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Typeface
 import android.view.Gravity
 import android.view.View.LAYOUT_DIRECTION_LTR
 import android.view.ViewGroup
@@ -101,7 +100,6 @@ private fun ConstraintLayout.buildGrid(
                     paint.style = Paint.Style.STROKE
                     paint.strokeWidth = 2 * density
                 }
-                typeface = Typeface.DEFAULT_BOLD
                 gravity = Gravity.CENTER
                 text = viewId.toString()
             }

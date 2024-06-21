@@ -35,7 +35,6 @@
         <attr name="layout_cellRowAndColumn" format="string" />
         <attr name="layout_cellIsVisible" format="boolean" />
         <attr name="layout_cellIsSelected" format="boolean" />
-        <attr name="layout_hexBackgroundEnabled" format="boolean" />
         <attr name="layout_hexBackgroundColor" format="color" />
         <attr name="layout_hexBackgroundInset" format="dimension" />
     </declare-styleable>

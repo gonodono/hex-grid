@@ -66,7 +66,7 @@ class ImmutableGrid internal constructor(
 /**
  * Copies this [MutableGrid] and wraps the new instance in an [ImmutableGrid].
  */
-fun MutableGrid.toImmutable(): ImmutableGrid = ImmutableGrid(this.copy())
+fun MutableGrid.toImmutableGrid(): ImmutableGrid = ImmutableGrid(this.copy())
 
 /**
  * Wraps this [MutableGrid] in an [ImmutableGrid].
@@ -76,4 +76,4 @@ fun MutableGrid.toImmutable(): ImmutableGrid = ImmutableGrid(this.copy())
  * will never be modified afterward, as it allows the internal state generation
  * and verification to be skipped.
  */
-fun MutableGrid.asImmutable(): ImmutableGrid = ImmutableGrid(this)
+fun MutableGrid.asImmutableGrid(): ImmutableGrid = ImmutableGrid(this)

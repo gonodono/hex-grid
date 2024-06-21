@@ -270,7 +270,8 @@ class HexGridView @JvmOverloads constructor(
 
     /**
      * Modifies the passed View's [LayoutParams] to cause a [HexDrawable]
-     * background to be added or updated during layout.
+     * background to be added or updated during layout. If [color] is
+     * [Color.TRANSPARENT], the background is removed.
      *
      * See [removeHexBackground].
      */
@@ -281,15 +282,13 @@ class HexGridView @JvmOverloads constructor(
     ) {
         val current = view.layoutParams
         val next = if (current is LayoutParams) {
-            if (current.hexBackgroundEnabled &&
-                current.hexBackgroundColor == color &&
+            if (current.hexBackgroundColor == color &&
                 current.hexBackgroundInset == inset
             ) return
             current
         } else {
             generateDefaultLayoutParams()
         }
-        next.hexBackgroundEnabled = true
         next.hexBackgroundColor = color
         next.hexBackgroundInset = inset
         view.layoutParams = next
@@ -303,7 +302,7 @@ class HexGridView @JvmOverloads constructor(
      */
     fun removeHexBackground(view: View) {
         val params = view.layoutParams as? LayoutParams ?: return
-        params.hexBackgroundEnabled = false
+        params.hexBackgroundColor = Color.TRANSPARENT
         view.layoutParams = params
     }
 
@@ -409,7 +408,7 @@ class HexGridView @JvmOverloads constructor(
         }
         views.values.forEach { view ->
             val params = view?.layoutParams as? LayoutParams ?: return@forEach
-            if (params.hexBackgroundEnabled) {
+            if (params.hexBackgroundColor != Color.TRANSPARENT) {
                 val background = view.background as? HexDrawable
                     ?: generateHexDrawable().also { view.background = it }
                 background.fillColor = params.hexBackgroundColor
@@ -420,9 +419,9 @@ class HexGridView @JvmOverloads constructor(
         children.forEach { child ->
             val params = child.layoutParams as? LayoutParams ?: return@forEach
             val bounds = tmpBounds
-            val inset = when {
-                params.hexBackgroundEnabled -> params.hexBackgroundInset
-                else -> 0F
+            val inset = when (params.hexBackgroundColor) {
+                Color.TRANSPARENT -> 0F
+                else -> params.hexBackgroundInset
             }
             gridUi.getCellItemBounds(params.address, inset, bounds)
             val childWidth = childMeasureSpec(params.width, bounds.width())
@@ -504,7 +503,6 @@ class HexGridView @JvmOverloads constructor(
 
         internal var address = Grid.Address(-2, -2)
         internal var state = Grid.State.Default
-        internal var hexBackgroundEnabled: Boolean = false
         internal var hexBackgroundColor: Int = Color.WHITE
         internal var hexBackgroundInset: Float = 0.0F
 
@@ -530,10 +528,6 @@ class HexGridView @JvmOverloads constructor(
                     R.styleable.HexGridView_Layout_layout_cellIsSelected,
                     state.isSelected
                 )
-            )
-            hexBackgroundEnabled = array.getBoolean(
-                R.styleable.HexGridView_Layout_layout_hexBackgroundEnabled,
-                hexBackgroundEnabled
             )
             hexBackgroundColor = array.getColor(
                 R.styleable.HexGridView_Layout_layout_hexBackgroundColor,

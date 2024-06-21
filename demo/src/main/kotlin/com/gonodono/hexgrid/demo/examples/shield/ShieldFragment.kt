@@ -40,11 +40,6 @@ class ShieldFragment : Fragment(R.layout.fragment_shield) {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        hexShield()
-    }
-
     private fun hexShield() = with(ui) {
         constraintLayout.hexShield(radioHorizontal.isChecked)
         isHorizontal.value = radioHorizontal.isChecked
