@@ -18,10 +18,11 @@ hexagonal grids, hex maps, beehive layouts, honeycombs, etc.
 
 ## Examples
 
-+ [Wiki][examples-wiki]
 + [Code][examples]
++ [Wiki][examples-wiki]
 
 <br />
+
 
 The `ConstraintLayout` examples are currently hosted in their own launcher
 `Activity` in the `demo` app, simply to avoid having to mess with multiple apps.
@@ -33,7 +34,7 @@ alt="Screenshots of the two example formats previewed in Android Studio."
 width="60%" />
 </p>
 
-The Shield examples show a simple design of seven cells, with one in the center
+The Shield examples show a simple design of seven cells with one in the center
 circled by the others. The View version is initialized from a layout resource
 that illustrates how such an arrangement can be specified in XML. Both versions
 have runtime routines that size the content to fit the container's width, and
@@ -43,11 +44,11 @@ The Grid examples demonstrate how to generate grids dynamically, taking into
 consideration the available space and either the desired number of rows/columns,
 or a specific hexagon size.
 
-Using existing components and APIs certainly has its advantages; e.g., reduced
-overhead, familiarity, etc. However, this approach does have its downsides, too.
-For example, all of the hexagon components are actually still rectangular in
-shape, as far as the frameworks are concerned, so touch handling doesn't really
-work in the overlapping areas.
+Using existing components and APIs certainly has its advantages; e.g.,
+familiarity, reduced overhead, etc. However, this approach does have its
+downsides, too. For example, all of the hexagon components are actually still
+rectangular in shape, as far as the frameworks are concerned, so touch handling
+doesn't really work in the overlapping areas.
 
 Also, you might have a hard time getting things lined up exactly, since we're
 basically relaying data through intermediate painters using `LayoutParams` and
@@ -68,10 +69,19 @@ the library a try.
 + [Compose](#compose)
 + [Notes](#notes)
 + [Download](#download)
-+ [Documentation](https://gonodono.github.io/hex-grid)
-+ [Wiki](https://github.com/gonodono/hex-grid/wiki)
++ [Documentation][documentation]
++ [Wiki][wiki]
 
 <br />
+
+
+_**NB:** The information presented here, in the documentation, and in the wiki
+is accurate for [Release 0.1.3][current-release] only. The library is in the
+middle of a minor overhaul without any deprecation stage, so some things are
+incompatible between that release and the current code._
+
+<br />
+
 
 These components were designed to offer maximum flexibility in defining a grid's
 shape and draw settings while maintaining precise placement and touch
@@ -230,10 +240,10 @@ custom collection type, `Grid`. The Compose implementation is `ImmutableGrid`,
 which is really just a wrapper around View's `MutableGrid` that hides the
 mutators.
 
-A custom collection is used here because of the unusual coordinate system, which
-is actually not unique to this library, but which I can't really expect users to
-keep track of on their own, especially since the valid coordinate pairs change
-depending on which lines are inset. Further information on `Grid` and its
+A custom collection is used here because of the unusual grid address system,
+which is actually not unique to this library, but which I can't really expect
+users to keep track of on their own, especially since the valid row/column pairs
+change depending on which lines are inset. Further information on `Grid` and its
 properties can be found on [its wiki page][grid-wiki]
 
 Lastly here, the `getHexShape()` function shown in the `border()` modifer in the
@@ -275,9 +285,9 @@ next release.
 ### Download
 
 I've configured the library to be published, so you can get a compiled version
-through [JitPack](https://jitpack.io). The repo's page
-is [here](https://jitpack.io/#gonodono/hex-grid), and it has instructions toward
-the bottom on how to add JitPack and the library's dependency to your project.
+through [JitPack][jitpack]. The repo's page is [here][jitpack-hex-grid], and it
+has instructions toward the bottom on how to add JitPack and the library's
+dependency to your project.
 
 <br />
 
@@ -311,6 +321,14 @@ SOFTWARE.
 
   [examples-wiki]: https://github.com/gonodono/hex-grid/wiki/Intro
 
+  [documentation]: https://gonodono.github.io/hex-grid
+
   [wiki]: https://github.com/gonodono/hex-grid/wiki
 
+  [current-release]: https://github.com/gonodono/hex-grid/releases/tag/0.1.3
+
   [grid-wiki]: https://github.com/gonodono/hex-grid/wiki/Grid-definitions
+
+  [jitpack]: https://jitpack.io
+
+  [jitpack-hex-grid]: https://jitpack.io/#gonodono/hex-grid

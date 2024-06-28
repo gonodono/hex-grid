@@ -22,7 +22,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.gonodono.hexgrid.compose.HexGrid
 import com.gonodono.hexgrid.compose.HexGridDefaults
 import com.gonodono.hexgrid.compose.ShownIndices
-import com.gonodono.hexgrid.compose.asImmutableGrid
+import com.gonodono.hexgrid.compose.toMutableStateGrid
 import com.gonodono.hexgrid.data.CrossMode
 import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
@@ -54,6 +54,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
             ui.buttonStrokeColor.setSwatchColor(strokeColor)
             ui.buttonFillColor.setSwatchColor(fillColor)
             ui.buttonSelectColor.setSwatchColor(selectColor)
+            ui.buttonIndexColor.setSwatchColor(indexColor)
             ui.checkShowColumnIndices.isChecked = showColumnIndices
             ui.checkShowRowIndices.isChecked = showRowIndices
             ui.drawableView.background = HexGridDrawable(grid).also { d ->
@@ -64,6 +65,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
                 d.strokeColor = strokeColor
                 d.fillColor = fillColor
                 d.selectColor = selectColor
+                d.indexColor = indexColor
                 d.showColumnIndices = showColumnIndices
                 d.showRowIndices = showRowIndices
             }
@@ -136,6 +138,9 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         ui.buttonSelectColor.setOnClickListener {
             showColorDialog(model::selectColor, ui.buttonSelectColor)
         }
+        ui.buttonIndexColor.setOnClickListener {
+            showColorDialog(model::indexColor, ui.buttonIndexColor)
+        }
         ui.checkShowRowIndices.setOnCheckedChangeListener { _, isChecked ->
             model.showRowIndices = isChecked
         }
@@ -162,6 +167,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
                         strokeColor = state.strokeColor
                         fillColor = state.fillColor
                         selectColor = state.selectColor
+                        indexColor = state.indexColor
                         showColumnIndices = state.showColumnIndices
                         showRowIndices = state.showRowIndices
                     }
@@ -174,11 +180,11 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
                         strokeColor = state.strokeColor
                         fillColor = state.fillColor
                         selectColor = state.selectColor
+                        indexColor = state.indexColor
                         showColumnIndices = state.showColumnIndices
                         showRowIndices = state.showRowIndices
                     }
-                    var selected = 0
-                    state.grid.forEach { _, s -> if (s.isSelected) selected++ }
+                    val selected = state.grid.states.count { it.isSelected }
                     countLabel.info = "$selected/${state.grid.size}"
                 }
             }
@@ -205,9 +211,10 @@ private fun GridHexGrid(
     onOutsideTap: () -> Unit
 ) {
     val state by model.gridState.collectAsStateWithLifecycle(DefaultGridState)
-    val grid = state.grid.asImmutableGrid()
-    val dp = state.strokeWidth /
-            LocalContext.current.resources.displayMetrics.density
+    val grid = state.grid.toMutableStateGrid()
+    val density = LocalContext.current.resources.displayMetrics.density
+    val dp = state.strokeWidth / density
+
     HexGrid(
         grid = grid,
         fitMode = state.fitMode,
@@ -217,7 +224,8 @@ private fun GridHexGrid(
         colors = HexGridDefaults.colors(
             ComposeColor(state.strokeColor),
             ComposeColor(state.fillColor),
-            ComposeColor(state.selectColor)
+            ComposeColor(state.selectColor),
+            ComposeColor(state.indexColor)
         ),
         shownIndices = when {
             state.showRowIndices && state.showColumnIndices -> ShownIndices.Both

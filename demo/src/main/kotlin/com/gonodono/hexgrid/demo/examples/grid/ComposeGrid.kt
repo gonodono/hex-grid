@@ -27,7 +27,7 @@ import com.gonodono.hexgrid.demo.examples.internal.rememberHexagonShape
 @Preview(showBackground = true)
 @Composable
 internal fun HexGrid(
-    fitMode: FitMode = FitMode.FitHex,
+    fitMode: FitMode = FitMode.FitHex(40F),
     isHorizontal: Boolean = false
 ) {
     BoxWithConstraints(
@@ -38,7 +38,7 @@ internal fun HexGrid(
         val height = constraints.maxHeight
         val density = LocalDensity.current
         val data = remember(fitMode, isHorizontal, width, height, density) {
-            calculateGridData(
+            calculateExampleData(
                 fitMode = fitMode,
                 isHorizontal = isHorizontal,
                 availableWidth = width,
@@ -49,10 +49,10 @@ internal fun HexGrid(
         }
 
         val size = Size(data.hexWidth, data.hexHeight)
-        val dpSize = with(LocalDensity.current) { size.toDpSize() }
+        val dpSize = with(density) { size.toDpSize() }
         val shape = rememberHexagonShape(isHorizontal, size)
-        val radius = with(density) { data.radius.toDp() }
         val isLtr = LocalLayoutDirection.current == LayoutDirection.Ltr
+        val radius = with(density) { data.radius.toDp() }
 
         ConstraintLayout {
             val refs = mutableListOf<ConstrainedLayoutReference>()
@@ -66,7 +66,6 @@ internal fun HexGrid(
                         stop = Color.Magenta,
                         fraction = index.toFloat() / total
                     )
-
                     Hexagon(
                         ref = ref,
                         size = dpSize,

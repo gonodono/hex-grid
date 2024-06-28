@@ -4,10 +4,10 @@ import android.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.gonodono.hexgrid.data.CrossMode
 import com.gonodono.hexgrid.data.FitMode
-import com.gonodono.hexgrid.data.Grid.Address
-import com.gonodono.hexgrid.data.Grid.State
+import com.gonodono.hexgrid.data.Grid
 import com.gonodono.hexgrid.data.HexOrientation
 import com.gonodono.hexgrid.data.MutableGrid
+import com.gonodono.hexgrid.data.buildStateMap
 import com.gonodono.hexgrid.data.toggled
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -20,7 +20,7 @@ internal class OptionsViewModel : ViewModel() {
 
     val gridState = _gridState.asSharedFlow()
 
-    fun toggleSelected(address: Address) {
+    fun toggleSelected(address: Grid.Address) {
         val current = _gridState.value.grid
         val next = current.toggled(address)
         _gridState.value = _gridState.value.copy(grid = next)
@@ -61,6 +61,9 @@ internal class OptionsViewModel : ViewModel() {
     var selectColor by changeState(DefaultGridState.selectColor) { state, value ->
         state.copy(selectColor = value)
     }
+    var indexColor by changeState(DefaultGridState.indexColor) { state, value ->
+        state.copy(indexColor = value)
+    }
     var showRowIndices by changeState(DefaultGridState.showRowIndices) { state, value ->
         state.copy(showRowIndices = value)
     }
@@ -98,6 +101,7 @@ internal data class GridState(
     val strokeColor: Int,
     val fillColor: Int,
     val selectColor: Int,
+    val indexColor: Int,
     val showRowIndices: Boolean,
     val showColumnIndices: Boolean
 )
@@ -107,10 +111,7 @@ internal val DefaultGridState = GridState(
         rowCount = 5,
         columnCount = 5,
         insetEvenLines = true,
-        initial = mapOf(
-            Address(2, 1) to State(isSelected = true),
-            Address(2, 3) to State(isSelected = true),
-        )
+        initial = buildStateMap { select(at(2, 1), at(2, 3)) }
     ),
     fitMode = FitMode.FitColumns,
     crossMode = CrossMode.AlignCenter,
@@ -119,6 +120,7 @@ internal val DefaultGridState = GridState(
     strokeColor = Color.BLUE,
     fillColor = Color.CYAN,
     selectColor = Color.MAGENTA,
+    indexColor = Color.BLUE,
     showRowIndices = false,
     showColumnIndices = false
 )

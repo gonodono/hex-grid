@@ -61,6 +61,8 @@ class GridUi {
 
     var selectColor: Int = Color.GRAY
 
+    var indexColor: Int = Color.BLACK
+
     var showRowIndices: Boolean = false
 
     var showColumnIndices: Boolean = false
@@ -301,7 +303,7 @@ class GridUi {
         showColumnIndices: Boolean,
         tmpBounds: RectF
     ) {
-        grid.forEach { address, state ->
+        grid.fastForEach { address, state ->
             getCellBounds(address, tmpBounds)
             if (state.isVisible) {
                 hexagon.draw(
@@ -341,7 +343,7 @@ class GridUi {
                 else -> "$column"
             }
         }
-        paint.color = strokeColor
+        paint.color = indexColor
         paint.style = Paint.Style.FILL
         paint.textSize = bounds.height() / 3
         paint.textAlign = Paint.Align.CENTER

@@ -47,7 +47,7 @@ import com.gonodono.hexgrid.data.HexOrientation
  */
 @Composable
 fun HexGrid(
-    grid: ImmutableGrid,
+    grid: MutableStateGrid,
     modifier: Modifier = Modifier,
     fitMode: FitMode = FitMode.FitColumns,
     crossMode: CrossMode = CrossMode.AlignCenter,
@@ -74,6 +74,7 @@ fun HexGrid(
         this.strokeColor = colors.strokeColor.toArgb()
         this.fillColor = colors.fillColor.toArgb()
         this.selectColor = colors.selectColor.toArgb()
+        this.indexColor = colors.indexColor.toArgb()
         this.showRowIndices = shownIndices.showRows
         this.showColumnIndices = shownIndices.showColumns
     }
@@ -111,7 +112,7 @@ fun HexGrid(
 
         if (cellItems != null) {
             val items = mutableListOf<Pair<Placeable, Rect>>()
-            grid.forEach { address, _ ->
+            grid.addresses.forEach { address ->
                 val item = subcompose(address) {
                     scope.prepare(address)
                     scope.cellItems(address)
@@ -164,7 +165,7 @@ interface HexGridItemScope {
 object HexGridDefaults {
 
     /**
-     * The grid's color values.
+     * The grid's various color values.
      *
      * Colors aren't stateful yet, so they're handled as a simple data class for
      * now.
@@ -172,16 +173,23 @@ object HexGridDefaults {
      * @param strokeColor The cell outline color
      * @param fillColor The normal cell fill color
      * @param selectColor The fill color when the cell is selected
+     * @param indexColor The color of the indices, if shown
      */
     fun colors(
         strokeColor: Color = Color.Black,
         fillColor: Color = Color.Transparent,
-        selectColor: Color = Color.Gray
-    ): HexGridColors = HexGridColors(strokeColor, fillColor, selectColor)
+        selectColor: Color = Color.Gray,
+        indexColor: Color = strokeColor
+    ): HexGridColors = HexGridColors(
+        strokeColor = strokeColor,
+        fillColor = fillColor,
+        selectColor = selectColor,
+        indexColor = indexColor
+    )
 }
 
 /**
- * The cell stroke and fill colors used by [HexGrid].
+ * The various colors used by [HexGrid].
  *
  * See [HexGridDefaults.colors] for the default colors.
  */
@@ -189,7 +197,8 @@ object HexGridDefaults {
 data class HexGridColors internal constructor(
     internal val strokeColor: Color,
     internal val fillColor: Color,
-    internal val selectColor: Color
+    internal val selectColor: Color,
+    internal val indexColor: Color
 )
 
 /**

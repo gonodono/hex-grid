@@ -45,23 +45,61 @@ interface Grid {
     val enableEdgeLines: Boolean
 
     /**
+     * If [enableEdgeLines] is `false`, this will be equal to [rowCount].
+     *
+     * If [enableEdgeLines] is `true`, this will be equal to [rowCount] + 2.
+     */
+    val totalRowCount: Int
+
+    /**
+     * If [enableEdgeLines] is `false`, this will be equal to [columnCount].
+     *
+     * If [enableEdgeLines] is `true`, this will be equal to [columnCount] + 2.
+     */
+    val totalColumnCount: Int
+
+    /**
      * The total cell count, named [size] for consistency with other collections.
      */
     val size: Int
 
     /**
-     * The Address-indexed get operator for Grid.
+     * A [Set] view of the [Grid]'s mappings.
      *
-     * This is a direct accessor, and it will result in Exceptions for invalid
-     * addresses. See [isValidAddress].
+     * Analogous to [Map]'s [entries][Map.entries].
+     */
+    val cells: Set<Cell>
+
+    /**
+     * A [Set] view of the [Grid]'s [Address]es.
+     *
+     * Analogous to [Map]'s [keys][Map.keys].
+     */
+    val addresses: Set<Address>
+
+    /**
+     * A [Collection] view of the [Grid]'s [State]s.
+     *
+     * Analogous to [Map]'s [values][Map.values].
+     */
+    val states: Collection<State>
+
+    /**
+     * Provides faster iteration than the standard views by skipping [Iterator]s.
+     */
+    fun fastForEach(action: (Address, State) -> Unit)
+
+    /**
+     * The [Address]-indexed get operator for [Grid].
+     *
+     * Invalid addresses will result in Exceptions. See [isValidAddress].
      */
     operator fun get(address: Address): State
 
     /**
-     * The Int-indexed get operator for Grid.
+     * The Int-indexed get operator for [Grid].
      *
-     * This is a direct accessor, and it will result in Exceptions for invalid
-     * addresses. See [isValidAddress].
+     * Invalid addresses will result in Exceptions. See [isValidAddress].
      */
     operator fun get(row: Int, column: Int): State
 
@@ -75,23 +113,18 @@ interface Grid {
     fun isLineInset(index: Int): Boolean
 
     /**
-     *  Returns true if [row] and [column] are valid coordinates for the current
+     *  Returns true if [row] and [column] are valid indices for the current
      *  grid specifications.
      */
     fun isValidAddress(row: Int, column: Int): Boolean
 
     /**
      * Returns the appropriate [Grid.Address] if [row] and [column] are valid
-     * coordinates.
+     * indices; i.e., if `isValidAddress(row, column)` would return `true`.
      *
      * Returns null otherwise.
      */
     fun findAddress(row: Int, column: Int): Address?
-
-    /**
-     * Iterator function for Grid.
-     */
-    fun forEach(action: (Address, State) -> Unit)
 
     /**
      * Returns a new, modified instance of this [Grid] if [changes] actually
@@ -101,7 +134,7 @@ interface Grid {
      * instance is returned. If the map is empty, an exact copy is returned as a
      * new instance.
      *
-     * Invalid Addresses will cause Exceptions. See [isValidAddress].
+     * Invalid addresses will result in Exceptions. See [isValidAddress].
      */
     fun copy(changes: Map<Address, State> = emptyMap()): Grid
 
@@ -111,12 +144,12 @@ interface Grid {
      *
      * If it does not cause a change, the same instance is returned.
      *
-     * Invalid Addresses will cause Exceptions. See [isValidAddress].
+     * Invalid addresses will result in Exceptions. See [isValidAddress].
      */
     fun copy(address: Address, change: State): Grid
 
     /**
-     * The index structure for Grid.
+     * The index structure for [Grid].
      */
     data class Address(val row: Int, val column: Int) {
 
@@ -131,7 +164,7 @@ interface Grid {
     }
 
     /**
-     * The state class for grid cells.
+     * The state class for [Grid] cells.
      */
     data class State(
         val isVisible: Boolean = true,
@@ -149,10 +182,17 @@ interface Grid {
             val Default: State = State()
         }
     }
+
+    interface Cell {
+        val address: Address
+        val state: State
+        operator fun component1() = address
+        operator fun component2() = state
+    }
 }
 
 /**
- * An empty Grid instance for use as an initial value, a reset value, etc.
+ * An empty [Grid] instance for use as an initial value, a reset value, etc.
  */
 val EmptyGrid: Grid = object : Grid {
 
@@ -164,27 +204,37 @@ val EmptyGrid: Grid = object : Grid {
 
     override val enableEdgeLines: Boolean = false
 
+    override val totalRowCount: Int = 0
+
+    override val totalColumnCount: Int = 0
+
     override val size: Int = 0
 
+    override val cells: Set<Grid.Cell> = emptySet()
+
+    override val addresses: Set<Grid.Address> = emptySet()
+
+    override val states: Collection<Grid.State> = emptyList()
+
     override fun get(address: Grid.Address): Grid.State {
-        error("EmptyGrid is empty")
+        throw NoSuchElementException()
     }
 
     override fun get(row: Int, column: Int): Grid.State {
-        error("EmptyGrid is empty")
+        throw NoSuchElementException()
     }
 
-    override fun isLineInset(index: Int): Boolean = false
-
-    override fun isValidAddress(row: Int, column: Int): Boolean = false
-
     override fun findAddress(row: Int, column: Int): Grid.Address? = null
-
-    override fun forEach(action: (Grid.Address, Grid.State) -> Unit) {}
 
     override fun copy(changes: Map<Grid.Address, Grid.State>): Grid = this
 
     override fun copy(address: Grid.Address, change: Grid.State): Grid = this
+
+    override fun fastForEach(action: (Grid.Address, Grid.State) -> Unit) {}
+
+    override fun isLineInset(index: Int): Boolean = false
+
+    override fun isValidAddress(row: Int, column: Int): Boolean = false
 
     override fun toString(): String = "EmptyGrid"
 }

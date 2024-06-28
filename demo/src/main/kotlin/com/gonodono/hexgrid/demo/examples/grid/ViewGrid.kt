@@ -25,7 +25,7 @@ internal fun ConstraintLayout.hexGrid(
     if (availableWidth <= 0 || availableHeight <= 0) return
 
     val density = context.resources.displayMetrics.density
-    val data = calculateGridData(
+    val data = calculateExampleData(
         fitMode,
         isHorizontal,
         availableWidth,

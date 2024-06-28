@@ -24,12 +24,11 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.gonodono.hexgrid.compose.HexGrid
 import com.gonodono.hexgrid.compose.HexGridDefaults
-import com.gonodono.hexgrid.compose.toImmutableGrid
+import com.gonodono.hexgrid.compose.toMutableStateGrid
 import com.gonodono.hexgrid.data.CrossMode
 import com.gonodono.hexgrid.data.Grid
 import com.gonodono.hexgrid.data.MutableGrid
 import com.gonodono.hexgrid.data.toggle
-import com.gonodono.hexgrid.data.toggled
 import com.gonodono.hexgrid.demo.R
 import com.gonodono.hexgrid.demo.databinding.FragmentLayoutBinding
 import com.gonodono.hexgrid.demo.databinding.LayoutItemBinding
@@ -139,9 +138,7 @@ private fun LayoutHexGrid(
     showBackgrounds: Boolean,
     showStats: (Grid) -> Unit
 ) {
-    var immutableGrid by remember {
-        mutableStateOf(LayoutGrid.toImmutableGrid())
-    }
+    val immutableGrid = remember { LayoutGrid.toMutableStateGrid() }
     val strokeColor = when {
         showStroke -> Color.Black
         else -> Color.Transparent
@@ -151,7 +148,7 @@ private fun LayoutHexGrid(
         crossMode = crossMode,
         colors = HexGridDefaults.colors(strokeColor = strokeColor),
         onGridTap = { address ->
-            immutableGrid = immutableGrid.toggled(address)
+            immutableGrid.toggle(address)
             showStats(immutableGrid)
         }
     ) { address ->
@@ -185,13 +182,8 @@ private fun LayoutHexGrid(
 private val LayoutGrid = MutableGrid(3, 5, insetEvenLines = true)
 
 private fun LabelDrawable.showStats(grid: Grid) {
-    var selected = 0
-    var visible = 0
-    grid.forEach { _, state ->
-        if (state.isSelected) selected++
-        if (state.isVisible) visible++
-    }
-    info = "$selected/$visible"
+    val selected = grid.states.count { it.isSelected }
+    info = "$selected/${grid.size}"
 }
 
 private fun colorFor(address: Grid.Address) =

@@ -1,49 +1,59 @@
 package com.gonodono.hexgrid.data
 
 /**
- * The mutable version of the library's [Grid] structure.
+ * The regular mutable version of the library's [Grid] structure.
  *
- * MutableGrid allows its [Grid.State]s to be changed out, though the Grid's
+ * [MutableGrid] allows its [Grid.State]s to be changed out, though the grid's
  * basic shape is actually immutable. That shape is defined by its row and
  * column counts, the lines which are inset, and whether edge lines are enabled.
  */
-class MutableGrid private constructor(
-    override val rowCount: Int,
-    override val columnCount: Int,
-    override val insetEvenLines: Boolean,
-    override val enableEdgeLines: Boolean,
-    initial: Map<Grid.Address, Grid.State>?,
-    addresses: Addresses?,
-    states: States?
+open class MutableGrid(
+    final override val rowCount: Int,
+    final override val columnCount: Int,
+    final override val insetEvenLines: Boolean = false,
+    final override val enableEdgeLines: Boolean = false,
+    init: (Grid.Address) -> Grid.State? = { null }
 ) : Grid {
 
+    /**
+     * Map init constructor.
+     */
     constructor(
         rowCount: Int,
         columnCount: Int,
         insetEvenLines: Boolean = false,
         enableEdgeLines: Boolean = false,
-        initial: Map<Grid.Address, Grid.State>? = null
+        initial: Map<Grid.Address, Grid.State>
     ) : this(
         rowCount,
         columnCount,
         insetEvenLines,
         enableEdgeLines,
-        initial,
-        null,
-        null
+        initial::get
     )
 
-    internal val totalRowCount = when {
+    /**
+     * Copy/convert constructor.
+     */
+    constructor(grid: Grid) : this(
+        grid.rowCount,
+        grid.columnCount,
+        grid.insetEvenLines,
+        grid.enableEdgeLines,
+        grid::get
+    )
+
+    final override val totalRowCount = when {
         enableEdgeLines -> rowCount + 2
         else -> rowCount
     }
 
-    internal val totalColumnCount = when {
+    final override val totalColumnCount = when {
         enableEdgeLines -> columnCount + 2
         else -> columnCount
     }
 
-    override val size: Int = when {
+    final override val size: Int = when {
         insetEvenLines -> totalRowCount.largeHalf * totalColumnCount.smallHalf +
                 totalRowCount.smallHalf * totalColumnCount.largeHalf
 
@@ -51,121 +61,142 @@ class MutableGrid private constructor(
                 totalRowCount.smallHalf * totalColumnCount.smallHalf
     }
 
-    private val addresses = addresses ?: Addresses(this)
+    open class MutableCell(
+        final override val address: Grid.Address,
+        override var state: Grid.State
+    ) : Grid.Cell
 
-    private val states = states ?: States(this, initial)
+    protected open fun createMutableCell(
+        address: Grid.Address,
+        state: Grid.State
+    ): MutableCell = MutableCell(address, state)
 
-    init {
-        check(size == this.addresses.size && size == this.states.size) {
-            "Bad internal state: $size,${this.addresses.size},${this.states.size}"
-        }
-    }
-
-    override fun get(address: Grid.Address): Grid.State {
-        checkAddress(address.row, address.column)
-        return states[address]
-    }
-
-    override fun get(row: Int, column: Int): Grid.State {
-        checkAddress(row, column)
-        return states[row, column]
-    }
-
-    /**
-     * The Address-indexed set operator for MutableGrid.
-     *
-     * This is direct assignment, and it will result in Exceptions for invalid
-     * addresses. See [isValidAddress].
-     */
-    operator fun set(address: Grid.Address, state: Grid.State) {
-        checkAddress(address.row, address.column)
-        states[address] = state
-    }
-
-    /**
-     * The Int-indexed set operator for MutableGrid.
-     *
-     * This is direct assignment, and it will result in Exceptions for invalid
-     * addresses. See [isValidAddress].
-     */
-    operator fun set(row: Int, column: Int, state: Grid.State) {
-        checkAddress(row, column)
-        states[row, column] = state
-    }
-
-    private fun checkAddress(row: Int, column: Int) {
+    protected fun checkAddress(row: Int, column: Int) {
         check(isValidAddress(row, column)) {
             "Invalid Address ($row, $column) for $this"
         }
     }
 
-    override fun isLineInset(index: Int): Boolean =
-        insetEvenLines == (index % 2 == 0)
+    final override val cells: Set<Grid.Cell>
+        get() = _cells ?: object : AbstractSet<MutableCell>() {
+            override val size: Int get() = this@MutableGrid.size
+            override fun iterator(): Iterator<MutableCell> =
+                object : MutableGridIterator(), Iterator<MutableCell> {
+                    override fun next(): MutableCell = nextCell()
+                }
+        }.also { _cells = it }
 
-    override fun isValidAddress(row: Int, column: Int): Boolean =
-        isValidLine(row, column, totalRowCount) &&
-                isValidLine(column, row, totalColumnCount)
+    @kotlin.concurrent.Volatile
+    private var _cells: Set<Grid.Cell>? = null
 
-    override fun findAddress(row: Int, column: Int): Grid.Address? =
-        if (isValidAddress(row, column)) addresses[row][column] else null
+    final override val addresses: Set<Grid.Address>
+        get() = _addresses ?: object : AbstractSet<Grid.Address>() {
+            override val size: Int get() = this@MutableGrid.size
+            override fun iterator(): Iterator<Grid.Address> =
+                object : MutableGridIterator(), Iterator<Grid.Address> {
+                    override fun next(): Grid.Address = nextCell().address
+                }
+        }.also { _addresses = it }
+
+    @kotlin.concurrent.Volatile
+    private var _addresses: Set<Grid.Address>? = null
+
+    final override val states: Collection<Grid.State>
+        get() = _states ?: object : AbstractCollection<Grid.State>() {
+            override val size: Int get() = this@MutableGrid.size
+            override fun iterator(): Iterator<Grid.State> =
+                object : MutableGridIterator(), Iterator<Grid.State> {
+                    override fun next(): Grid.State = nextCell().state
+                }
+        }.also { _states = it }
+
+    @kotlin.concurrent.Volatile
+    private var _states: Collection<Grid.State>? = null
+
+    private val minimumIndex = if (enableEdgeLines) -1 else 0
+
+    private val rows: Array<Row> = Array(totalRowCount) { index ->
+        val row = minimumIndex + index
+        val isInset = isLineInset(row)
+        val start = crossStartIndex(isInset)
+        val size = crossCount(isInset, totalColumnCount)
+        Row(row, start, size, init)
+    }
+
+    private fun arrayRow(row: Int) = rows[row - minimumIndex]
+
+    final override fun get(address: Grid.Address): Grid.State =
+        get(address.row, address.column)
+
+    final override fun get(row: Int, column: Int): Grid.State {
+        checkAddress(row, column)
+        return arrayRow(row)[column]
+    }
+
+    /**
+     * The [Address][Grid.Address]-indexed set operator for [MutableGrid].
+     *
+     * Invalid addresses will result in Exceptions. See [isValidAddress].
+     */
+    operator fun set(address: Grid.Address, state: Grid.State) {
+        set(address.row, address.column, state)
+    }
+
+    /**
+     * The Int-indexed set operator for [MutableGrid].
+     *
+     * Invalid addresses will result in Exceptions. See [isValidAddress].
+     */
+    operator fun set(row: Int, column: Int, state: Grid.State) {
+        checkAddress(row, column)
+        arrayRow(row)[column] = state
+    }
+
+    final override fun findAddress(row: Int, column: Int): Grid.Address? =
+        when {
+            isValidAddress(row, column) -> arrayRow(row).address(column)
+            else -> null
+        }
+
+    override fun copy(address: Grid.Address, change: Grid.State): MutableGrid {
+        checkAddress(address.row, address.column)
+        return MutableGrid(
+            rowCount,
+            columnCount,
+            insetEvenLines,
+            enableEdgeLines
+        ) { initAddress ->
+            when (initAddress) {
+                address -> change
+                else -> this[initAddress]
+            }
+        }
+    }
 
     override fun copy(changes: Map<Grid.Address, Grid.State>): MutableGrid {
-        var statesCopy: States?
-        if (changes.isEmpty()) {
-            statesCopy = states.copyOf()
-        } else {
-            statesCopy = null
-            changes.forEach { (address, state) ->
-                checkAddress(address.row, address.column)
-                if (this[address] != state) {
-                    val copy = statesCopy
-                        ?: states.copyOf().also { statesCopy = it }
-                    copy[address] = state
-                }
-            }
+        changes.keys.forEach { address ->
+            checkAddress(address.row, address.column)
         }
-        return when {
-            statesCopy != null -> MutableGrid(
-                rowCount,
-                columnCount,
-                insetEvenLines,
-                enableEdgeLines,
-                null,
-                addresses,
-                statesCopy
-            )
-
-            else -> this
+        return MutableGrid(
+            rowCount,
+            columnCount,
+            insetEvenLines,
+            enableEdgeLines
+        ) { initAddress ->
+            changes[initAddress] ?: this[initAddress]
         }
     }
 
-    override fun copy(
-        address: Grid.Address,
-        change: Grid.State
-    ): MutableGrid {
-        checkAddress(address.row, address.column)
-        return when {
-            this[address] != change -> {
-                val statesCopy = states.copyOf()
-                statesCopy[address] = change
-                MutableGrid(
-                    rowCount,
-                    columnCount,
-                    insetEvenLines,
-                    enableEdgeLines,
-                    null,
-                    addresses,
-                    statesCopy
-                )
-            }
-
-            else -> this
-        }
+    final override fun fastForEach(action: (Grid.Address, Grid.State) -> Unit) {
+        for (row in rows) for (cell in row) action(cell.address, cell.state)
     }
 
-    override fun forEach(action: (Grid.Address, Grid.State) -> Unit) {
-        addresses.forEach { address -> action(address, states[address]) }
-    }
+    final override fun isLineInset(index: Int): Boolean =
+        insetEvenLines == (index % 2 == 0)
+
+    final override fun isValidAddress(row: Int, column: Int): Boolean =
+        isValidLine(row, column, totalRowCount) &&
+                isValidLine(column, row, totalColumnCount)
 
     private fun isValidLine(
         line: Int,
@@ -180,12 +211,12 @@ class MutableGrid private constructor(
         return index < crossCount(isCrossInset, totalCount)
     }
 
-    internal fun crossStartIndex(isInset: Boolean) = when {
+    private fun crossStartIndex(isInset: Boolean) = when {
         isInset -> if (enableEdgeLines) -1 else 1
         else -> 0
     }
 
-    internal fun crossCount(
+    private fun crossCount(
         isInset: Boolean,
         totalCount: Int
     ) = if (isInset == enableEdgeLines) {
@@ -194,156 +225,55 @@ class MutableGrid private constructor(
         totalCount.smallHalf
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as MutableGrid
-        if (rowCount != other.rowCount) return false
-        if (columnCount != other.columnCount) return false
-        if (insetEvenLines != other.insetEvenLines) return false
-        if (enableEdgeLines != other.enableEdgeLines) return false
-        return states.contentEquals(other.states)
-    }
-
-    override fun hashCode(): Int {
-        var result = rowCount
-        result = 31 * result + columnCount
-        result = 31 * result + insetEvenLines.hashCode()
-        result = 31 * result + enableEdgeLines.hashCode()
-        result = 31 * result + states.contentHashCode()
-        return result
-    }
-
     override fun toString(): String =
         "MutableGrid($rowCount,$columnCount,$insetEvenLines,$enableEdgeLines)"
-}
-
-private class Addresses(grid: MutableGrid) : Iterable<Grid.Address> {
-
-    var size: Int = 0
-        private set
-
-    private val minimumIndex = if (grid.enableEdgeLines) -1 else 0
-
-    private val rows = Array(grid.totalRowCount) { r ->
-        val row = minimumIndex + r
-        val isInset = grid.isLineInset(row)
-        val start = grid.crossStartIndex(isInset)
-        val size = grid.crossCount(isInset, grid.totalColumnCount)
-        this@Addresses.size += size
-        Row(start, size) { column -> Grid.Address(row, column) }
-    }
-
-    operator fun get(row: Int) = rows[row - minimumIndex]
-
-    override fun iterator(): Iterator<Grid.Address> =
-        GridIterator(rows.iterator())
-
-    inner class Row(
-        private val start: Int,
-        size: Int,
-        init: (Int) -> Grid.Address
-    ) : Iterable<Grid.Address> {
-
-        private val addresses = Array(size) { c -> init(start + 2 * c) }
-
-        operator fun get(column: Int) = addresses[(column - start) / 2]
-
-        override fun iterator() = addresses.iterator()
-    }
-}
-
-private class States private constructor(
-    private val grid: MutableGrid,
-    initial: Map<Grid.Address, Grid.State>?,
-    rows: Array<Row>?
-) {
-    constructor(
-        grid: MutableGrid,
-        initial: Map<Grid.Address, Grid.State>?
-    ) : this(grid, initial, null)
-
-    var size: Int = 0
-        private set
-
-    private val minimumIndex = if (grid.enableEdgeLines) -1 else 0
-
-    private val rows: Array<Row> = rows ?: with(grid) {
-        val newRows = Array(totalRowCount) { index ->
-            val row = minimumIndex + index
-            val isInset = isLineInset(row)
-            val start = crossStartIndex(isInset)
-            val size = crossCount(isInset, totalColumnCount)
-            this@States.size += size
-            Row(start, size)
-        }
-        initial?.forEach { (address, state) ->
-            if (isValidAddress(address.row, address.column)) {
-                newRows[address.row][address.column] = state
-            }
-        }
-        newRows
-    }
-
-    operator fun get(address: Grid.Address): Grid.State =
-        rows[address.row - minimumIndex][address.column]
-
-    operator fun get(row: Int, column: Int): Grid.State =
-        rows[row - minimumIndex][column]
-
-    operator fun set(address: Grid.Address, state: Grid.State) {
-        rows[address.row - minimumIndex][address.column] = state
-    }
-
-    operator fun set(row: Int, column: Int, state: Grid.State) {
-        rows[row - minimumIndex][column] = state
-    }
-
-    fun contentEquals(other: States) = rows.contentEquals(other.rows)
-
-    fun contentHashCode() = rows.contentHashCode()
-
-    fun copyOf(): States {
-        val rowsCopy = Array(grid.totalRowCount) { rows[it].copyOf() }
-        return States(grid, null, rowsCopy).also { it.size = this@States.size }
-    }
 
     private inner class Row(
-        val startIndex: Int,
-        val size: Int,
-        cells: Array<Grid.State>?
-    ) {
-        constructor(
-            startIndex: Int,
-            size: Int,
-        ) : this(startIndex, size, null)
+        private val rowIndex: Int,
+        private val startIndex: Int,
+        size: Int,
+        init: (Grid.Address) -> Grid.State?
+    ) : Iterable<MutableCell> {
 
-        private val cells = cells ?: Array(size) { Grid.State.Default }
-
-        operator fun get(index: Int) = cells[adjustedIndex(index)]
-
-        operator fun set(index: Int, state: Grid.State) {
-            cells[adjustedIndex(index)] = state
+        private val cells: Array<MutableCell> = Array(size) { column ->
+            val address = Grid.Address(rowIndex, 2 * column + startIndex)
+            createMutableCell(address, init(address) ?: Grid.State.Default)
         }
 
-        private fun adjustedIndex(index: Int) = (index - startIndex) / 2
+        private fun arrayCell(column: Int) = cells[(column - startIndex) / 2]
 
-        fun copyOf() = Row(startIndex, size, cells.copyOf())
+        operator fun get(column: Int): Grid.State = arrayCell(column).state
 
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-            if (other !is Row) return false
-            if (size != other.size) return false
-            if (startIndex != other.startIndex) return false
-            return cells.contentEquals(other.cells)
+        operator fun set(column: Int, state: Grid.State) {
+            arrayCell(column).state = state
         }
 
-        override fun hashCode(): Int {
-            var result = size
-            result = 31 * result + startIndex
-            result = 31 * result + cells.contentHashCode()
-            return result
+        fun address(column: Int): Grid.Address = arrayCell(column).address
+
+        override fun iterator(): Iterator<MutableCell> = cells.iterator()
+    }
+
+    private abstract inner class MutableGridIterator {
+
+        private val major: Iterator<Iterable<MutableCell>> = rows.iterator()
+
+        private var minor: Iterator<MutableCell>? = nextIterator()
+
+        private fun nextIterator(): Iterator<MutableCell>? {
+            while (major.hasNext()) {
+                val nextIterator = major.next().iterator()
+                if (nextIterator.hasNext()) return nextIterator
+            }
+            return null
+        }
+
+        fun hasNext() = minor?.hasNext() == true
+
+        fun nextCell(): MutableCell {
+            val iterator = minor ?: throw NoSuchElementException()
+            val nextValue = iterator.next()
+            if (!iterator.hasNext()) minor = nextIterator()
+            return nextValue
         }
     }
 }

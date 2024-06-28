@@ -89,6 +89,13 @@ class HexGridDrawable(grid: Grid? = null) : Drawable() {
     var selectColor: Int by invalidating(gridUi::selectColor)
 
     /**
+     * Color of the cells' indices, if shown.
+     */
+    @get:ColorInt
+    @setparam:ColorInt
+    var indexColor: Int by invalidating(gridUi::indexColor)
+
+    /**
      * Whether to show each cell's row index.
      */
     var showRowIndices: Boolean by invalidating(gridUi::showRowIndices)

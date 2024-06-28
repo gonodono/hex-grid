@@ -60,26 +60,26 @@ class HexagonDrawable(isHorizontal: Boolean = true) : Drawable() {
         }
         val halfMinor = minor / 2F
 
-        val coordinatePairs = arrayOf(
-            floatArrayOf(0F, halfMinor),
-            floatArrayOf(quarterMajor, 0F),
-            floatArrayOf(3 * quarterMajor, 0F),
-            floatArrayOf(major, halfMinor),
-            floatArrayOf(3 * quarterMajor, minor),
-            floatArrayOf(quarterMajor, minor)
-        )
-
-        val path = hexagon.apply { rewind() }
-        coordinatePairs.forEachIndexed { index, (c1, c2) ->
-            if (isHorizontal) when (index) {
-                0 -> path.moveTo(c1, c2)
-                else -> path.lineTo(c1, c2)
-            } else when (index) {
-                0 -> path.moveTo(c2, c1)
-                else -> path.lineTo(c2, c1)
+        with(hexagon) {
+            rewind()
+            if (isHorizontal) {
+                moveTo(0F, halfMinor)
+                lineTo(quarterMajor, 0F)
+                lineTo(3 * quarterMajor, 0F)
+                lineTo(major, halfMinor)
+                lineTo(3 * quarterMajor, minor)
+                lineTo(quarterMajor, minor)
+                lineTo(0F, halfMinor)
+            } else {
+                moveTo(halfMinor, 0F)
+                lineTo(0F, quarterMajor)
+                lineTo(0F, 3 * quarterMajor)
+                lineTo(halfMinor, major)
+                lineTo(minor, 3 * quarterMajor)
+                lineTo(minor, quarterMajor)
+                lineTo(halfMinor, 0F)
             }
         }
-        path.close()
     }
 
     /**

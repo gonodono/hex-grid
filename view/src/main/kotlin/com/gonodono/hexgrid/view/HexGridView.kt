@@ -26,6 +26,7 @@ import com.gonodono.hexgrid.data.HexOrientation
 import com.gonodono.hexgrid.data.MutableGrid
 import com.gonodono.hexgrid.view.HexGridView.OnClickListener
 import com.gonodono.hexgrid.view.HexGridView.ViewProvider
+import kotlin.collections.set
 import kotlin.reflect.KMutableProperty0
 
 /**
@@ -122,7 +123,7 @@ class HexGridView @JvmOverloads constructor(
                     getBoolean(R.styleable.HexGridView_insetEvenLines, false),
                     getBoolean(R.styleable.HexGridView_enableEdgeLines, false)
                 )
-                val shown = getInt(R.styleable.HexGridView_cellIndicesShown, 0)
+                val shown = getInt(R.styleable.HexGridView_cellShownIndices, 0)
                 gridUi.apply {
                     this.grid = grid
                     layoutSpecs = LayoutSpecs(
@@ -151,6 +152,10 @@ class HexGridView @JvmOverloads constructor(
                     selectColor = getColor(
                         R.styleable.HexGridView_cellSelectColor,
                         Color.GRAY
+                    )
+                    indexColor = getColor(
+                        R.styleable.HexGridView_cellShownIndices,
+                        strokeColor
                     )
                     showRowIndices = shown and FLAG_ROWS != 0
                     showColumnIndices = shown and FLAG_COLUMNS != 0
@@ -237,6 +242,13 @@ class HexGridView @JvmOverloads constructor(
     @get:ColorInt
     @setparam:ColorInt
     var selectColor: Int by invalidating(gridUi::selectColor)
+
+    /**
+     * Color of the cells' indices, if shown.
+     */
+    @get:ColorInt
+    @setparam:ColorInt
+    var indexColor: Int by invalidating(gridUi::indexColor)
 
     /**
      * Whether to show each cell's row index.
@@ -392,7 +404,7 @@ class HexGridView @JvmOverloads constructor(
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         views.values.removeAll { view -> view == null || view.parent != this }
         viewProvider?.let { provider ->
-            grid.forEach { address, state ->
+            grid.fastForEach { address, state ->
                 val next = provider.getView(address, views[address])
                 val nextParams = next?.layoutParams
                 val params = when {

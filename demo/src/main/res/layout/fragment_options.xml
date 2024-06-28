@@ -79,6 +79,14 @@
 
         </RadioGroup>
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@drawable/divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/group_framework" />
+
         <TextView
             android:id="@+id/label_rows"
             android:layout_width="wrap_content"
@@ -147,7 +155,7 @@
             android:checked="true"
             app:layout_constraintBottom_toTopOf="@id/switch_enable_edge_lines"
             app:layout_constraintEnd_toStartOf="@id/vertical"
-            app:layout_constraintTop_toBottomOf="@id/edit_rows" />
+            app:layout_constraintTop_toBottomOf="@id/edit_columns" />
 
         <TextView
             android:id="@+id/label_enable_edge_cells"
@@ -273,10 +281,24 @@
             android:paddingEnd="10dp"
             android:text="Select color"
             android:textAllCaps="false"
-            app:layout_constraintBottom_toTopOf="@id/check_show_row_indices"
+            app:layout_constraintBottom_toTopOf="@id/button_index_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/vertical"
             app:layout_constraintTop_toBottomOf="@id/button_fill_color"
+            tools:ignore="RtlSymmetry" />
+
+        <Button
+            android:id="@+id/button_index_color"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/color_swatch"
+            android:paddingEnd="10dp"
+            android:text="Index color"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toTopOf="@id/check_show_row_indices"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/vertical"
+            app:layout_constraintTop_toBottomOf="@id/button_select_color"
             tools:ignore="RtlSymmetry" />
 
         <CheckBox
@@ -287,7 +309,7 @@
             app:layout_constraintBottom_toTopOf="@id/check_show_column_indices"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/vertical"
-            app:layout_constraintTop_toBottomOf="@id/button_select_color" />
+            app:layout_constraintTop_toBottomOf="@id/button_index_color" />
 
         <CheckBox
             android:id="@+id/check_show_column_indices"

@@ -39,6 +39,7 @@ android {
 }
 
 dependencies {
+
     implementation(project(":view"))
     implementation(project(":compose"))
 

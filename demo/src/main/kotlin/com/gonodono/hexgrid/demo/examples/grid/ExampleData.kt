@@ -7,7 +7,7 @@ import com.gonodono.hexgrid.demo.examples.internal.HexGridCalculator.hexSizeForH
 import com.gonodono.hexgrid.demo.examples.internal.HexGridCalculator.lineCountForHexEdge
 import kotlin.math.roundToInt
 
-internal data class GridData(
+internal data class ExampleData(
     val rowCount: Int,
     val columnCount: Int,
     val hexWidth: Float,
@@ -15,26 +15,28 @@ internal data class GridData(
     val radius: Int,
 )
 
-internal enum class FitMode { FitColumns, FitRows, FitHex }
-
-internal fun calculateGridData(
+internal fun calculateExampleData(
     fitMode: FitMode,
     isHorizontal: Boolean,
     availableWidth: Int,
     availableHeight: Int,
     marginDp: Int,
     density: Float
-): GridData {
+): ExampleData {
     val margin = marginDp * density
 
     val rowCount: Int
     val columnCount: Int
     val hexEdge: Float
     when (fitMode) {
-        FitMode.FitHex -> {
+        // This Example mode fits "natural" rows and columns – i.e., lines with
+        // contiguous cells – so the demo grid might look like another line
+        // of hexagons can be squeezed in on one side, but that directions'
+        // lines are the wonky ones, and another full natural line won't fit.
+        is FitMode.FitHex -> {
             // This can be figured from width/height, if you need
             // to use those instead. This is just for the example.
-            hexEdge = HEX_EDGE_DP * density
+            hexEdge = fitMode.side * density
             columnCount = lineCountForHexEdge(
                 hexEdge = hexEdge,
                 available = availableWidth.toFloat(),
@@ -76,11 +78,9 @@ internal fun calculateGridData(
     val shortSide = if (isHorizontal) hexHeight else hexWidth
     val radius = (shortSide + margin).roundToInt()
 
-    return GridData(rowCount, columnCount, hexWidth, hexHeight, radius)
+    return ExampleData(rowCount, columnCount, hexWidth, hexHeight, radius)
 }
 
 private const val ROW_COUNT = 4
 
 private const val COLUMN_COUNT = 5
-
-private const val HEX_EDGE_DP = 30

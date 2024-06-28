@@ -24,7 +24,8 @@
         <attr name="cellStrokeColor" format="color" />
         <attr name="cellFillColor" format="color" />
         <attr name="cellSelectColor" format="color" />
-        <attr name="cellIndicesShown" format="flags">
+        <attr name="cellIndexColor" format="color" />
+        <attr name="cellShownIndices" format="flags">
             <flag name="none" value="0" />
             <flag name="rows" value="1" />
             <flag name="columns" value="2" />

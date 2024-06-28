@@ -1,8 +1,17 @@
 package com.gonodono.hexgrid.data
 
 /**
- * Provides a scope in which to build a Map<Grid.Address, Grid.State> using
- * convenience functions.
+ * Provides a scope in which to build a `Map<Grid.Address, Grid.State>` using
+ * convenience functions. For example:
+ *
+ * ```kotlin
+ * val grid = MutableGrid(
+ *     rowCount = 5,
+ *     columnCount = 5,
+ *     insetEvenLines = true,
+ *     initial = buildStateMap { select(at(2, 1), at(2, 3)) }
+ * )
+ * ```
  *
  * The command functions in [StateMapBuilderScope] are cooperative; i.e., you
  * can both [select][StateMapBuilderScope.select] and

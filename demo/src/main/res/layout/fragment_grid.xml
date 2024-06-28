@@ -100,6 +100,39 @@
         android:layout_height="1dp"
         android:background="@drawable/divider" />
 
+    <LinearLayout
+        android:id="@+id/layout_side"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp">
+
+        <TextView
+            android:id="@+id/label_hex_side"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:labelFor="@id/slider_hex_side"
+            android:text="Hex side:" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/slider_hex_side"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:layout_weight="1"
+            android:contentDescription="Hex side length"
+            android:value="40"
+            android:valueFrom="20"
+            android:valueTo="60" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/divider" />
+
     <RadioGroup
         android:id="@+id/group_framework"
         android:layout_width="wrap_content"

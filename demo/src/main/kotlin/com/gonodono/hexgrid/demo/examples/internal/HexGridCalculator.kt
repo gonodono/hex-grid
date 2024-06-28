@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package com.gonodono.hexgrid.demo.examples.internal
 
 import android.util.SizeF
@@ -104,6 +102,7 @@ internal object HexGridCalculator {
      *
      * I don't know that you'll ever need this; it's included mainly as info.
      */
+    @Suppress("unused")
     fun hexMajorForHexEdge(hexEdge: Float): Float = 2 * hexEdge
 
     /**
@@ -112,6 +111,7 @@ internal object HexGridCalculator {
      *
      * I don't know that you'll ever need this; it's included mainly as info.
      */
+    @Suppress("unused")
     fun hexMinorForHexEdge(hexEdge: Float): Float = sqrt(3F) * hexEdge
 
     /**

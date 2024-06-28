@@ -9,7 +9,7 @@ fun Grid.Address.isAt(row: Int, column: Int): Boolean =
 /**
  * Updates the [Grid.State] at the given [Grid.Address].
  *
- * Invalid Addresses will result in Exceptions. See [Grid.isValidAddress].
+ * Invalid addresses will result in Exceptions. See [Grid.isValidAddress].
  */
 fun MutableGrid.change(
     address: Grid.Address,
@@ -22,7 +22,7 @@ fun MutableGrid.change(
 /**
  * Toggles the [Grid.State.isSelected] value at the given [Grid.Address].
  *
- * Invalid Addresses will result in Exceptions. See [Grid.isValidAddress].
+ * Invalid addresses will result in Exceptions. See [Grid.isValidAddress].
  */
 fun MutableGrid.toggle(address: Grid.Address) {
     this.change(address, isSelected = !this[address].isSelected)
@@ -34,7 +34,7 @@ fun MutableGrid.toggle(address: Grid.Address) {
  *
  * If the State does not change, the same Grid instance is returned.
  *
- * Invalid Addresses will result in Exceptions. See [Grid.isValidAddress].
+ * Invalid addresses will result in Exceptions. See [Grid.isValidAddress].
  */
 inline fun <reified T : Grid> T.changed(
     address: Grid.Address,
@@ -46,7 +46,7 @@ inline fun <reified T : Grid> T.changed(
  * Returns a modified copy of the [Grid] with the [Grid.State.isSelected] value
  * toggled at the given [Grid.Address].
  *
- * Invalid Addresses will result in Exceptions. See [Grid.isValidAddress].
+ * Invalid addresses will result in Exceptions. See [Grid.isValidAddress].
  */
 inline fun <reified T : Grid> T.toggled(address: Grid.Address): T =
     this.changed(address, isSelected = !this[address].isSelected)

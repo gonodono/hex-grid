@@ -22,7 +22,7 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val ui = FragmentGridBinding.bind(view).also { ui = it }
 
-        fitMode = mutableStateOf(fitMode())
+        fitMode = mutableStateOf(configureFitMode())
         isHorizontal = mutableStateOf(ui.radioHorizontal.isChecked)
 
         val size = resources.getDimension(R.dimen.label_size)
@@ -35,6 +35,7 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
                 else -> 0
             }
         }
+        ui.sliderHexSide.addOnChangeListener { _, _, _ -> hexGrid() }
         ui.groupOrientation.setOnCheckedChangeListener { _, _ -> hexGrid() }
         ui.groupFitMode.setOnCheckedChangeListener { _, _ -> hexGrid() }
         ui.constraintContainer.doOnSizeChanges { hexGrid() }
@@ -48,18 +49,24 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
     private fun hexGrid() = with(ui) {
         // The target size is coming from the container, so it's passed in.
         constraintLayout.hexGrid(
-            fitMode(),
+            configureFitMode(),
             radioHorizontal.isChecked,
             with(constraintContainer) { width - paddingLeft - paddingRight },
             with(constraintContainer) { height - paddingTop - paddingBottom },
         )
-        fitMode.value = fitMode()
+        fitMode.value = configureFitMode()
         isHorizontal.value = radioHorizontal.isChecked
     }
 
-    private fun fitMode() = when {
-        ui.radioFitHex.isChecked -> FitMode.FitHex
-        ui.radioFitRows.isChecked -> FitMode.FitRows
-        else -> FitMode.FitColumns
+    private fun configureFitMode(): FitMode {
+        val enableSlider = ui.radioFitHex.isChecked
+        ui.labelHexSide.isEnabled = enableSlider
+        ui.sliderHexSide.isEnabled = enableSlider
+        ui.layoutSide.alpha = if (enableSlider) 1F else 0.5F
+        return when {
+            enableSlider -> FitMode.FitHex(ui.sliderHexSide.value)
+            ui.radioFitRows.isChecked -> FitMode.FitRows
+            else -> FitMode.FitColumns
+        }
     }
 }
