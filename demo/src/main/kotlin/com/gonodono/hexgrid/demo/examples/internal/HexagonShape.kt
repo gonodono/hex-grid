@@ -16,15 +16,15 @@ import androidx.compose.ui.unit.LayoutDirection
 sealed interface HexagonShape : Shape
 
 /**
- * Creates and remembers a sized [HexagonShape] used for [Hexagon]s.
+ * Creates and remembers a sized [HexagonShape] for use with [Hexagon]s.
  */
 @Composable
 fun rememberHexagonShape(isHorizontal: Boolean, size: Size): HexagonShape =
     remember(isHorizontal, size) { SizedHexagonShape(isHorizontal, size) }
 
 /**
- * A [HexagonShape] used for the [Hexagon] Composable that pre-computes its
- * [Outline].
+ * A [HexagonShape] that pre-computes its [Outline], for use with the [Hexagon]
+ * Composable.
  */
 @Immutable
 private class SizedHexagonShape(
@@ -75,8 +75,13 @@ private class SizedHexagonShape(
 }
 
 /**
- * A general-purpose [HexagonShape] with horizontal orientation.
+ * A general-purpose [HexagonShape] with a major axis aligned horizontally.
+ *
+ * This does _not_ enforce a regular hexagon. The shape is defined by vertices
+ * that are placed along the bounds with the same proportional spacing as a
+ * regular hexagon, but the bounds' dimensions are not constrained in any way.
  */
+@Suppress("unused")
 data object HorizontalHexagonShape : HexagonShape {
 
     override fun createOutline(
@@ -102,8 +107,13 @@ data object HorizontalHexagonShape : HexagonShape {
 }
 
 /**
- * A general-purpose [HexagonShape] with vertical orientation.
+ * A general-purpose [HexagonShape] with a major axis aligned vertically.
+ *
+ * This does _not_ enforce a regular hexagon. The shape is defined by vertices
+ * that are placed along the bounds with the same proportional spacing as a
+ * regular hexagon, but the bounds' dimensions are not constrained in any way.
  */
+@Suppress("unused")
 data object VerticalHexagonShape : HexagonShape {
 
     override fun createOutline(

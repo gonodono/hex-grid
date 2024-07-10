@@ -14,7 +14,7 @@ import android.view.View
  *
  *     <com.gonodono.hexgrid.view.CellStateView
  *         …
- *         app:layout_cellRowAndColumn="1,1"
+ *         app:layout_rowAndColumn="1,1"
  *         app:layout_cellIsSelected="true" />
  *
  * </com.gonodono.hexgrid.view.HexGridView>

@@ -64,32 +64,6 @@ interface Grid {
     val size: Int
 
     /**
-     * A [Set] view of the [Grid]'s mappings.
-     *
-     * Analogous to [Map]'s [entries][Map.entries].
-     */
-    val cells: Set<Cell>
-
-    /**
-     * A [Set] view of the [Grid]'s [Address]es.
-     *
-     * Analogous to [Map]'s [keys][Map.keys].
-     */
-    val addresses: Set<Address>
-
-    /**
-     * A [Collection] view of the [Grid]'s [State]s.
-     *
-     * Analogous to [Map]'s [values][Map.values].
-     */
-    val states: Collection<State>
-
-    /**
-     * Provides faster iteration than the standard views by skipping [Iterator]s.
-     */
-    fun fastForEach(action: (Address, State) -> Unit)
-
-    /**
      * The [Address]-indexed get operator for [Grid].
      *
      * Invalid addresses will result in Exceptions. See [isValidAddress].
@@ -127,33 +101,55 @@ interface Grid {
     fun findAddress(row: Int, column: Int): Address?
 
     /**
-     * Returns a new, modified instance of this [Grid] if [changes] actually
-     * causes any changes.
+     * A [Set] view of the [Grid]'s mappings.
      *
-     * If the map is non-empty and causes no changes at all, the same Grid
-     * instance is returned. If the map is empty, an exact copy is returned as a
-     * new instance.
-     *
-     * Invalid addresses will result in Exceptions. See [isValidAddress].
+     * Analogous to [Map]'s [entries][Map.entries].
      */
-    fun copy(changes: Map<Address, State> = emptyMap()): Grid
+    val cells: Set<Cell>
+
+    /**
+     * A [Set] view of the [Grid]'s [Address]es.
+     *
+     * Analogous to [Map]'s [keys][Map.keys].
+     */
+    val addresses: Set<Address>
+
+    /**
+     * A [Collection] view of the [Grid]'s [State]s.
+     *
+     * Analogous to [Map]'s [values][Map.values].
+     */
+    val states: Collection<State>
+
+    /**
+     * Provides faster iteration than the standard views by skipping [Iterator]s.
+     */
+    fun forEach(action: (Address, State) -> Unit)
 
     /**
      * Returns a modified copy of this [Grid] if [change] actually causes a
-     * change.
-     *
-     * If it does not cause a change, the same instance is returned.
+     * change. If it does not cause a change, the same Grid instance is
+     * returned.
      *
      * Invalid addresses will result in Exceptions. See [isValidAddress].
      */
     fun copy(address: Address, change: State): Grid
 
     /**
+     * Returns a modified copy of this [Grid] if [changes] actually causes any
+     * changes. If the Map does not cause any changes, the same Grid instance is
+     * returned.
+     *
+     * Invalid addresses will result in Exceptions. See [isValidAddress].
+     */
+    fun copy(changes: Map<Address, State>): Grid
+
+    /**
      * The index structure for [Grid].
      */
     data class Address(val row: Int, val column: Int) {
 
-        override fun toString(): String = "Grid.Address($row,$column)"
+        override fun toString(): String = "Address($row,$column)"
 
         companion object {
             /**
@@ -170,7 +166,7 @@ interface Grid {
         val isVisible: Boolean = true,
         val isSelected: Boolean = false
     ) {
-        override fun toString(): String = "Grid.State(v%s,s%s)".format(
+        override fun toString(): String = "State(v%s,s%s)".format(
             if (isVisible) "+" else "-",
             if (isSelected) "+" else "-"
         )
@@ -183,58 +179,62 @@ interface Grid {
         }
     }
 
+    /**
+     * A [Grid]'s [Address]-[State] pair, analogous to [Map]'s
+     * [Entry][Map.Entry], with similar semantics.
+     *
+     * The mapping represented by this pair is guaranteed valid only for the
+     * duration of the current iteration, not counting any direct changes by the
+     * user in mutable implementations.
+     */
     interface Cell {
+
+        /**
+         * The [Cell]'s [Address]. This should always be completely immutable in
+         * any subclass.
+         */
         val address: Address
+
+        /**
+         * The [Cell]'s current [State].
+         */
         val state: State
+
         operator fun component1() = address
         operator fun component2() = state
     }
 }
 
 /**
- * An empty [Grid] instance for use as an initial value, a reset value, etc.
+ * Returns an empty, read-only [Grid] instance.
+ *
+ * The returned Grid's [get] functions throw Exceptions unconditionally.
  */
-val EmptyGrid: Grid = object : Grid {
+fun emptyGrid(): Grid = EmptyGrid
 
+/**
+ * An empty [Grid] instance for use as an initializer, a reset value, etc.
+ *
+ * This Grid's [get] functions throw Exceptions unconditionally.
+ */
+private data object EmptyGrid : Grid {
     override val rowCount: Int = 0
-
     override val columnCount: Int = 0
-
     override val insetEvenLines: Boolean = false
-
     override val enableEdgeLines: Boolean = false
-
     override val totalRowCount: Int = 0
-
     override val totalColumnCount: Int = 0
-
     override val size: Int = 0
-
-    override val cells: Set<Grid.Cell> = emptySet()
-
-    override val addresses: Set<Grid.Address> = emptySet()
-
-    override val states: Collection<Grid.State> = emptyList()
-
-    override fun get(address: Grid.Address): Grid.State {
-        throw NoSuchElementException()
-    }
-
-    override fun get(row: Int, column: Int): Grid.State {
-        throw NoSuchElementException()
-    }
-
+    override fun get(address: Grid.Address) = error("EmptyGrid is empty.")
+    override fun get(row: Int, column: Int) = error("EmptyGrid is empty.")
     override fun findAddress(row: Int, column: Int): Grid.Address? = null
-
-    override fun copy(changes: Map<Grid.Address, Grid.State>): Grid = this
-
+    override val cells: Set<Grid.Cell> = emptySet()
+    override val addresses: Set<Grid.Address> = emptySet()
+    override val states: Collection<Grid.State> = emptyList()
+    override fun forEach(action: (Grid.Address, Grid.State) -> Unit) {}
     override fun copy(address: Grid.Address, change: Grid.State): Grid = this
-
-    override fun fastForEach(action: (Grid.Address, Grid.State) -> Unit) {}
-
+    override fun copy(changes: Map<Grid.Address, Grid.State>): Grid = this
     override fun isLineInset(index: Int): Boolean = false
-
     override fun isValidAddress(row: Int, column: Int): Boolean = false
-
     override fun toString(): String = "EmptyGrid"
 }

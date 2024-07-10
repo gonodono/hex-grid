@@ -33,7 +33,7 @@ import androidx.annotation.ColorInt
  * [Shader][android.graphics.Shader] with the [Paint][android.graphics.Paint]
  * instead of a solid color.
  */
-open class HexDrawable(
+open class HexagonDrawable(
     private val hexGridView: HexGridView,
     @ColorInt fillColor: Int = Color.WHITE
 ) : Drawable() {

@@ -21,12 +21,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.gonodono.hexgrid.compose.HexGrid
 import com.gonodono.hexgrid.compose.HexGridDefaults
-import com.gonodono.hexgrid.compose.ShownIndices
 import com.gonodono.hexgrid.compose.toMutableStateGrid
 import com.gonodono.hexgrid.data.CrossMode
 import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
 import com.gonodono.hexgrid.data.HexOrientation
+import com.gonodono.hexgrid.data.Lines
 import com.gonodono.hexgrid.demo.R
 import com.gonodono.hexgrid.demo.databinding.FragmentOptionsBinding
 import com.gonodono.hexgrid.demo.internal.FlashDrawable
@@ -55,8 +55,6 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
             ui.buttonFillColor.setSwatchColor(fillColor)
             ui.buttonSelectColor.setSwatchColor(selectColor)
             ui.buttonIndexColor.setSwatchColor(indexColor)
-            ui.checkShowColumnIndices.isChecked = showColumnIndices
-            ui.checkShowRowIndices.isChecked = showRowIndices
             ui.drawableView.background = HexGridDrawable(grid).also { d ->
                 d.fitMode = fitMode
                 d.crossMode = crossMode
@@ -66,8 +64,6 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
                 d.fillColor = fillColor
                 d.selectColor = selectColor
                 d.indexColor = indexColor
-                d.showColumnIndices = showColumnIndices
-                d.showRowIndices = showRowIndices
             }
         }
 
@@ -141,11 +137,21 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         ui.buttonIndexColor.setOnClickListener {
             showColorDialog(model::indexColor, ui.buttonIndexColor)
         }
-        ui.checkShowRowIndices.setOnCheckedChangeListener { _, isChecked ->
-            model.showRowIndices = isChecked
+        fun updateCellIndices() {
+            val rows = ui.checkShowRowIndices.isChecked
+            val columns = ui.checkShowColumnIndices.isChecked
+            model.cellIndices = when {
+                rows && columns -> Lines.Both
+                rows -> Lines.Rows
+                columns -> Lines.Columns
+                else -> Lines.None
+            }
         }
-        ui.checkShowColumnIndices.setOnCheckedChangeListener { _, isChecked ->
-            model.showColumnIndices = isChecked
+        ui.checkShowRowIndices.setOnCheckedChangeListener { _, _ ->
+            updateCellIndices()
+        }
+        ui.checkShowColumnIndices.setOnCheckedChangeListener { _, _ ->
+            updateCellIndices()
         }
         ui.groupFramework.setOnCheckedChangeListener { _, checkedId ->
             ui.animator.displayedChild = when (checkedId) {
@@ -168,8 +174,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
                         fillColor = state.fillColor
                         selectColor = state.selectColor
                         indexColor = state.indexColor
-                        showColumnIndices = state.showColumnIndices
-                        showRowIndices = state.showRowIndices
+                        cellIndices = state.cellIndices
                     }
                     hexGridDrawable.apply {
                         grid = state.grid
@@ -181,8 +186,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
                         fillColor = state.fillColor
                         selectColor = state.selectColor
                         indexColor = state.indexColor
-                        showColumnIndices = state.showColumnIndices
-                        showRowIndices = state.showRowIndices
+                        cellIndices = state.cellIndices
                     }
                     val selected = state.grid.states.count { it.isSelected }
                     countLabel.info = "$selected/${state.grid.size}"
@@ -227,12 +231,7 @@ private fun GridHexGrid(
             ComposeColor(state.selectColor),
             ComposeColor(state.indexColor)
         ),
-        shownIndices = when {
-            state.showRowIndices && state.showColumnIndices -> ShownIndices.Both
-            state.showColumnIndices -> ShownIndices.Columns
-            state.showRowIndices -> ShownIndices.Rows
-            else -> ShownIndices.None
-        },
+        cellIndices = state.cellIndices,
         onGridTap = { model.toggleSelected(it) },
         onOutsideTap = onOutsideTap
     )

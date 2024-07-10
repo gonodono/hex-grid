@@ -9,7 +9,7 @@ package com.gonodono.hexgrid.data
  *     rowCount = 5,
  *     columnCount = 5,
  *     insetEvenLines = true,
- *     initial = buildStateMap { select(at(2, 1), at(2, 3)) }
+ *     initial = buildStateMap { select(at(2, 1)); hide(at(2, 3)) }
  * )
  * ```
  *

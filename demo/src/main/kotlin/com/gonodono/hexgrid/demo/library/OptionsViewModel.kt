@@ -7,6 +7,7 @@ import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
 import com.gonodono.hexgrid.data.HexOrientation
 import com.gonodono.hexgrid.data.MutableGrid
+import com.gonodono.hexgrid.data.Lines
 import com.gonodono.hexgrid.data.buildStateMap
 import com.gonodono.hexgrid.data.toggled
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -64,11 +65,8 @@ internal class OptionsViewModel : ViewModel() {
     var indexColor by changeState(DefaultGridState.indexColor) { state, value ->
         state.copy(indexColor = value)
     }
-    var showRowIndices by changeState(DefaultGridState.showRowIndices) { state, value ->
-        state.copy(showRowIndices = value)
-    }
-    var showColumnIndices by changeState(DefaultGridState.showColumnIndices) { state, value ->
-        state.copy(showColumnIndices = value)
+    var cellIndices by changeState(DefaultGridState.cellIndices) { state, value ->
+        state.copy(cellIndices = value)
     }
 
     private fun <T> changeGrid(
@@ -102,8 +100,7 @@ internal data class GridState(
     val fillColor: Int,
     val selectColor: Int,
     val indexColor: Int,
-    val showRowIndices: Boolean,
-    val showColumnIndices: Boolean
+    val cellIndices: Lines
 )
 
 internal val DefaultGridState = GridState(
@@ -121,8 +118,7 @@ internal val DefaultGridState = GridState(
     fillColor = Color.CYAN,
     selectColor = Color.MAGENTA,
     indexColor = Color.BLUE,
-    showRowIndices = false,
-    showColumnIndices = false
+    cellIndices = Lines.None
 )
 
 private fun MutableGrid.newGrid(

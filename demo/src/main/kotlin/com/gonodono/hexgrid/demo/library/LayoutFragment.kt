@@ -70,7 +70,7 @@ class LayoutFragment : Fragment(R.layout.fragment_layout) {
             }.also { crossMode = it }
         }
 
-        val mutableGrid = LayoutGrid.copy()
+        val mutableGrid = MutableGrid(LayoutGrid)
         ui.hexGrid.grid = mutableGrid
         ui.hexGrid.viewProvider = HexGridView.ViewProvider { address, current ->
             val item = when {

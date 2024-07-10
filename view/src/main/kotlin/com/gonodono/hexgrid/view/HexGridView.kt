@@ -10,6 +10,7 @@ import android.graphics.Rect
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
+import android.util.Size
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import com.gonodono.hexgrid.data.CrossMode
 import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
 import com.gonodono.hexgrid.data.HexOrientation
+import com.gonodono.hexgrid.data.Lines
 import com.gonodono.hexgrid.data.MutableGrid
 import com.gonodono.hexgrid.view.HexGridView.OnClickListener
 import com.gonodono.hexgrid.view.HexGridView.ViewProvider
@@ -41,7 +43,7 @@ import kotlin.reflect.KMutableProperty0
  *
  *     <Button
  *         …
- *         app:layout_cellRowAndColumn="1,1"
+ *         app:layout_rowAndColumn="1,1"
  *         app:layout_cellIsSelected="true" />
  *
  * </com.gonodono.hexgrid.view.HexGridView>
@@ -57,7 +59,7 @@ import kotlin.reflect.KMutableProperty0
  *
  * HexGridView offers its own [OnClickListener] interface and corresponding
  * property for click callbacks, and the drawn grid's cosmetic values are all
- * available as direct properties; e.g., [strokeColor] and [showRowIndices].
+ * available as direct properties; e.g., [strokeColor] and [cellIndices].
  *
  * A HexGridView's Grid is handled similarly to ListView's and
  * RecyclerView's data sets: if the user modifies the Grid, the HexGridView
@@ -114,16 +116,15 @@ class HexGridView @JvmOverloads constructor(
         with(context.obtainStyledAttributes(attrs, R.styleable.HexGridView)) {
             registerDebugData(context, attrs, this)
 
-            if (hasValue(R.styleable.HexGridView_gridRowCount) &&
-                hasValue(R.styleable.HexGridView_gridColumnCount)
+            if (hasValue(R.styleable.HexGridView_rowCount) &&
+                hasValue(R.styleable.HexGridView_columnCount)
             ) {
                 val grid = MutableGrid(
-                    getInt(R.styleable.HexGridView_gridRowCount, 0),
-                    getInt(R.styleable.HexGridView_gridColumnCount, 0),
+                    getInt(R.styleable.HexGridView_rowCount, 0),
+                    getInt(R.styleable.HexGridView_columnCount, 0),
                     getBoolean(R.styleable.HexGridView_insetEvenLines, false),
                     getBoolean(R.styleable.HexGridView_enableEdgeLines, false)
                 )
-                val shown = getInt(R.styleable.HexGridView_cellShownIndices, 0)
                 gridUi.apply {
                     this.grid = grid
                     layoutSpecs = LayoutSpecs(
@@ -137,28 +138,33 @@ class HexGridView @JvmOverloads constructor(
                             getInt(R.styleable.HexGridView_hexOrientation, 0)
                         ],
                         getDimension(
-                            R.styleable.HexGridView_cellStrokeWidth,
+                            R.styleable.HexGridView_strokeWidth,
                             0F
                         )
                     )
                     strokeColor = getColor(
-                        R.styleable.HexGridView_cellStrokeColor,
+                        R.styleable.HexGridView_strokeColor,
                         Color.BLACK
                     )
                     fillColor = getColor(
-                        R.styleable.HexGridView_cellFillColor,
+                        R.styleable.HexGridView_fillColor,
                         Color.TRANSPARENT
                     )
                     selectColor = getColor(
-                        R.styleable.HexGridView_cellSelectColor,
+                        R.styleable.HexGridView_selectColor,
                         Color.GRAY
                     )
                     indexColor = getColor(
-                        R.styleable.HexGridView_cellShownIndices,
+                        R.styleable.HexGridView_indexColor,
                         strokeColor
                     )
-                    showRowIndices = shown and FLAG_ROWS != 0
-                    showColumnIndices = shown and FLAG_COLUMNS != 0
+                    cellIndices =
+                        when (getInt(R.styleable.HexGridView_cellIndices, 0)) {
+                            1 -> Lines.Both
+                            2 -> Lines.Rows
+                            3 -> Lines.Columns
+                            else -> Lines.None
+                        }
                 }
             }
 
@@ -173,7 +179,7 @@ class HexGridView @JvmOverloads constructor(
      * The HexGridView's current [Grid], which defaults to an empty Grid.
      *
      * If the View has been inflated from an XML element specifying both
-     * app:gridRowCount and app:gridColumnCount, the Grid will be
+     * `app:rowCount` and `app:columnCount`, the Grid will be
      * initialized with the appropriate attribute values.
      *
      * Setting a new Grid instance with the same shape as the current one will
@@ -251,14 +257,9 @@ class HexGridView @JvmOverloads constructor(
     var indexColor: Int by invalidating(gridUi::indexColor)
 
     /**
-     * Whether to show each cell's row index.
+     * Design/debug option to show the cells' row and/or column.
      */
-    var showRowIndices: Boolean by invalidating(gridUi::showRowIndices)
-
-    /**
-     * Whether to show each cell's column index.
-     */
-    var showColumnIndices: Boolean by invalidating(gridUi::showColumnIndices)
+    var cellIndices: Lines by invalidating(gridUi::cellIndices)
 
     /**
      * The HexGridView's current [OnClickListener].
@@ -276,12 +277,12 @@ class HexGridView @JvmOverloads constructor(
         }
 
     /**
-     * A read-only Map of the current child Views.
+     * A [Map] of the current child [View]s.
      */
     val cellViews: Map<Grid.Address, View?> = views
 
     /**
-     * Modifies the passed View's [LayoutParams] to cause a [HexDrawable]
+     * Modifies the passed View's [LayoutParams] to cause a [HexagonDrawable]
      * background to be added or updated during layout. If [color] is
      * [Color.TRANSPARENT], the background is removed.
      *
@@ -308,7 +309,7 @@ class HexGridView @JvmOverloads constructor(
 
     /**
      * Modifies the passed View's [LayoutParams] to remove any
-     * [HexDrawable] background that may be present.
+     * [HexagonDrawable] background that may be present.
      *
      * See [applyHexBackground].
      */
@@ -397,14 +398,15 @@ class HexGridView @JvmOverloads constructor(
             paddingTop,
             paddingRight,
             paddingBottom
-        )
+        ).also { size = it }
         setMeasuredDimension(uiSize.width, uiSize.height)
     }
 
+    var size = Size(0, 0)
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         views.values.removeAll { view -> view == null || view.parent != this }
         viewProvider?.let { provider ->
-            grid.fastForEach { address, state ->
+            grid.forEach { address, state ->
                 val next = provider.getView(address, views[address])
                 val nextParams = next?.layoutParams
                 val params = when {
@@ -421,8 +423,8 @@ class HexGridView @JvmOverloads constructor(
         views.values.forEach { view ->
             val params = view?.layoutParams as? LayoutParams ?: return@forEach
             if (params.hexBackgroundColor != Color.TRANSPARENT) {
-                val background = view.background as? HexDrawable
-                    ?: generateHexDrawable().also { view.background = it }
+                val background = view.background as? HexagonDrawable
+                    ?: generateHexagonDrawable().also { view.background = it }
                 background.fillColor = params.hexBackgroundColor
             } else {
                 view.background = null
@@ -447,7 +449,7 @@ class HexGridView @JvmOverloads constructor(
         }
     }
 
-    private fun generateHexDrawable() = HexDrawable(this)
+    private fun generateHexagonDrawable() = HexagonDrawable(this)
 
     internal fun getHexagonPath(outPath: Path, bounds: Rect) {
         gridUi.getHexagonPath(outPath, bounds)
@@ -528,7 +530,7 @@ class HexGridView @JvmOverloads constructor(
             )
             parseRowAndColumn(
                 array.getString(
-                    R.styleable.HexGridView_Layout_layout_cellRowAndColumn
+                    R.styleable.HexGridView_Layout_layout_rowAndColumn
                 )
             )
             state = Grid.State(
@@ -610,11 +612,5 @@ private fun Grid.isDifferentShape(other: Grid): Boolean =
             columnCount != other.columnCount ||
             insetEvenLines != other.insetEvenLines ||
             enableEdgeLines != other.enableEdgeLines
-
-// These flags correspond to the indicesShown attr enum values.
-
-private const val FLAG_ROWS = 1
-
-private const val FLAG_COLUMNS = 2
 
 private const val TAG = "HexGridView"

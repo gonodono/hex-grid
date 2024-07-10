@@ -53,7 +53,7 @@ internal object HexGridCalculator {
         }
         return when {
             isMajor -> 2 * d / (3 * lineCount + 1)
-            else -> 2 / sqrt(3F) * d / (lineCount + 1)
+            else -> 2 / SQRT_3F * d / (lineCount + 1)
         }
     }
 
@@ -77,9 +77,8 @@ internal object HexGridCalculator {
             (num / den).toInt()
         }
         else -> {
-            val sqrt = sqrt(3F)
-            val num = sqrt * available + sqrt * margin - 3 * hexEdge
-            val den = sqrt * margin + 3 * hexEdge
+            val num = SQRT_3F * available + SQRT_3F * margin - 3 * hexEdge
+            val den = SQRT_3F * margin + 3 * hexEdge
             (num / den).toInt()
         }
     }
@@ -92,8 +91,8 @@ internal object HexGridCalculator {
         hexEdge: Float,
         isHorizontal: Boolean
     ): SizeF = when {
-        isHorizontal -> SizeF(2 * hexEdge, sqrt(3F) * hexEdge)
-        else -> SizeF(sqrt(3F) * hexEdge, 2 * hexEdge)
+        isHorizontal -> SizeF(2 * hexEdge, SQRT_3F * hexEdge)
+        else -> SizeF(SQRT_3F * hexEdge, 2 * hexEdge)
     }
 
     /**
@@ -112,7 +111,7 @@ internal object HexGridCalculator {
      * I don't know that you'll ever need this; it's included mainly as info.
      */
     @Suppress("unused")
-    fun hexMinorForHexEdge(hexEdge: Float): Float = sqrt(3F) * hexEdge
+    fun hexMinorForHexEdge(hexEdge: Float): Float = SQRT_3F * hexEdge
 
     /**
      * For the start-to-end and top-to-bottom build sequence used in the these
@@ -180,3 +179,5 @@ internal object HexGridCalculator {
 }
 
 private inline val Int.isEven: Boolean get() = this % 2 == 0
+
+private val SQRT_3F = sqrt(3F)

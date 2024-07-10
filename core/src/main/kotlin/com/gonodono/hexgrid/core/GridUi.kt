@@ -12,10 +12,11 @@ import android.util.Size
 import androidx.core.graphics.toRectF
 import androidx.core.graphics.withMatrix
 import com.gonodono.hexgrid.data.CrossMode
-import com.gonodono.hexgrid.data.EmptyGrid
 import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
 import com.gonodono.hexgrid.data.HexOrientation
+import com.gonodono.hexgrid.data.Lines
+import com.gonodono.hexgrid.data.emptyGrid
 import com.gonodono.hexgrid.data.isHorizontal
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -26,7 +27,9 @@ class GridUi {
 
     private val hexagon = Hexagon(DefaultLayoutSpecs.isHexHorizontal)
 
-    private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        textAlign = Paint.Align.CENTER
+    }
 
     private val measureData = MeasureData()
 
@@ -40,7 +43,9 @@ class GridUi {
 
     private val cellSize = PointF()
 
-    var grid: Grid = EmptyGrid
+    private var textOffsetY = 0F
+
+    var grid: Grid = emptyGrid()
         set(value) {
             if (field == value) return
             field = value
@@ -52,6 +57,7 @@ class GridUi {
             if (field == value) return
             field = value
             hexagon.isHorizontal = value.isHexHorizontal
+            paint.strokeWidth = value.strokeWidth
             calculate()
         }
 
@@ -63,9 +69,7 @@ class GridUi {
 
     var indexColor: Int = Color.BLACK
 
-    var showRowIndices: Boolean = false
-
-    var showColumnIndices: Boolean = false
+    var cellIndices: Lines = Lines.None
 
     fun calculateSize(
         hasBoundedWidth: Boolean,
@@ -121,7 +125,7 @@ class GridUi {
         val isFitMajor = isFitColumns == isHorizontal
 
         val lineThicknessMinor = layoutSpecs.strokeWidth.coerceAtLeast(1F)
-        val lineThicknessMajor = 2 / sqrt(3F) * lineThicknessMinor
+        val lineThicknessMajor = 2 / Sqrt3F * lineThicknessMinor
         val fitLineThickness: Float
         val crossLineThickness: Float
         if (isFitMajor) {
@@ -132,8 +136,11 @@ class GridUi {
             crossLineThickness = lineThicknessMajor
         }
 
-        val maxWidth = availableWidth - insetLeft - insetRight
-        val maxHeight = availableHeight - insetTop - insetBottom
+        val insetsHorizontal = insetLeft + insetRight
+        val insetsVertical = insetTop + insetBottom
+        val maxWidth = availableWidth - insetsHorizontal
+        val maxHeight = availableHeight - insetsVertical
+
         val fitCount: Int
         val crossCount: Int
         val fitDimension: Float
@@ -149,7 +156,7 @@ class GridUi {
 
         val hexagonSide = when {
             isFitMajor -> fitDimension * 2 / (3 * fitCount + 1)
-            else -> fitDimension * 2 / sqrt(3F) / (fitCount + 1)
+            else -> fitDimension * 2 / Sqrt3F / (fitCount + 1)
         }
         with(hexagon) {
             setSideLength(hexagonSide)
@@ -162,55 +169,55 @@ class GridUi {
             }
         }
         val crossDimension = when {
-            isFitMajor -> hexagonSide * sqrt(3F) / 2 * (crossCount + 1)
+            isFitMajor -> hexagonSide * Sqrt3F / 2 * (crossCount + 1)
             else -> hexagonSide * (3 * crossCount + 1) / 2
         }
 
-        val marginHorizontal: Float
-        val marginVertical: Float
+        val strokeInsetLeft: Float
+        val strokeInsetTop: Float
         val size = actualSize
         if (isFitColumns) {
-            marginHorizontal = fitLineThickness / 2
-            marginVertical = crossLineThickness / 2
+            strokeInsetLeft = fitLineThickness / 2
+            strokeInsetTop = crossLineThickness / 2
             size.set(
                 fitDimension + fitLineThickness,
-                crossDimension + crossLineThickness
+                crossDimension + crossLineThickness + insetsVertical
             )
         } else {
-            marginHorizontal = crossLineThickness / 2
-            marginVertical = fitLineThickness / 2
+            strokeInsetLeft = crossLineThickness / 2
+            strokeInsetTop = fitLineThickness / 2
             size.set(
-                crossDimension + crossLineThickness,
+                crossDimension + crossLineThickness + insetsHorizontal,
                 fitDimension + fitLineThickness
             )
         }
 
         with(drawMatrix) {
             reset()
-            var offsetX = insetLeft + marginHorizontal
-            var offsetY = insetTop + marginVertical
+            var offsetX = insetLeft + strokeInsetLeft
+            var offsetY = insetTop + strokeInsetTop
             if (!isWrapContent) when (layoutSpecs.crossMode) {
-
-                CrossMode.AlignStart -> {}  // no-op
-
                 CrossMode.AlignCenter -> {
                     offsetX += (maxWidth - size.x) / 2
                     offsetY += (maxHeight - size.y) / 2
                 }
-
                 CrossMode.AlignEnd -> {
                     offsetX += maxWidth - size.x
                     offsetY += maxHeight - size.y
                 }
-
                 CrossMode.ScaleToFit -> setScale(
                     maxWidth / size.x,
                     maxHeight / size.y
                 )
+                CrossMode.AlignStart -> {}  // no-op
             }
             preTranslate(offsetX, offsetY)
             invert(touchMatrix)
         }
+
+        val textSize = cellSize.y / 3
+        paint.textSize = textSize
+        textOffsetY = textSize / 3  // Cheap approximation.
     }
 
     fun getHexagonPath(outPath: Path, bounds: Rect) {
@@ -224,9 +231,8 @@ class GridUi {
     }
 
     private fun getCellToBoundsMatrix(bounds: Rect): Matrix {
-        val source = tmpBoundsF.apply {
-            set(0F, 0F, cellSize.x, cellSize.y)
-        }
+        val source = tmpBoundsF
+        source.set(0F, 0F, cellSize.x, cellSize.y)
         return tmpMatrix.apply {
             setRectToRect(
                 source,
@@ -243,17 +249,18 @@ class GridUi {
     ) {
         val insetX: Float
         val insetY: Float
-        if (layoutSpecs.hexOrientation.isHorizontal) {
-            insetX = 2 / sqrt(3F) * inset
+        if (layoutSpecs.isHexHorizontal) {
+            insetX = 2 / Sqrt3F * inset
             insetY = inset
         } else {
             insetX = inset
-            insetY = 2 / sqrt(3F) * inset
+            insetY = 2 / Sqrt3F * inset
         }
-        val boundsF = tmpBoundsF.also { tmp ->
-            getCellBounds(address, tmp)
-            drawMatrix.mapRect(tmp)
-        }
+
+        val boundsF = tmpBoundsF
+        boundsF.setToCellBounds(address)
+        drawMatrix.mapRect(boundsF)
+
         val bounds = tmpBounds
         boundsF.roundOut(bounds)
         bounds.set(
@@ -265,10 +272,7 @@ class GridUi {
         outBounds.set(bounds)
     }
 
-    private fun getCellBounds(
-        address: Grid.Address,
-        outBounds: RectF
-    ) = outBounds.run {
+    private fun RectF.setToCellBounds(address: Grid.Address) {
         set(0F, 0F, cellSize.x, cellSize.y)
         offsetTo(address.column * stepSize.x, address.row * stepSize.y)
     }
@@ -280,12 +284,12 @@ class GridUi {
                 grid,
                 hexagon,
                 paint,
-                layoutSpecs.strokeWidth,
                 strokeColor,
                 fillColor,
                 selectColor,
-                showRowIndices,
-                showColumnIndices,
+                indexColor,
+                cellIndices,
+                textOffsetY,
                 tmpBoundsF
             )
         }
@@ -295,69 +299,67 @@ class GridUi {
         grid: Grid,
         hexagon: Hexagon,
         paint: Paint,
-        strokeWidth: Float,
         strokeColor: Int,
         fillColor: Int,
         selectColor: Int,
-        showRowIndices: Boolean,
-        showColumnIndices: Boolean,
+        indexColor: Int,
+        cellIndices: Lines,
+        textOffsetY: Float,
         tmpBounds: RectF
     ) {
-        grid.fastForEach { address, state ->
-            getCellBounds(address, tmpBounds)
+        grid.forEach { address, state ->
+            tmpBounds.setToCellBounds(address)
             if (state.isVisible) {
                 hexagon.draw(
                     canvas,
                     tmpBounds,
                     paint,
-                    strokeWidth,
                     strokeColor,
                     if (state.isSelected) selectColor else fillColor
                 )
             }
-            if (showColumnIndices || showRowIndices) {
-                drawIndices(
-                    canvas,
-                    paint.apply { color = strokeColor },
-                    tmpBounds,
-                    address,
-                    showRowIndices,
-                    showColumnIndices
-                )
-            }
+            drawIndices(
+                canvas,
+                paint,
+                indexColor,
+                cellIndices,
+                address,
+                tmpBounds,
+                textOffsetY
+            )
         }
     }
 
     private fun drawIndices(
         canvas: Canvas,
         paint: Paint,
-        bounds: RectF,
+        indexColor: Int,
+        cellIndices: Lines,
         address: Grid.Address,
-        showRows: Boolean,
-        showColumns: Boolean
+        bounds: RectF,
+        textOffsetY: Float
     ) {
-        val text = with(address) {
-            when {
-                showRows && showColumns -> "$row,$column"
-                showRows -> "$row"
-                else -> "$column"
-            }
+        val text = when (cellIndices) {
+            Lines.None -> return
+            Lines.Both -> "${address.row},${address.column}"
+            Lines.Rows -> "${address.row}"
+            Lines.Columns -> "${address.column}"
         }
         paint.color = indexColor
         paint.style = Paint.Style.FILL
-        paint.textSize = bounds.height() / 3
-        paint.textAlign = Paint.Align.CENTER
         canvas.drawText(
             text,
             bounds.centerX(),
-            bounds.centerY() + paint.textSize / 3,
+            bounds.centerY() + textOffsetY,
             paint
         )
     }
 
     fun resolveAddress(x: Float, y: Float): Grid.Address? {
-        val point = tmpPoint.also { pt -> pt[0] = x; pt[1] = y }
+        val point = tmpPoint
+        point[0] = x; point[1] = y
         touchMatrix.mapPoints(point)
+
         with(hexagon) {
             // Flip to horizontal if needed, to unify calculations.
             // Also, adding a step in each direction because of edge lines, to
@@ -418,15 +420,15 @@ class GridUi {
     private val tmpPoint = FloatArray(2)
 }
 
-private inline val LayoutSpecs.isHexHorizontal
-    get() = hexOrientation.isHorizontal
-
 private val DefaultLayoutSpecs = LayoutSpecs(
     FitMode.FitColumns,
     CrossMode.AlignCenter,
     HexOrientation.Horizontal,
     0F
 )
+
+private inline val LayoutSpecs.isHexHorizontal
+    get() = hexOrientation.isHorizontal
 
 private class MeasureData {
     var isFitColumns: Boolean = false
@@ -438,3 +440,5 @@ private class MeasureData {
     var insetRight: Int = 0
     var insetBottom: Int = 0
 }
+
+internal val Sqrt3F = sqrt(3F)

@@ -35,12 +35,10 @@ private class RelayChangeProperty<T>(
     private val onChange: () -> Unit
 ) : ReadWriteProperty<Any?, T> {
 
-    private fun getWrapped() = wrapped.get()
-
-    override fun getValue(thisRef: Any?, property: KProperty<*>) = getWrapped()
+    override fun getValue(thisRef: Any?, property: KProperty<*>) = wrapped.get()
 
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-        if (getWrapped() == value) return
+        if (wrapped.get() == value) return
         wrapped.set(value)
         onChange()
     }

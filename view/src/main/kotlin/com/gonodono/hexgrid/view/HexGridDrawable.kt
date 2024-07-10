@@ -10,10 +10,11 @@ import androidx.core.graphics.withClip
 import com.gonodono.hexgrid.core.GridUi
 import com.gonodono.hexgrid.core.LayoutSpecs
 import com.gonodono.hexgrid.data.CrossMode
-import com.gonodono.hexgrid.data.EmptyGrid
 import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
 import com.gonodono.hexgrid.data.HexOrientation
+import com.gonodono.hexgrid.data.Lines
+import com.gonodono.hexgrid.data.emptyGrid
 import kotlin.reflect.KMutableProperty0
 
 /**
@@ -31,7 +32,7 @@ class HexGridDrawable(grid: Grid? = null) : Drawable() {
     /**
      * The HexGridDrawable's current [Grid].
      */
-    var grid: Grid = EmptyGrid
+    var grid: Grid = emptyGrid()
         set(value) {
             if (field == value) return
             field = value
@@ -96,14 +97,9 @@ class HexGridDrawable(grid: Grid? = null) : Drawable() {
     var indexColor: Int by invalidating(gridUi::indexColor)
 
     /**
-     * Whether to show each cell's row index.
+     * Design/debug option to show the cells' row and/or column.
      */
-    var showRowIndices: Boolean by invalidating(gridUi::showRowIndices)
-
-    /**
-     * Whether to show each cell's column index.
-     */
-    var showColumnIndices: Boolean by invalidating(gridUi::showColumnIndices)
+    var cellIndices: Lines by invalidating(gridUi::cellIndices)
 
     /**
      * Whether to clip the grid, or let it draw out of bounds, if it's big

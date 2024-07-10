@@ -6,14 +6,14 @@ package com.gonodono.hexgrid.demo.examples.grid
 internal sealed class FitMode {
 
     /**
-     * Calculate the hexagon size from the available width and the number of
-     * columns.
+     * Calculate the regular hexagon size from the available width and the
+     * number of columns.
      */
     data object FitColumns : FitMode()
 
     /**
-     * Calculate the hexagon size from the available height and the number of
-     * rows.
+     * Calculate the regular hexagon size from the available height and the
+     * number of rows.
      */
     data object FitRows : FitMode()
 

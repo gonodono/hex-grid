@@ -2,8 +2,8 @@
 <resources>
 
     <declare-styleable name="HexGridView">
-        <attr name="gridRowCount" format="integer" />
-        <attr name="gridColumnCount" format="integer" />
+        <attr name="rowCount" format="integer" />
+        <attr name="columnCount" format="integer" />
         <attr name="insetEvenLines" format="boolean" />
         <attr name="enableEdgeLines" format="boolean" />
         <attr name="fitMode" format="enum">
@@ -20,20 +20,21 @@
             <enum name="horizontal" value="0" />
             <enum name="vertical" value="1" />
         </attr>
-        <attr name="cellStrokeWidth" format="dimension" />
-        <attr name="cellStrokeColor" format="color" />
-        <attr name="cellFillColor" format="color" />
-        <attr name="cellSelectColor" format="color" />
-        <attr name="cellIndexColor" format="color" />
-        <attr name="cellShownIndices" format="flags">
-            <flag name="none" value="0" />
-            <flag name="rows" value="1" />
-            <flag name="columns" value="2" />
+        <attr name="strokeWidth" format="dimension" />
+        <attr name="strokeColor" format="color" />
+        <attr name="fillColor" format="color" />
+        <attr name="selectColor" format="color" />
+        <attr name="indexColor" format="color" />
+        <attr name="cellIndices" format="enum">
+            <enum name="none" value="0" />
+            <enum name="both" value="1" />
+            <enum name="rows" value="2" />
+            <enum name="columns" value="3" />
         </attr>
     </declare-styleable>
 
     <declare-styleable name="HexGridView_Layout">
-        <attr name="layout_cellRowAndColumn" format="string" />
+        <attr name="layout_rowAndColumn" format="string" />
         <attr name="layout_cellIsVisible" format="boolean" />
         <attr name="layout_cellIsSelected" format="boolean" />
         <attr name="layout_hexBackgroundColor" format="color" />

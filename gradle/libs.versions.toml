@@ -10,7 +10,7 @@ constraintlayout = "2.1.4"
 constraintLayoutCompose = "1.0.1"
 coreKtx = "1.13.1"
 fragmentKtx = "1.8.1"
-lifecycle = "2.8.2"
+lifecycle = "2.8.3"
 materialcomponents = "1.12.0"
 
 [libraries]

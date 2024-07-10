@@ -28,6 +28,7 @@ import com.gonodono.hexgrid.data.CrossMode
 import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
 import com.gonodono.hexgrid.data.HexOrientation
+import com.gonodono.hexgrid.data.Lines
 
 /**
  * The Compose version of the library's hex grid.
@@ -39,8 +40,8 @@ import com.gonodono.hexgrid.data.HexOrientation
  * @param crossMode Behavior for the other direction, rows or columns
  * @param strokeWidth Stroke width of the cell outline
  * @param colors The grid's three colors: line, fill, and select
- * @param shownIndices Design/debug flags to display cells' row and/or column
  * @param clipToBounds Whether to clip the grid draw to the Composable's bounds
+ * @param cellIndices Design/debug option to show each cell's row and/or column
  * @param onGridTap Called with the Grid.Address when a tap hits successfully
  * @param onOutsideTap Called when the Composable is clicked outside of any cell
  * @param cellItems Each cell is allowed one (centered) Composable for content
@@ -54,8 +55,8 @@ fun HexGrid(
     hexOrientation: HexOrientation = HexOrientation.Horizontal,
     strokeWidth: Dp = Dp.Hairline,
     colors: HexGridColors = HexGridDefaults.colors(),
-    shownIndices: ShownIndices = ShownIndices.None,
     clipToBounds: Boolean = true,
+    cellIndices: Lines = Lines.None,
     onGridTap: ((Grid.Address) -> Unit)? = null,
     onOutsideTap: (() -> Unit)? = null,
     cellItems: @Composable (HexGridItemScope.(Grid.Address) -> Unit)? = null
@@ -75,8 +76,7 @@ fun HexGrid(
         this.fillColor = colors.fillColor.toArgb()
         this.selectColor = colors.selectColor.toArgb()
         this.indexColor = colors.indexColor.toArgb()
-        this.showRowIndices = shownIndices.showRows
-        this.showColumnIndices = shownIndices.showColumns
+        this.cellIndices = cellIndices
     }
 
     val scope = remember(density) { HexGridItemScopeImpl(gridUi, density) }
@@ -116,17 +116,15 @@ fun HexGrid(
                 val item = subcompose(address) {
                     scope.prepare(address)
                     scope.cellItems(address)
-                }.firstOrNull()
-                if (item != null) {
-                    val bounds = scope.copyBounds()
-                    val placeable = item.measure(
-                        Constraints(
-                            maxWidth = bounds.width(),
-                            maxHeight = bounds.height()
-                        )
+                }.firstOrNull() ?: return@forEach
+                val bounds = scope.copyBounds()
+                val placeable = item.measure(
+                    Constraints(
+                        maxWidth = bounds.width(),
+                        maxHeight = bounds.height()
                     )
-                    items += placeable to bounds
-                }
+                )
+                items += placeable to bounds
             }
             layout(uiSize.width, uiSize.height) {
                 items.forEach { (item, bounds) ->
@@ -173,7 +171,7 @@ object HexGridDefaults {
      * @param strokeColor The cell outline color
      * @param fillColor The normal cell fill color
      * @param selectColor The fill color when the cell is selected
-     * @param indexColor The color of the indices, if shown
+     * @param indexColor The color of the cells' indices, if shown
      */
     fun colors(
         strokeColor: Color = Color.Black,
@@ -200,34 +198,6 @@ data class HexGridColors internal constructor(
     internal val selectColor: Color,
     internal val indexColor: Color
 )
-
-/**
- * Options for which indices are drawn in each grid cell.
- */
-enum class ShownIndices(
-    internal val showRows: Boolean,
-    internal val showColumns: Boolean
-) {
-    /**
-     * No indices are drawn.
-     */
-    None(false, false),
-
-    /**
-     * Both row and column indices are drawn in each cell.
-     */
-    Both(true, true),
-
-    /**
-     * Only the row index is drawn in each cell.
-     */
-    Rows(true, false),
-
-    /**
-     * Only the column index is drawn in each cell.
-     */
-    Columns(false, true)
-}
 
 private class HexGridItemScopeImpl(
     private val gridUi: GridUi,

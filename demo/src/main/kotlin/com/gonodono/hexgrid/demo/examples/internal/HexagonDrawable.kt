@@ -35,9 +35,9 @@ class HexagonDrawable(isHorizontal: Boolean = true) : Drawable() {
     /**
      * Since this class doesn't enforce regular hexagons, the real dimensions
      * may not even be in the right relation to each other; i.e., the normally
-     * shorter one may actually be the longer dimension.
+     * shorter dimension may actually be the longer one.
      *
-     * This routine simply  places the vertices along the edges with the same
+     * This routine simply places the vertices along the edges with the same
      * spacing as regular hexagons.
      *
      * + The "short" sides each have one vertex right in the middle.

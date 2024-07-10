@@ -6,9 +6,8 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import androidx.core.graphics.withTranslation
-import kotlin.math.sqrt
 
-class Hexagon(var isHorizontal: Boolean) {
+internal class Hexagon(var isHorizontal: Boolean) {
 
     // Base measures for vertex coordinates
     var side = 0F
@@ -32,7 +31,7 @@ class Hexagon(var isHorizontal: Boolean) {
         if (this.side == side) return
         this.side = side
 
-        val minor = (sqrt(3F) * side).also { minor = it }
+        val minor = (Sqrt3F * side).also { minor = it }
         val halfMinor = (minor / 2F).also { halfMinor = it }
         val halfSide = (side / 2F).also { halfSide = it }
 
@@ -60,18 +59,16 @@ class Hexagon(var isHorizontal: Boolean) {
         canvas: Canvas,
         bounds: RectF,
         paint: Paint,
-        strokeWidth: Float,
         strokeColor: Int,
         fillColor: Int
     ) {
         canvas.withTranslation(bounds.left, bounds.top) {
-            paint.style = Paint.Style.FILL
             paint.color = fillColor
+            paint.style = Paint.Style.FILL
             drawPath(path, paint)
 
-            paint.style = Paint.Style.STROKE
-            paint.strokeWidth = strokeWidth
             paint.color = strokeColor
+            paint.style = Paint.Style.STROKE
             drawPath(path, paint)
         }
     }

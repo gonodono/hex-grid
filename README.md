@@ -75,10 +75,11 @@ the library a try.
 <br />
 
 
-_**NB:** The information presented here, in the documentation, and in the wiki
-is accurate for [Release 0.1.3][current-release] only. The library is in the
-middle of a minor overhaul without any deprecation stage, so some things are
-incompatible between that release and the current code._
+> [!IMPORTANT]
+> The information presented here, in the documentation, and in the wiki is
+> accurate for [Release 0.1.3][current-release] only. The library is in the
+> middle of a minor overhaul without any deprecation stage, so some things are
+> incompatible between that release and the current code.
 
 <br />
 
@@ -206,7 +207,8 @@ fun Library() {
             rowCount = 5,
             columnCount = 3,
             insetEvenLines = true,
-            initial = buildStateMap { hide(at(2, 1)) })
+            initial = buildStateMap { hide(at(2, 1)) }
+        )
     }
     HexGrid(
         grid = grid,
@@ -246,8 +248,8 @@ users to keep track of on their own, especially since the valid row/column pairs
 change depending on which lines are inset. Further information on `Grid` and its
 properties can be found on [its wiki page][grid-wiki]
 
-Lastly here, the `getHexShape()` function shown in the `border()` modifer in the
-snippet above is how children are given hexagonal shapes in Compose. Its
+Lastly here, the `getHexShape()` function shown in the `border()` modifier in
+the snippet above is how children are given hexagonal shapes in Compose. Its
 functionality is similar to that of View's custom background Drawable, but since
 it's a `Shape`, it can effect several more draw modes than the Drawable
 currently supports. It's up to the user to apply the `Shape` wherever is
