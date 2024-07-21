@@ -8,15 +8,47 @@ package com.gonodono.hexgrid.data
  * column counts, the lines which are inset, and whether edge lines are enabled.
  */
 open class MutableGrid(
-    final override val rowCount: Int,
-    final override val columnCount: Int,
+    final override val size: Grid.Size,
     final override val insetEvenLines: Boolean = false,
     final override val enableEdgeLines: Boolean = false,
     init: (Grid.Address) -> Grid.State? = { null }
 ) : Grid {
 
     /**
-     * Map init constructor.
+     * Convenience for the [init] function constructor that takes line count
+     * [Int]s rather than a [Grid.Size].
+     */
+    constructor(
+        rowCount: Int,
+        columnCount: Int,
+        insetEvenLines: Boolean = false,
+        enableEdgeLines: Boolean = false,
+        init: (Grid.Address) -> Grid.State? = { null }
+    ) : this(
+        Grid.Size(rowCount, columnCount),
+        insetEvenLines,
+        enableEdgeLines,
+        init
+    )
+
+    /**
+     * Constructor that takes an [initial] state Map.
+     */
+    constructor(
+        size: Grid.Size,
+        insetEvenLines: Boolean = false,
+        enableEdgeLines: Boolean = false,
+        initial: Map<Grid.Address, Grid.State>
+    ) : this(
+        size,
+        insetEvenLines,
+        enableEdgeLines,
+        initial::get
+    )
+
+    /**
+     * Convenience for the [initial] map constructor that takes line count
+     * [Int]s rather than a [Grid.Size].
      */
     constructor(
         rowCount: Int,
@@ -25,8 +57,7 @@ open class MutableGrid(
         enableEdgeLines: Boolean = false,
         initial: Map<Grid.Address, Grid.State>
     ) : this(
-        rowCount,
-        columnCount,
+        Grid.Size(rowCount, columnCount),
         insetEvenLines,
         enableEdgeLines,
         initial::get
@@ -36,29 +67,23 @@ open class MutableGrid(
      * Copy/convert constructor.
      */
     constructor(grid: Grid) : this(
-        grid.rowCount,
-        grid.columnCount,
+        grid.size,
         grid.insetEvenLines,
         grid.enableEdgeLines,
         grid::get
     )
 
-    final override val totalRowCount = when {
-        enableEdgeLines -> rowCount + 2
-        else -> rowCount
+    final override val totalSize: Grid.Size = when {
+        enableEdgeLines -> Grid.Size(size.rowCount + 2, size.columnCount + 2)
+        else -> Grid.Size(size.rowCount, size.columnCount)
     }
 
-    final override val totalColumnCount = when {
-        enableEdgeLines -> columnCount + 2
-        else -> columnCount
-    }
-
-    final override val size: Int = when {
-        insetEvenLines -> totalRowCount.largeHalf * totalColumnCount.smallHalf +
-                totalRowCount.smallHalf * totalColumnCount.largeHalf
-
-        else -> totalRowCount.largeHalf * totalColumnCount.largeHalf +
-                totalRowCount.smallHalf * totalColumnCount.smallHalf
+    final override val cellCount: Int = if (insetEvenLines) {
+        totalSize.rowCount.largeHalf * totalSize.columnCount.smallHalf +
+                totalSize.rowCount.smallHalf * totalSize.columnCount.largeHalf
+    } else {
+        totalSize.rowCount.largeHalf * totalSize.columnCount.largeHalf +
+                totalSize.rowCount.smallHalf * totalSize.columnCount.smallHalf
     }
 
     open class MutableCell(
@@ -89,37 +114,37 @@ open class MutableGrid(
             createMutableCell(address, init(address) ?: Grid.State.Default)
         }
 
-        private fun arrayCell(column: Int) = cells[(column - startIndex) / 2]
+        private fun getCell(column: Int) = cells[(column - startIndex) / 2]
 
-        operator fun get(column: Int): Grid.State = arrayCell(column).state
+        operator fun get(column: Int): Grid.State = getCell(column).state
 
         operator fun set(column: Int, state: Grid.State) {
-            arrayCell(column).state = state
+            getCell(column).state = state
         }
 
-        fun address(column: Int): Grid.Address = arrayCell(column).address
+        fun address(column: Int): Grid.Address = getCell(column).address
 
         override fun iterator(): Iterator<MutableCell> = cells.iterator()
     }
 
     private val minimumIndex = if (enableEdgeLines) -1 else 0
 
-    private val rows: Array<Row> = Array(totalRowCount) { index ->
-        val row = minimumIndex + index
-        val isInset = isLineInset(row)
-        val start = crossStartIndex(isInset)
-        val size = crossCount(isInset, totalColumnCount)
-        Row(row, start, size, init)
+    private val rows: Array<Row> = Array(totalSize.rowCount) { index ->
+        val rowIndex = minimumIndex + index
+        val isInset = isLineInset(rowIndex)
+        val startIndex = crossStartIndex(isInset)
+        val size = crossCount(isInset, totalSize.columnCount)
+        Row(rowIndex, startIndex, size, init)
     }
 
-    private fun arrayRow(row: Int) = rows[row - minimumIndex]
+    private fun getRow(row: Int) = rows[row - minimumIndex]
 
     final override fun get(address: Grid.Address): Grid.State =
         get(address.row, address.column)
 
     final override fun get(row: Int, column: Int): Grid.State {
         checkAddress(row, column)
-        return arrayRow(row)[column]
+        return getRow(row)[column]
     }
 
     /**
@@ -132,18 +157,18 @@ open class MutableGrid(
     }
 
     /**
-     * The Int-indexed set operator for [MutableGrid].
+     * The [Int]-indexed set operator for [MutableGrid].
      *
      * Invalid addresses will result in Exceptions. See [isValidAddress].
      */
     operator fun set(row: Int, column: Int, state: Grid.State) {
         checkAddress(row, column)
-        arrayRow(row)[column] = state
+        getRow(row)[column] = state
     }
 
     final override fun findAddress(row: Int, column: Int): Grid.Address? =
         when {
-            isValidAddress(row, column) -> arrayRow(row).address(column)
+            isValidAddress(row, column) -> getRow(row).address(column)
             else -> null
         }
 
@@ -173,7 +198,7 @@ open class MutableGrid(
 
     final override val cells: Set<Grid.Cell>
         get() = _cells ?: object : AbstractSet<MutableCell>() {
-            override val size: Int get() = this@MutableGrid.size
+            override val size: Int get() = this@MutableGrid.cellCount
             override fun iterator(): Iterator<MutableCell> =
                 object : MutableGridIterator(), Iterator<MutableCell> {
                     override fun next(): MutableCell = nextCell()
@@ -185,7 +210,7 @@ open class MutableGrid(
 
     final override val addresses: Set<Grid.Address>
         get() = _addresses ?: object : AbstractSet<Grid.Address>() {
-            override val size: Int get() = this@MutableGrid.size
+            override val size: Int get() = this@MutableGrid.cellCount
             override fun iterator(): Iterator<Grid.Address> =
                 object : MutableGridIterator(), Iterator<Grid.Address> {
                     override fun next(): Grid.Address = nextCell().address
@@ -197,7 +222,7 @@ open class MutableGrid(
 
     final override val states: Collection<Grid.State>
         get() = _states ?: object : AbstractCollection<Grid.State>() {
-            override val size: Int get() = this@MutableGrid.size
+            override val size: Int get() = this@MutableGrid.cellCount
             override fun iterator(): Iterator<Grid.State> =
                 object : MutableGridIterator(), Iterator<Grid.State> {
                     override fun next(): Grid.State = nextCell().state
@@ -216,8 +241,7 @@ open class MutableGrid(
         return when {
             this[address] != change -> {
                 MutableGrid(
-                    rowCount,
-                    columnCount,
+                    size,
                     insetEvenLines,
                     enableEdgeLines
                 ) { initAddress ->
@@ -242,18 +266,17 @@ open class MutableGrid(
                 actual[address] = state
             }
         }
-        return when {
-            actualChanges != null -> {
+        return when (val actual = actualChanges) {
+            null -> this
+            else -> {
                 MutableGrid(
-                    rowCount,
-                    columnCount,
+                    size,
                     insetEvenLines,
                     enableEdgeLines
                 ) { initAddress ->
-                    changes[initAddress] ?: this[initAddress]
+                    actual[initAddress] ?: this[initAddress]
                 }
             }
-            else -> this
         }
     }
 
@@ -261,8 +284,8 @@ open class MutableGrid(
         (index % 2 == 0) == insetEvenLines
 
     final override fun isValidAddress(row: Int, column: Int): Boolean =
-        isValidLine(row, column, totalRowCount) &&
-                isValidLine(column, row, totalColumnCount)
+        isValidLine(row, column, totalSize.rowCount) &&
+                isValidLine(column, row, totalSize.columnCount)
 
     private fun isValidLine(
         line: Int,
@@ -292,7 +315,7 @@ open class MutableGrid(
     }
 
     override fun toString(): String =
-        "MutableGrid($rowCount,$columnCount,$insetEvenLines,$enableEdgeLines)"
+        "MutableGrid($size,$insetEvenLines,$enableEdgeLines)"
 }
 
 private inline val Int.smallHalf: Int

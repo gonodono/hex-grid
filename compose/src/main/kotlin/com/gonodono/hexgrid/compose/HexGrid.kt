@@ -204,7 +204,7 @@ private class HexGridItemScopeImpl(
     density: Density
 ) : HexGridItemScope, Density by density {
 
-    private var address = Grid.Address.Zero
+    private var address = Grid.Address.Origin
 
     private val itemBounds = Rect()
 

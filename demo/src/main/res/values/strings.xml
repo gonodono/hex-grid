@@ -2,7 +2,7 @@
 
     <string name="app_name">Hex Grid Demo</string>
     <string name="label_library">Hex Grid Library</string>
-    <string name="label_constraint_layout">Hex Grid Examples</string>
+    <string name="label_examples">Hex Grid Examples</string>
 
     <string name="welcome_library_header">Welcome to the\n<big><b><u>Hex Grid Library Demo</u></b></big></string>
     <string name="welcome_library">• The demo has a tabbed layout with two pages: Layout and Options. The Layout page shows grids with children, in both Views and Compose. The Options page demonstrates the rest of the available settings and interaction modes for both types, along with a Drawable version that\'s also included in the library.\n\n• The View and Compose grids on both pages are clickable to toggle cells\' selected states.\n\n• On the Options page, changing any of the first four properties – row count, column count, inset lines, and edge lines – will clear the selected states.\n\n• When designing the app\'s UI, only a few large phone screens were targeted and tested. I can\'t really guarantee that it\'ll look that great on any other setups. Just FYI.</string>

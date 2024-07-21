@@ -10,10 +10,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
-import com.gonodono.hexgrid.demo.examples.internal.HexGridCalculator.naturalRowStartAngle
-import com.gonodono.hexgrid.demo.examples.internal.HexGridCalculator.naturalRowTailAngle
 import com.gonodono.hexgrid.demo.examples.internal.HexagonDrawable
 import com.gonodono.hexgrid.demo.examples.internal.MARGIN_DP
+import com.gonodono.hexgrid.demo.examples.internal.naturalRowStartAngle
+import com.gonodono.hexgrid.demo.examples.internal.naturalRowTailAngle
 import kotlin.math.roundToInt
 
 internal fun ConstraintLayout.hexGrid(

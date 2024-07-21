@@ -1,5 +1,7 @@
 package com.gonodono.hexgrid.data
 
+import androidx.annotation.IntRange
+
 /**
  * The library's specialized state collection that allows indexing by the
  * particular address system used here.
@@ -7,20 +9,12 @@ package com.gonodono.hexgrid.data
 interface Grid {
 
     /**
-     * The number of linear rows in the [Grid].
+     * The the [Grid]'s [Size]: its row count and column count.
      *
-     * A linear row comprises strictly collinear cells, not necessarily
+     * The library defines rows and columns as collinear cells, not necessarily
      * contiguous ones.
      */
-    val rowCount: Int
-
-    /**
-     * The number of linear columns in the [Grid].
-     *
-     * A linear column comprises strictly collinear cells, not necessarily
-     * contiguous ones.
-     */
-    val columnCount: Int
+    val size: Size
 
     /**
      * Whether the even rows and columns are inset, or the odd ones.
@@ -40,28 +34,22 @@ interface Grid {
      *
      * The extra lines result in the minimum row/column index being -1
      * instead of 0, and the maximum row/column index being exactly the
-     * [rowCount]/[columnCount] instead of 1 less than those.
+     * [Size.rowCount]/[Size.columnCount] instead of 1 less than those.
      */
     val enableEdgeLines: Boolean
 
     /**
-     * If [enableEdgeLines] is `false`, this will be equal to [rowCount].
+     * If [enableEdgeLines] is `false`, this will be equal to [size].
      *
-     * If [enableEdgeLines] is `true`, this will be equal to [rowCount] + 2.
+     * If [enableEdgeLines] is `true`, this will be equal to
+     * `Size(size.rowCount + 2, size.columnCount + 2)`.
      */
-    val totalRowCount: Int
+    val totalSize: Size
 
     /**
-     * If [enableEdgeLines] is `false`, this will be equal to [columnCount].
-     *
-     * If [enableEdgeLines] is `true`, this will be equal to [columnCount] + 2.
+     * The total cell count.
      */
-    val totalColumnCount: Int
-
-    /**
-     * The total cell count, named [size] for consistency with other collections.
-     */
-    val size: Int
+    val cellCount: Int
 
     /**
      * The [Address]-indexed get operator for [Grid].
@@ -71,7 +59,7 @@ interface Grid {
     operator fun get(address: Address): State
 
     /**
-     * The Int-indexed get operator for [Grid].
+     * The [Int]-indexed get operator for [Grid].
      *
      * Invalid addresses will result in Exceptions. See [isValidAddress].
      */
@@ -101,7 +89,7 @@ interface Grid {
     fun findAddress(row: Int, column: Int): Address?
 
     /**
-     * A [Set] view of the [Grid]'s mappings.
+     * A [Set] view of the [Grid]'s mappings as [Cell]s.
      *
      * Analogous to [Map]'s [entries][Map.entries].
      */
@@ -145,9 +133,39 @@ interface Grid {
     fun copy(changes: Map<Address, State>): Grid
 
     /**
+     * Immutable class specifying a [Grid]'s line counts in each dimension.
+     */
+    data class Size(
+        @IntRange(from = 0) val rowCount: Int,
+        @IntRange(from = 0) val columnCount: Int
+    ) {
+        init {
+            check(rowCount >= 0 && columnCount >= 0) {
+                "Invalid size: (${rowCount}x$columnCount)"
+            }
+        }
+
+        override fun toString(): String = "Size(${rowCount}x$columnCount)"
+
+        companion object {
+            /**
+             * A [Size] with no rows or columns.
+             */
+            val Zero: Size = Size(0, 0)
+        }
+    }
+
+    /**
      * The index structure for [Grid].
      */
     data class Address(val row: Int, val column: Int) {
+
+        /**
+         * Convenience to concisely check a [Grid.Address] against individual
+         * indices.
+         */
+        fun isAt(row: Int, column: Int): Boolean =
+            this.row == row && this.column == column
 
         override fun toString(): String = "Address($row,$column)"
 
@@ -155,7 +173,7 @@ interface Grid {
             /**
              * The [Address] of the origin cell.
              */
-            val Zero: Address = Address(0, 0)
+            val Origin: Address = Address(0, 0)
         }
     }
 
@@ -167,8 +185,7 @@ interface Grid {
         val isSelected: Boolean = false
     ) {
         override fun toString(): String = "State(v%s,s%s)".format(
-            if (isVisible) "+" else "-",
-            if (isSelected) "+" else "-"
+            if (isVisible) "+" else "-", if (isSelected) "+" else "-"
         )
 
         companion object {
@@ -183,9 +200,10 @@ interface Grid {
      * A [Grid]'s [Address]-[State] pair, analogous to [Map]'s
      * [Entry][Map.Entry], with similar semantics.
      *
-     * The mapping represented by this pair is guaranteed valid only for the
-     * duration of the current iteration, not counting any direct changes by the
-     * user in mutable implementations.
+     * The mapping represented by this pair is guaranteed valid only for
+     * instances provided by an [Iterator] on [cells], and only for the duration
+     * of the current iteration (not counting any direct changes by the user in
+     * mutable implementations).
      */
     interface Cell {
 
@@ -208,23 +226,22 @@ interface Grid {
 /**
  * Returns an empty, read-only [Grid] instance.
  *
- * The returned Grid's [get] functions throw Exceptions unconditionally.
+ * The returned Grid's [get][Grid.get] functions throw Exceptions
+ * unconditionally.
  */
 fun emptyGrid(): Grid = EmptyGrid
 
 /**
  * An empty [Grid] instance for use as an initializer, a reset value, etc.
  *
- * This Grid's [get] functions throw Exceptions unconditionally.
+ * This Grid's [get][Grid.get] functions throw Exceptions unconditionally.
  */
 private data object EmptyGrid : Grid {
-    override val rowCount: Int = 0
-    override val columnCount: Int = 0
+    override val size: Grid.Size = Grid.Size.Zero
     override val insetEvenLines: Boolean = false
     override val enableEdgeLines: Boolean = false
-    override val totalRowCount: Int = 0
-    override val totalColumnCount: Int = 0
-    override val size: Int = 0
+    override val totalSize: Grid.Size = Grid.Size.Zero
+    override val cellCount: Int = 0
     override fun get(address: Grid.Address) = error("EmptyGrid is empty.")
     override fun get(row: Int, column: Int) = error("EmptyGrid is empty.")
     override fun findAddress(row: Int, column: Int): Grid.Address? = null

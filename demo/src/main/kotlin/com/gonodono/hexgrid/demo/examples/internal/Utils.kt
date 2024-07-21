@@ -1,5 +1,8 @@
 package com.gonodono.hexgrid.demo.examples.internal
 
+import android.content.res.Resources
+import android.content.res.TypedArray
+import android.util.AttributeSet
 import android.view.View
 
 internal const val MARGIN_DP = 5
@@ -13,3 +16,11 @@ internal inline fun View.doOnSizeChanges(crossinline action: () -> Unit) {
         if (w != ow || h != oh) action()
     }
 }
+
+internal fun obtainAttributes(
+    r: Resources,
+    attrs: AttributeSet?,
+    theme: Resources.Theme?,
+    styleable: IntArray
+): TypedArray = theme?.obtainStyledAttributes(attrs, styleable, 0, 0)
+    ?: r.obtainAttributes(attrs, styleable)

@@ -1,6 +1,7 @@
 package com.gonodono.hexgrid.demo.examples.internal
 
 import android.content.res.ColorStateList
+import android.content.res.Resources
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
 import android.graphics.Canvas
@@ -13,6 +14,9 @@ import android.graphics.PorterDuffColorFilter
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.util.AttributeSet
+import com.gonodono.hexgrid.demo.R
+import org.xmlpull.v1.XmlPullParser
 
 /**
  * [HexagonDrawable] uses only basic arithmetic, but it doesn't enforce regular
@@ -20,8 +24,12 @@ import android.os.Build
  */
 class HexagonDrawable(isHorizontal: Boolean = true) : Drawable() {
 
-    private val hexagon = Path()
+    private val path = Path()
 
+    /**
+     * Determines whether the hexagon has a major axis aligned horizontally or
+     * vertically.
+     */
     var isHorizontal: Boolean = isHorizontal
         set(value) {
             if (field == value) return
@@ -30,15 +38,39 @@ class HexagonDrawable(isHorizontal: Boolean = true) : Drawable() {
             invalidateSelf()
         }
 
+    /**
+     * The [Paint] is public for these examples in order to allow simple
+     * external modifications without additional setters.
+     */
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     /**
+     * [HexagonDrawable] isn't set up for shared state currently, so we just
+     * directly assign the property here.
+     *
+     * Only the orientation is handled for now, but it should be obvious how to
+     * add any other attributes that might be required. Refer to
+     * `res/drawable/hexagon_vertical.xml` for an example.
+     */
+    override fun inflate(
+        r: Resources,
+        parser: XmlPullParser,
+        attrs: AttributeSet,
+        theme: Resources.Theme?
+    ) {
+        val a = obtainAttributes(r, attrs, theme, R.styleable.HexagonDrawable)
+        isHorizontal =
+            a.getInt(R.styleable.HexagonDrawable_hexOrientation, 0) == 0
+        a.recycle()
+    }
+
+    /**
+     * This routine simply places the vertices along the edges with the same
+     * spacing as regular hexagons.
+     *
      * Since this class doesn't enforce regular hexagons, the real dimensions
      * may not even be in the right relation to each other; i.e., the normally
      * shorter dimension may actually be the longer one.
-     *
-     * This routine simply places the vertices along the edges with the same
-     * spacing as regular hexagons.
      *
      * + The "short" sides each have one vertex right in the middle.
      *
@@ -60,7 +92,7 @@ class HexagonDrawable(isHorizontal: Boolean = true) : Drawable() {
         }
         val halfMinor = minor / 2F
 
-        with(hexagon) {
+        with(path) {
             rewind()
             if (isHorizontal) {
                 moveTo(0F, halfMinor)
@@ -88,7 +120,7 @@ class HexagonDrawable(isHorizontal: Boolean = true) : Drawable() {
      * ends are 2/√3 times the actual width, by the way).
      */
     override fun draw(canvas: Canvas) {
-        canvas.drawPath(hexagon, paint)
+        canvas.drawPath(path, paint)
     }
 
     /**

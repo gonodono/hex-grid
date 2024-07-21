@@ -183,7 +183,7 @@ private val LayoutGrid = MutableGrid(3, 5, insetEvenLines = true)
 
 private fun LabelDrawable.showStats(grid: Grid) {
     val selected = grid.states.count { it.isSelected }
-    info = "$selected/${grid.size}"
+    info = "$selected/${grid.cellCount}"
 }
 
 private fun colorFor(address: Grid.Address) =

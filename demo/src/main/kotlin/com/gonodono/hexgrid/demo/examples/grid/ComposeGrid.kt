@@ -18,10 +18,10 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.gonodono.hexgrid.demo.examples.internal.HexGridCalculator.naturalRowStartAngle
-import com.gonodono.hexgrid.demo.examples.internal.HexGridCalculator.naturalRowTailAngle
 import com.gonodono.hexgrid.demo.examples.internal.Hexagon
 import com.gonodono.hexgrid.demo.examples.internal.MARGIN_DP
+import com.gonodono.hexgrid.demo.examples.internal.naturalRowStartAngle
+import com.gonodono.hexgrid.demo.examples.internal.naturalRowTailAngle
 import com.gonodono.hexgrid.demo.examples.internal.rememberHexagonShape
 
 @Preview(showBackground = true)

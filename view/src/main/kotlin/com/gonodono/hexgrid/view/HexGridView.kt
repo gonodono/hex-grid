@@ -10,7 +10,6 @@ import android.graphics.Rect
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
-import android.util.Size
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -398,11 +397,10 @@ class HexGridView @JvmOverloads constructor(
             paddingTop,
             paddingRight,
             paddingBottom
-        ).also { size = it }
+        )
         setMeasuredDimension(uiSize.width, uiSize.height)
     }
 
-    var size = Size(0, 0)
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         views.values.removeAll { view -> view == null || view.parent != this }
         viewProvider?.let { provider ->
@@ -608,8 +606,7 @@ class HexGridView @JvmOverloads constructor(
 }
 
 private fun Grid.isDifferentShape(other: Grid): Boolean =
-    rowCount != other.rowCount ||
-            columnCount != other.columnCount ||
+    size != other.size ||
             insetEvenLines != other.insetEvenLines ||
             enableEdgeLines != other.enableEdgeLines
 

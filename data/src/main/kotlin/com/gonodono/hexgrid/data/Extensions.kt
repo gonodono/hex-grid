@@ -1,12 +1,6 @@
 package com.gonodono.hexgrid.data
 
 /**
- * Convenience to concisely check a [Grid.Address] against individual indices.
- */
-fun Grid.Address.isAt(row: Int, column: Int): Boolean =
-    this.row == row && this.column == column
-
-/**
  * Updates the [Grid.State] at the given [Grid.Address].
  *
  * Invalid addresses will result in Exceptions. See [Grid.isValidAddress].

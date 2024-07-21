@@ -145,12 +145,12 @@ class GridUi {
         val crossCount: Int
         val fitDimension: Float
         if (isFitColumns) {
-            fitCount = grid.columnCount
-            crossCount = grid.rowCount
+            fitCount = grid.size.columnCount
+            crossCount = grid.size.rowCount
             fitDimension = maxWidth - fitLineThickness
         } else {
-            fitCount = grid.rowCount
-            crossCount = grid.columnCount
+            fitCount = grid.size.rowCount
+            crossCount = grid.size.columnCount
             fitDimension = maxHeight - fitLineThickness
         }
 
@@ -217,7 +217,7 @@ class GridUi {
 
         val textSize = cellSize.y / 3
         paint.textSize = textSize
-        textOffsetY = textSize / 3  // Cheap approximation.
+        textOffsetY = textSize / 3  // Cheap approximation
     }
 
     fun getHexagonPath(outPath: Path, bounds: Rect) {
@@ -305,54 +305,34 @@ class GridUi {
         indexColor: Int,
         cellIndices: Lines,
         textOffsetY: Float,
-        tmpBounds: RectF
+        tmpBoundsF: RectF
     ) {
         grid.forEach { address, state ->
-            tmpBounds.setToCellBounds(address)
             if (state.isVisible) {
-                hexagon.draw(
-                    canvas,
-                    tmpBounds,
-                    paint,
-                    strokeColor,
-                    if (state.isSelected) selectColor else fillColor
-                )
+                tmpBoundsF.setToCellBounds(address)
+                val fill = if (state.isSelected) selectColor else fillColor
+                hexagon.draw(canvas, tmpBoundsF, paint, strokeColor, fill)
             }
-            drawIndices(
-                canvas,
-                paint,
-                indexColor,
-                cellIndices,
-                address,
-                tmpBounds,
-                textOffsetY
+        }
+
+        val formatIndices: (Grid.Address) -> String = when (cellIndices) {
+            Lines.None -> return
+            Lines.Both -> { a -> "${a.row},${a.column}" }
+            Lines.Rows -> { a -> "${a.row}" }
+            Lines.Columns -> { a -> "${a.column}" }
+        }
+        paint.style = Paint.Style.FILL
+        paint.color = indexColor
+
+        grid.forEach { address, _ ->
+            tmpBoundsF.setToCellBounds(address)
+            canvas.drawText(
+                formatIndices(address),
+                tmpBoundsF.centerX(),
+                tmpBoundsF.centerY() + textOffsetY,
+                paint
             )
         }
-    }
-
-    private fun drawIndices(
-        canvas: Canvas,
-        paint: Paint,
-        indexColor: Int,
-        cellIndices: Lines,
-        address: Grid.Address,
-        bounds: RectF,
-        textOffsetY: Float
-    ) {
-        val text = when (cellIndices) {
-            Lines.None -> return
-            Lines.Both -> "${address.row},${address.column}"
-            Lines.Rows -> "${address.row}"
-            Lines.Columns -> "${address.column}"
-        }
-        paint.color = indexColor
-        paint.style = Paint.Style.FILL
-        canvas.drawText(
-            text,
-            bounds.centerX(),
-            bounds.centerY() + textOffsetY,
-            paint
-        )
     }
 
     fun resolveAddress(x: Float, y: Float): Grid.Address? {

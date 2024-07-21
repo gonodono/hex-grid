@@ -6,8 +6,8 @@ import com.gonodono.hexgrid.data.CrossMode
 import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
 import com.gonodono.hexgrid.data.HexOrientation
-import com.gonodono.hexgrid.data.MutableGrid
 import com.gonodono.hexgrid.data.Lines
+import com.gonodono.hexgrid.data.MutableGrid
 import com.gonodono.hexgrid.data.buildStateMap
 import com.gonodono.hexgrid.data.toggled
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,10 +27,10 @@ internal class OptionsViewModel : ViewModel() {
         _gridState.value = _gridState.value.copy(grid = next)
     }
 
-    var rowCount by changeGrid(DefaultGridState.grid.rowCount) { grid, value ->
+    var rowCount by changeGrid(DefaultGridState.grid.size.rowCount) { grid, value ->
         grid.newGrid(rowCount = value)
     }
-    var columnCount by changeGrid(DefaultGridState.grid.columnCount) { grid, value ->
+    var columnCount by changeGrid(DefaultGridState.grid.size.columnCount) { grid, value ->
         grid.newGrid(columnCount = value)
     }
     var insetEvenLines by changeGrid(DefaultGridState.grid.insetEvenLines) { grid, value ->
@@ -122,8 +122,8 @@ internal val DefaultGridState = GridState(
 )
 
 private fun MutableGrid.newGrid(
-    rowCount: Int = this.rowCount,
-    columnCount: Int = this.columnCount,
+    rowCount: Int = this.size.rowCount,
+    columnCount: Int = this.size.columnCount,
     insetEvenLines: Boolean = this.insetEvenLines,
     enableEdgeLines: Boolean = this.enableEdgeLines
 ) = MutableGrid(rowCount, columnCount, insetEvenLines, enableEdgeLines)

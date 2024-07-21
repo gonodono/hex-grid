@@ -2,9 +2,9 @@ package com.gonodono.hexgrid.demo.examples.grid
 
 import androidx.core.util.component1
 import androidx.core.util.component2
-import com.gonodono.hexgrid.demo.examples.internal.HexGridCalculator.hexEdgeForLineCount
-import com.gonodono.hexgrid.demo.examples.internal.HexGridCalculator.hexSizeForHexEdge
-import com.gonodono.hexgrid.demo.examples.internal.HexGridCalculator.lineCountForHexEdge
+import com.gonodono.hexgrid.demo.examples.internal.hexEdgeForLineCount
+import com.gonodono.hexgrid.demo.examples.internal.hexSizeForHexEdge
+import com.gonodono.hexgrid.demo.examples.internal.lineCountForHexEdge
 import kotlin.math.roundToInt
 
 internal data class ExampleData(

@@ -63,12 +63,12 @@ internal class Hexagon(var isHorizontal: Boolean) {
         fillColor: Int
     ) {
         canvas.withTranslation(bounds.left, bounds.top) {
-            paint.color = fillColor
             paint.style = Paint.Style.FILL
+            paint.color = fillColor
             drawPath(path, paint)
 
-            paint.color = strokeColor
             paint.style = Paint.Style.STROKE
+            paint.color = strokeColor
             drawPath(path, paint)
         }
     }

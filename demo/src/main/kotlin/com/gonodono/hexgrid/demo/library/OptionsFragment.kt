@@ -46,8 +46,8 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         val model: OptionsViewModel by viewModels()
 
         with(DefaultGridState) {
-            ui.editColumns.setText(grid.columnCount.toString())
-            ui.editRows.setText(grid.rowCount.toString())
+            ui.editRows.setText(grid.size.rowCount.toString())
+            ui.editColumns.setText(grid.size.columnCount.toString())
             ui.editStrokeWidth.setText(strokeWidth.toInt().toString())
             ui.switchInsetEvenLines.isChecked = grid.insetEvenLines
             ui.switchEnableEdgeLines.isChecked = grid.enableEdgeLines
@@ -189,7 +189,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
                         cellIndices = state.cellIndices
                     }
                     val selected = state.grid.states.count { it.isSelected }
-                    countLabel.info = "$selected/${state.grid.size}"
+                    countLabel.info = "$selected/${state.grid.cellCount}"
                 }
             }
         }

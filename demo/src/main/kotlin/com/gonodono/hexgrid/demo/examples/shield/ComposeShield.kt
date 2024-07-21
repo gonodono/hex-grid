@@ -17,9 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.util.component1
 import androidx.core.util.component2
-import com.gonodono.hexgrid.demo.examples.internal.HexGridCalculator.hexSizeForLineCount
 import com.gonodono.hexgrid.demo.examples.internal.Hexagon
 import com.gonodono.hexgrid.demo.examples.internal.MARGIN_DP
+import com.gonodono.hexgrid.demo.examples.internal.hexSizeForLineCount
 import com.gonodono.hexgrid.demo.examples.internal.rememberHexagonShape
 
 @Preview(showBackground = true)
@@ -45,36 +45,36 @@ fun HexShield(isHorizontal: Boolean = true) {
         val dpSize = with(LocalDensity.current) { size.toDpSize() }
         val shape = rememberHexagonShape(isHorizontal, size)
 
-        val center = createRef()
-        Hexagon(
-            ref = center,
-            size = dpSize,
-            shape = shape,
-            backgroundColor = Color.LightGray
-        ) {
-            start.linkTo(parent.start)
-            top.linkTo(parent.top)
-            end.linkTo(parent.end)
-            bottom.linkTo(parent.bottom)
-        }
+val center = createRef()
+Hexagon(
+    ref = center,
+    size = dpSize,
+    shape = shape,
+    backgroundColor = Color.LightGray
+) {
+    start.linkTo(parent.start)
+    top.linkTo(parent.top)
+    end.linkTo(parent.end)
+    bottom.linkTo(parent.bottom)
+}
 
-        val shortSide = if (isHorizontal) dpSize.height else dpSize.width
-        val radius = shortSide + MARGIN_DP.dp
-        repeat(6) { index ->
-            Hexagon(
-                ref = createRef(),
-                size = dpSize,
-                shape = shape,
-                backgroundColor = Colors[index]
-            ) {
-                val angle = (60F * index) + if (isHorizontal) 0F else 30F
-                circular(other = center, angle = angle, distance = radius)
-            }
-        }
+val shortSide = if (isHorizontal) dpSize.height else dpSize.width
+val radius = shortSide + MARGIN_DP.dp
+repeat(6) { index ->
+    Hexagon(
+        ref = createRef(),
+        size = dpSize,
+        shape = shape,
+        backgroundColor = outerColors[index]
+    ) {
+        val angle = (60F * index) + if (isHorizontal) 0F else 30F
+        circular(other = center, angle = angle, distance = radius)
+    }
+}
     }
 }
 
-private val Colors = listOf(
+private val outerColors = arrayOf(
     Color.Red,
     Color.Yellow,
     Color.Green,

@@ -34,21 +34,22 @@ alt="Screenshots of the two example formats previewed in Android Studio."
 width="60%" />
 </p>
 
-The Shield examples show a simple design of seven cells with one in the center
-circled by the others. The View version is initialized from a layout resource
-that illustrates how such an arrangement can be specified in XML. Both versions
-have runtime routines that size the content to fit the container's width, and
-that rearrange the children upon changing the hex orientation.
++ The Shield examples show a simple design of seven cells with one in the center
+  circled by the others. The View version is initialized from a layout resource
+  in order to illustrate how such an arrangement can be specified in XML. Both
+  versions have runtime routines that size the content to fit the container's
+  width, and that rearrange the children upon changing the hex orientation.
 
-The Grid examples demonstrate how to generate grids dynamically, taking into
-consideration the available space and either the desired number of rows/columns,
-or a specific hexagon size.
++ The Grid examples demonstrate how to generate grids dynamically, taking into
+  consideration the available space and either the desired number of
+  rows/columns, or a specific hexagon size.
 
 Using existing components and APIs certainly has its advantages; e.g.,
 familiarity, reduced overhead, etc. However, this approach does have its
 downsides, too. For example, all of the hexagon components are actually still
 rectangular in shape, as far as the frameworks are concerned, so touch handling
-doesn't really work in the overlapping areas.
+doesn't really work correctly in the corner areas that lie outside of the
+hexagonal bounds.
 
 Also, you might have a hard time getting things lined up exactly, since we're
 basically relaying data through intermediate painters using `LayoutParams` and
