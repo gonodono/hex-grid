@@ -5,7 +5,6 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
-import androidx.core.graphics.withTranslation
 
 internal class Hexagon(var isHorizontal: Boolean) {
 
@@ -62,15 +61,18 @@ internal class Hexagon(var isHorizontal: Boolean) {
         strokeColor: Int,
         fillColor: Int
     ) {
-        canvas.withTranslation(bounds.left, bounds.top) {
-            paint.style = Paint.Style.FILL
-            paint.color = fillColor
-            drawPath(path, paint)
+        val count = canvas.save()
+        canvas.translate(bounds.left, bounds.top)
 
-            paint.style = Paint.Style.STROKE
-            paint.color = strokeColor
-            drawPath(path, paint)
-        }
+        paint.style = Paint.Style.FILL
+        paint.color = fillColor
+        canvas.drawPath(path, paint)
+
+        paint.style = Paint.Style.STROKE
+        paint.color = strokeColor
+        canvas.drawPath(path, paint)
+
+        canvas.restoreToCount(count)
     }
 
     fun getPath(outPath: Path, matrix: Matrix) {

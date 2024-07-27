@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.gonodono.hexgrid.compose.data.StateGrid
 import com.gonodono.hexgrid.core.GridUi
 import com.gonodono.hexgrid.core.LayoutSpecs
 import com.gonodono.hexgrid.data.CrossMode
@@ -48,7 +49,7 @@ import com.gonodono.hexgrid.data.Lines
  */
 @Composable
 fun HexGrid(
-    grid: MutableStateGrid,
+    grid: StateGrid,
     modifier: Modifier = Modifier,
     fitMode: FitMode = FitMode.FitColumns,
     crossMode: CrossMode = CrossMode.AlignCenter,
@@ -59,7 +60,7 @@ fun HexGrid(
     cellIndices: Lines = Lines.None,
     onGridTap: ((Grid.Address) -> Unit)? = null,
     onOutsideTap: (() -> Unit)? = null,
-    cellItems: @Composable (HexGridItemScope.(Grid.Address) -> Unit)? = null
+    cellItems: @Composable (HexGridItemScope.(Grid.Address, Grid.State) -> Unit)? = null
 ) {
     val density = LocalDensity.current
     val layoutSpecs =
@@ -112,10 +113,10 @@ fun HexGrid(
 
         if (cellItems != null) {
             val items = mutableListOf<Pair<Placeable, Rect>>()
-            grid.addresses.forEach { address ->
+            grid.forEach { address, state ->
                 val item = subcompose(address) {
                     scope.prepare(address)
-                    scope.cellItems(address)
+                    scope.cellItems(address, state)
                 }.firstOrNull() ?: return@forEach
                 val bounds = scope.copyBounds()
                 val placeable = item.measure(
@@ -189,7 +190,7 @@ object HexGridDefaults {
 /**
  * The various colors used by [HexGrid].
  *
- * See [HexGridDefaults.colors] for the default colors.
+ * @see HexGridDefaults.colors
  */
 @Immutable
 data class HexGridColors internal constructor(

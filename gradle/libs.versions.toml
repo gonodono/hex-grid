@@ -3,14 +3,14 @@ agp = "8.5.1"
 kotlin = "2.0.0"
 dokka = "1.9.20"
 
-activityKtx = "1.9.0"
+activityKtx = "1.9.1"
 appcompat = "1.7.0"
 compose = "2024.06.00"
 constraintlayout = "2.1.4"
 constraintLayoutCompose = "1.0.1"
 coreKtx = "1.13.1"
-fragmentKtx = "1.8.1"
-lifecycle = "2.8.3"
+fragmentKtx = "1.8.2"
+lifecycle = "2.8.4"
 materialcomponents = "1.12.0"
 
 [libraries]

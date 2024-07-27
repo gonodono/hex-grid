@@ -41,5 +41,4 @@ afterEvaluate {
 
 dependencies {
     implementation(project(":data"))
-    implementation(libs.core.ktx)
 }

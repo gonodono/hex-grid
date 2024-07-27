@@ -30,13 +30,6 @@
         android:orientation="horizontal">
 
         <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switch_stroke"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="Stroke" />
-
-        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switch_icons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,6 +44,13 @@
             android:layout_marginStart="10dp"
             android:checked="true"
             android:text="Backgrounds" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_stroke"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Stroke" />
 
     </LinearLayout>
 

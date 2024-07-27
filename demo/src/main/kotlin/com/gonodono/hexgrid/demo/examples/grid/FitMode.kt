@@ -3,7 +3,7 @@ package com.gonodono.hexgrid.demo.examples.grid
 /**
  * The Examples' options for fitting the grid to the available space.
  */
-internal sealed class FitMode {
+sealed class FitMode {
 
     /**
      * Calculate the regular hexagon size from the available width and the

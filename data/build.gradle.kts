@@ -38,7 +38,3 @@ afterEvaluate {
         }
     }
 }
-
-dependencies {
-    implementation(libs.core.ktx)
-}

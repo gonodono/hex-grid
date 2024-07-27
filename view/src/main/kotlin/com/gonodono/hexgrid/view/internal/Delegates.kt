@@ -1,4 +1,4 @@
-package com.gonodono.hexgrid.view
+package com.gonodono.hexgrid.view.internal
 
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KMutableProperty0

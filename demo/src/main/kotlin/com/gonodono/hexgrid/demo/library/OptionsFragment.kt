@@ -21,7 +21,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.gonodono.hexgrid.compose.HexGrid
 import com.gonodono.hexgrid.compose.HexGridDefaults
-import com.gonodono.hexgrid.compose.toMutableStateGrid
 import com.gonodono.hexgrid.data.CrossMode
 import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
@@ -175,6 +174,11 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
                         selectColor = state.selectColor
                         indexColor = state.indexColor
                         cellIndices = state.cellIndices
+                        // This example uses the selected count to trigger the
+                        // ViewModel flow, but the actual value isn't set on the
+                        // View, so we need to invalidate it manually, which
+                        // we do unconditionally here, 'cause why not.
+                        invalidate()
                     }
                     hexGridDrawable.apply {
                         grid = state.grid
@@ -202,7 +206,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
                     androidx.lifecycle.compose.LocalLifecycleOwner provides
                             androidx.compose.ui.platform.LocalLifecycleOwner.current
                 ) {
-                    GridHexGrid(model, backgroundFlasher::flash)
+                    OptionsHexGrid(model, backgroundFlasher::flash)
                 }
             }
         }
@@ -210,17 +214,16 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
 }
 
 @Composable
-private fun GridHexGrid(
+private fun OptionsHexGrid(
     model: OptionsViewModel,
     onOutsideTap: () -> Unit
 ) {
     val state by model.gridState.collectAsStateWithLifecycle(DefaultGridState)
-    val grid = state.grid.toMutableStateGrid()
     val density = LocalContext.current.resources.displayMetrics.density
     val dp = state.strokeWidth / density
 
     HexGrid(
-        grid = grid,
+        grid = state.grid,
         fitMode = state.fitMode,
         crossMode = state.crossMode,
         hexOrientation = state.hexOrientation,

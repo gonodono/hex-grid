@@ -92,8 +92,8 @@ should be sufficient to produce about any shape or arrangement you might need,
 though other design aspects may take a bit of patching, for the time being.
 
 The `HexGridView` class and the `HexGrid` Composable share common core modules,
-so they both have all the same features that are configurable through properties
-and parameters that are quite similar.
+so they both have all of the same features that are configurable through
+properties and parameters that are quite similar.
 
 <p align="center">
 <img src="images/editors_library.png"
@@ -161,7 +161,7 @@ file, it could be added from code like so:
 hexGridView.viewProvider = HexGridView.ViewProvider { address, current ->
     when {
         address.isAt(2, 1) -> current
-            ?: layoutInflater.inflate(R.layout.hex_bee, hexGridView, false)
+            ?: layoutInflater.inflate(R.layout.bee, hexGridView, false)
 
         else -> null
     }
@@ -173,6 +173,8 @@ to be displayed wherever Drawables can be used. It lacks several of the main
 components' features – like wrapping to the content and hosting children – but
 it uses the same core data and draw modules, so it will otherwise look and
 behave identically.
+
+<br />
 
 
 ### Compose
@@ -256,6 +258,8 @@ it's a `Shape`, it can effect several more draw modes than the Drawable
 currently supports. It's up to the user to apply the `Shape` wherever is
 appropriate.
 
+<br />
+
 
 ### Notes
 
@@ -283,6 +287,8 @@ Because of that, this recent revision and release are mostly just small patches
 to keep this version working in the interim, in case the update takes too long.
 Some details in the docs and wiki might become stale or inaccurate until the
 next release.
+
+<br />
 
 
 ### Download

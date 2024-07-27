@@ -15,6 +15,8 @@ import com.gonodono.hexgrid.data.Grid
 import com.gonodono.hexgrid.data.HexOrientation
 import com.gonodono.hexgrid.data.Lines
 import com.gonodono.hexgrid.data.emptyGrid
+import com.gonodono.hexgrid.view.internal.onChange
+import com.gonodono.hexgrid.view.internal.relayChange
 import kotlin.reflect.KMutableProperty0
 
 /**

@@ -24,11 +24,11 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.gonodono.hexgrid.compose.HexGrid
 import com.gonodono.hexgrid.compose.HexGridDefaults
-import com.gonodono.hexgrid.compose.toMutableStateGrid
+import com.gonodono.hexgrid.compose.mutableStateGridOf
+import com.gonodono.hexgrid.data.ArrayGrid
 import com.gonodono.hexgrid.data.CrossMode
 import com.gonodono.hexgrid.data.Grid
 import com.gonodono.hexgrid.data.MutableGrid
-import com.gonodono.hexgrid.data.toggle
 import com.gonodono.hexgrid.demo.R
 import com.gonodono.hexgrid.demo.databinding.FragmentLayoutBinding
 import com.gonodono.hexgrid.demo.databinding.LayoutItemBinding
@@ -41,18 +41,11 @@ class LayoutFragment : Fragment(R.layout.fragment_layout) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val ui = FragmentLayoutBinding.bind(view)
 
-        var showStroke by mutableStateOf(true)
         var showIcons by mutableStateOf(true)
         var showBackgrounds by mutableStateOf(true)
+        var showStroke by mutableStateOf(true)
         var crossMode by mutableStateOf(CrossMode.AlignCenter)
 
-        ui.switchStroke.setOnCheckedChangeListener { _, isChecked ->
-            showStroke = isChecked
-            ui.hexGrid.strokeColor = when {
-                isChecked -> AndroidColor.BLACK
-                else -> AndroidColor.TRANSPARENT
-            }
-        }
         ui.switchIcons.setOnCheckedChangeListener { _, isChecked ->
             showIcons = isChecked
             ui.hexGrid.notifyViewsInvalidated()
@@ -60,6 +53,13 @@ class LayoutFragment : Fragment(R.layout.fragment_layout) {
         ui.switchBackgrounds.setOnCheckedChangeListener { _, isChecked ->
             showBackgrounds = isChecked
             ui.hexGrid.notifyViewsInvalidated()
+        }
+        ui.switchStroke.setOnCheckedChangeListener { _, isChecked ->
+            showStroke = isChecked
+            ui.hexGrid.strokeColor = when {
+                isChecked -> AndroidColor.BLACK
+                else -> AndroidColor.TRANSPARENT
+            }
         }
         ui.groupCrossMode.setOnCheckedChangeListener { _, checkedId ->
             ui.hexGrid.crossMode = when (checkedId) {
@@ -70,8 +70,8 @@ class LayoutFragment : Fragment(R.layout.fragment_layout) {
             }.also { crossMode = it }
         }
 
-        val mutableGrid = MutableGrid(LayoutGrid)
-        ui.hexGrid.grid = mutableGrid
+        val grid = ArrayGrid(3, 5, insetEvenLines = true)
+        ui.hexGrid.grid = grid
         ui.hexGrid.viewProvider = HexGridView.ViewProvider { address, current ->
             val item = when {
                 current != null -> LayoutItemBinding.bind(current)
@@ -95,19 +95,19 @@ class LayoutFragment : Fragment(R.layout.fragment_layout) {
         }
 
         val size = resources.getDimension(R.dimen.label_size)
-        val viewLabel = LabelDrawable("View", size).also {
-            ui.hexGrid.background = it
-            it.showStats(LayoutGrid)
+        val viewLabel = LabelDrawable("View", size).also { drawable ->
+            ui.hexGrid.background = drawable
+            drawable.showStats(grid)
         }
-        val composeLabel = LabelDrawable("Compose", size).also {
-            ui.composeView.background = it
-            it.showStats(LayoutGrid)
+        val composeLabel = LabelDrawable("Compose", size).also { drawable ->
+            ui.composeView.background = drawable
+            drawable.showStats(grid)
         }
 
         ui.hexGrid.onClickListener = HexGridView.OnClickListener { address ->
-            mutableGrid.toggle(address)
+            grid.toggleSelected(address)
             ui.hexGrid.invalidate()
-            viewLabel.showStats(mutableGrid)
+            viewLabel.showStats(grid)
         }
 
         ui.composeView.apply {
@@ -138,20 +138,20 @@ private fun LayoutHexGrid(
     showBackgrounds: Boolean,
     showStats: (Grid) -> Unit
 ) {
-    val immutableGrid = remember { LayoutGrid.toMutableStateGrid() }
+    val grid = remember { mutableStateGridOf(3, 5, insetEvenLines = true) }
     val strokeColor = when {
         showStroke -> Color.Black
         else -> Color.Transparent
     }
     HexGrid(
-        grid = immutableGrid,
+        grid = grid,
         crossMode = crossMode,
         colors = HexGridDefaults.colors(strokeColor = strokeColor),
         onGridTap = { address ->
-            immutableGrid.toggle(address)
-            showStats(immutableGrid)
+            grid.toggleSelected(address)
+            showStats(grid)
         }
-    ) { address ->
+    ) { address, _ ->
         val color = when {
             showBackgrounds -> colorFor(address)
             else -> Color.Transparent
@@ -179,13 +179,6 @@ private fun LayoutHexGrid(
     }
 }
 
-private val LayoutGrid = MutableGrid(3, 5, insetEvenLines = true)
-
-private fun LabelDrawable.showStats(grid: Grid) {
-    val selected = grid.states.count { it.isSelected }
-    info = "$selected/${grid.cellCount}"
-}
-
 private fun colorFor(address: Grid.Address) =
     Colors[address] ?: Color.Transparent
 
@@ -198,3 +191,12 @@ private val Colors = mapOf(
     Grid.Address(2, 1) to Color.Green,
     Grid.Address(2, 3) to Color.Magenta
 )
+
+private fun LabelDrawable.showStats(grid: Grid) {
+    val selected = grid.states.count { it.isSelected }
+    info = "$selected/${grid.cellCount}"
+}
+
+private fun MutableGrid.toggleSelected(address: Grid.Address) {
+    this[address] = this[address].let { it.copy(isSelected = !it.isSelected) }
+}

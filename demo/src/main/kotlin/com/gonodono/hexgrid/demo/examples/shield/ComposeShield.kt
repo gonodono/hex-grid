@@ -45,32 +45,32 @@ fun HexShield(isHorizontal: Boolean = true) {
         val dpSize = with(LocalDensity.current) { size.toDpSize() }
         val shape = rememberHexagonShape(isHorizontal, size)
 
-val center = createRef()
-Hexagon(
-    ref = center,
-    size = dpSize,
-    shape = shape,
-    backgroundColor = Color.LightGray
-) {
-    start.linkTo(parent.start)
-    top.linkTo(parent.top)
-    end.linkTo(parent.end)
-    bottom.linkTo(parent.bottom)
-}
+        val center = createRef()
+        Hexagon(
+            ref = center,
+            size = dpSize,
+            shape = shape,
+            backgroundColor = Color.LightGray
+        ) {
+            start.linkTo(parent.start)
+            top.linkTo(parent.top)
+            end.linkTo(parent.end)
+            bottom.linkTo(parent.bottom)
+        }
 
-val shortSide = if (isHorizontal) dpSize.height else dpSize.width
-val radius = shortSide + MARGIN_DP.dp
-repeat(6) { index ->
-    Hexagon(
-        ref = createRef(),
-        size = dpSize,
-        shape = shape,
-        backgroundColor = outerColors[index]
-    ) {
-        val angle = (60F * index) + if (isHorizontal) 0F else 30F
-        circular(other = center, angle = angle, distance = radius)
-    }
-}
+        val shortSide = if (isHorizontal) dpSize.height else dpSize.width
+        val radius = shortSide + MARGIN_DP.dp
+        repeat(6) { index ->
+            Hexagon(
+                ref = createRef(),
+                size = dpSize,
+                shape = shape,
+                backgroundColor = outerColors[index]
+            ) {
+                val angle = (60F * index) + if (isHorizontal) 0F else 30F
+                circular(other = center, angle = angle, distance = radius)
+            }
+        }
     }
 }
 

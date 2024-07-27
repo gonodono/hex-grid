@@ -19,6 +19,7 @@ import androidx.core.graphics.withClip
 import androidx.core.view.children
 import com.gonodono.hexgrid.core.GridUi
 import com.gonodono.hexgrid.core.LayoutSpecs
+import com.gonodono.hexgrid.data.ArrayGrid
 import com.gonodono.hexgrid.data.CrossMode
 import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
@@ -27,6 +28,8 @@ import com.gonodono.hexgrid.data.Lines
 import com.gonodono.hexgrid.data.MutableGrid
 import com.gonodono.hexgrid.view.HexGridView.OnClickListener
 import com.gonodono.hexgrid.view.HexGridView.ViewProvider
+import com.gonodono.hexgrid.view.internal.onChange
+import com.gonodono.hexgrid.view.internal.relayChange
 import kotlin.collections.set
 import kotlin.reflect.KMutableProperty0
 
@@ -118,7 +121,7 @@ class HexGridView @JvmOverloads constructor(
             if (hasValue(R.styleable.HexGridView_rowCount) &&
                 hasValue(R.styleable.HexGridView_columnCount)
             ) {
-                val grid = MutableGrid(
+                val grid = ArrayGrid(
                     getInt(R.styleable.HexGridView_rowCount, 0),
                     getInt(R.styleable.HexGridView_columnCount, 0),
                     getBoolean(R.styleable.HexGridView_insetEvenLines, false),
@@ -285,7 +288,7 @@ class HexGridView @JvmOverloads constructor(
      * background to be added or updated during layout. If [color] is
      * [Color.TRANSPARENT], the background is removed.
      *
-     * See [removeHexBackground].
+     * @see removeHexBackground
      */
     fun applyHexBackground(
         view: View,
@@ -310,7 +313,7 @@ class HexGridView @JvmOverloads constructor(
      * Modifies the passed View's [LayoutParams] to remove any
      * [HexagonDrawable] background that may be present.
      *
-     * See [applyHexBackground].
+     * @see applyHexBackground
      */
     fun removeHexBackground(view: View) {
         val params = view.layoutParams as? LayoutParams ?: return
@@ -485,7 +488,7 @@ class HexGridView @JvmOverloads constructor(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        // TODO: Proper touch handling.
+        // TODO Proper touch handling.
         if (event.action == MotionEvent.ACTION_UP) {
             val address = gridUi.resolveAddress(event.x, event.y)
             if (address != null) {

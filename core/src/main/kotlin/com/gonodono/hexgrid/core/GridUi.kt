@@ -9,8 +9,6 @@ import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.RectF
 import android.util.Size
-import androidx.core.graphics.toRectF
-import androidx.core.graphics.withMatrix
 import com.gonodono.hexgrid.data.CrossMode
 import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
@@ -18,6 +16,7 @@ import com.gonodono.hexgrid.data.HexOrientation
 import com.gonodono.hexgrid.data.Lines
 import com.gonodono.hexgrid.data.emptyGrid
 import com.gonodono.hexgrid.data.isHorizontal
+import com.gonodono.hexgrid.data.isLineInset
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.roundToInt
@@ -236,7 +235,7 @@ class GridUi {
         return tmpMatrix.apply {
             setRectToRect(
                 source,
-                bounds.toRectF(),
+                RectF(bounds),
                 Matrix.ScaleToFit.FILL
             )
         }
@@ -277,22 +276,24 @@ class GridUi {
         offsetTo(address.column * stepSize.x, address.row * stepSize.y)
     }
 
-    fun drawGrid(canvas: Canvas) =
-        canvas.withMatrix(drawMatrix) {
-            drawGridInternal(
-                canvas,
-                grid,
-                hexagon,
-                paint,
-                strokeColor,
-                fillColor,
-                selectColor,
-                indexColor,
-                cellIndices,
-                textOffsetY,
-                tmpBoundsF
-            )
-        }
+    fun drawGrid(canvas: Canvas) {
+        val count = canvas.save()
+        canvas.concat(drawMatrix)
+        drawGridInternal(
+            canvas,
+            grid,
+            hexagon,
+            paint,
+            strokeColor,
+            fillColor,
+            selectColor,
+            indexColor,
+            cellIndices,
+            textOffsetY,
+            tmpBoundsF
+        )
+        canvas.restoreToCount(count)
+    }
 
     private fun drawGridInternal(
         canvas: Canvas,

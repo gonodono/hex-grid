@@ -16,7 +16,7 @@ import com.gonodono.hexgrid.demo.examples.internal.naturalRowStartAngle
 import com.gonodono.hexgrid.demo.examples.internal.naturalRowTailAngle
 import kotlin.math.roundToInt
 
-internal fun ConstraintLayout.hexGrid(
+fun ConstraintLayout.hexGrid(
     fitMode: FitMode,
     isHorizontal: Boolean,
     availableWidth: Int,
@@ -74,14 +74,12 @@ private fun ConstraintLayout.buildGrid(
                     params.startToStart = PARENT_ID
                     params.topToTop = PARENT_ID
                 }
-
                 column == 0 -> {
                     params.circleConstraint = viewId - columnCount
                     params.circleRadius = radius
                     params.circleAngle =
                         naturalRowStartAngle(isHorizontal, isLtr, row)
                 }
-
                 else -> {
                     params.circleConstraint = viewId - 1
                     params.circleRadius = radius

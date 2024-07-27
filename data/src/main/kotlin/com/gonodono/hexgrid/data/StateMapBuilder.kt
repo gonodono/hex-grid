@@ -5,7 +5,7 @@ package com.gonodono.hexgrid.data
  * convenience functions. For example:
  *
  * ```kotlin
- * val grid = MutableGrid(
+ * val grid = ArrayGrid(
  *     rowCount = 5,
  *     columnCount = 5,
  *     insetEvenLines = true,
@@ -46,7 +46,7 @@ sealed interface StateMapBuilderScope {
     /**
      * Creates a [Grid.Address] from [row] and [column].
      */
-    fun at(row: Int, column: Int): Grid.Address = Grid.Address(row, column)
+    fun at(row: Int, column: Int): Grid.Address
 }
 
 private class StateMapBuilderScopeImpl : StateMapBuilderScope {
@@ -66,4 +66,6 @@ private class StateMapBuilderScopeImpl : StateMapBuilderScope {
             map += address to state.copy(isVisible = false)
         }
     }
+
+    override fun at(row: Int, column: Int) = Grid.Address(row, column)
 }

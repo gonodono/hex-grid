@@ -5,9 +5,9 @@ import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.View
 
-internal const val MARGIN_DP = 5
+const val MARGIN_DP = 5
 
-internal inline fun View.doOnSizeChanges(crossinline action: () -> Unit) {
+inline fun View.doOnSizeChanges(crossinline action: () -> Unit) {
     addOnLayoutChangeListener { _, l, t, r, b, ol, ot, or, ob ->
         val w = r - l
         val h = b - t
@@ -17,7 +17,7 @@ internal inline fun View.doOnSizeChanges(crossinline action: () -> Unit) {
     }
 }
 
-internal fun obtainAttributes(
+fun obtainAttributes(
     r: Resources,
     attrs: AttributeSet?,
     theme: Resources.Theme?,

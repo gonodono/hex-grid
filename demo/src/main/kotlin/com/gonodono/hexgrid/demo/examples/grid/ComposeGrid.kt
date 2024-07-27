@@ -26,7 +26,7 @@ import com.gonodono.hexgrid.demo.examples.internal.rememberHexagonShape
 
 @Preview(showBackground = true)
 @Composable
-internal fun HexGrid(
+fun HexGrid(
     fitMode: FitMode = FitMode.FitHex(40F),
     isHorizontal: Boolean = false
 ) {
@@ -78,7 +78,6 @@ internal fun HexGrid(
                                 start.linkTo(parent.start)
                                 top.linkTo(parent.top)
                             }
-
                             column == 0 -> {
                                 val angle = naturalRowStartAngle(
                                     isHorizontal = isHorizontal,
@@ -91,7 +90,6 @@ internal fun HexGrid(
                                     distance = radius
                                 )
                             }
-
                             else -> {
                                 val angle = naturalRowTailAngle(
                                     isHorizontal = isHorizontal,

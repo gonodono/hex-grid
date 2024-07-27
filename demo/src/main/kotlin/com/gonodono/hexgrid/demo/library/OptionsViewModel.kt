@@ -2,14 +2,14 @@ package com.gonodono.hexgrid.demo.library
 
 import android.graphics.Color
 import androidx.lifecycle.ViewModel
+import com.gonodono.hexgrid.compose.data.MutableStateGrid
+import com.gonodono.hexgrid.compose.mutableStateGridOf
 import com.gonodono.hexgrid.data.CrossMode
 import com.gonodono.hexgrid.data.FitMode
 import com.gonodono.hexgrid.data.Grid
 import com.gonodono.hexgrid.data.HexOrientation
 import com.gonodono.hexgrid.data.Lines
-import com.gonodono.hexgrid.data.MutableGrid
 import com.gonodono.hexgrid.data.buildStateMap
-import com.gonodono.hexgrid.data.toggled
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlin.properties.ReadWriteProperty
@@ -22,9 +22,16 @@ internal class OptionsViewModel : ViewModel() {
     val gridState = _gridState.asSharedFlow()
 
     fun toggleSelected(address: Grid.Address) {
-        val current = _gridState.value.grid
-        val next = current.toggled(address)
-        _gridState.value = _gridState.value.copy(grid = next)
+        val grid = _gridState.value.grid
+        val current: Grid.State = grid[address]
+
+        // This assignment is enough to trigger HexGrid's recomposition.
+        grid[address] = current.copy(isSelected = !current.isSelected)
+
+        // This is used to signal the HexGridView to invalidate.
+        val selected = grid.cells.count { it.state.isSelected }
+        val copy = _gridState.value.copy(selected = selected)
+        _gridState.value = copy
     }
 
     var rowCount by changeGrid(DefaultGridState.grid.size.rowCount) { grid, value ->
@@ -71,7 +78,7 @@ internal class OptionsViewModel : ViewModel() {
 
     private fun <T> changeGrid(
         initialValue: T,
-        createGrid: (current: MutableGrid, newValue: T) -> MutableGrid
+        createGrid: (current: Grid, newValue: T) -> MutableStateGrid
     ) = changeState(initialValue) { current, value ->
         current.copy(grid = createGrid(current.grid, value))
     }
@@ -91,7 +98,8 @@ internal class OptionsViewModel : ViewModel() {
 }
 
 internal data class GridState(
-    val grid: MutableGrid,
+    val grid: MutableStateGrid,
+    val selected: Int,
     val fitMode: FitMode,
     val crossMode: CrossMode,
     val hexOrientation: HexOrientation,
@@ -104,12 +112,13 @@ internal data class GridState(
 )
 
 internal val DefaultGridState = GridState(
-    grid = MutableGrid(
+    grid = mutableStateGridOf(
         rowCount = 5,
         columnCount = 5,
         insetEvenLines = true,
         initial = buildStateMap { select(at(2, 1), at(2, 3)) }
     ),
+    selected = 0,
     fitMode = FitMode.FitColumns,
     crossMode = CrossMode.AlignCenter,
     hexOrientation = HexOrientation.Horizontal,
@@ -121,9 +130,9 @@ internal val DefaultGridState = GridState(
     cellIndices = Lines.None
 )
 
-private fun MutableGrid.newGrid(
+private fun Grid.newGrid(
     rowCount: Int = this.size.rowCount,
     columnCount: Int = this.size.columnCount,
     insetEvenLines: Boolean = this.insetEvenLines,
     enableEdgeLines: Boolean = this.enableEdgeLines
-) = MutableGrid(rowCount, columnCount, insetEvenLines, enableEdgeLines)
+) = mutableStateGridOf(rowCount, columnCount, insetEvenLines, enableEdgeLines)

@@ -8,6 +8,24 @@ import kotlin.math.sqrt
 // cell sides.
 
 /**
+ * Returns the length of a regular hexagon's major axis if its edge has length
+ * [hexEdge].
+ *
+ * I don't know that you'll ever need this; it's included mainly as info.
+ */
+@Suppress("unused")
+fun hexMajorForHexEdge(hexEdge: Float): Float = 2 * hexEdge
+
+/**
+ * Returns the length of a regular hexagon's minor axis if its edge has length
+ * of [hexEdge].
+ *
+ * I don't know that you'll ever need this; it's included mainly as info.
+ */
+@Suppress("unused")
+fun hexMinorForHexEdge(hexEdge: Float): Float = Sqrt3F * hexEdge
+
+/**
  * Returns the size of the rectangular bounds of a regular hexagon in a grid
  * that has an [available] measure in the constrained dimension, a [margin]
  * between all cells, and a [lineCount] number of cross lines. [isMajor]
@@ -16,7 +34,7 @@ import kotlin.math.sqrt
  * This function defines lines as collinear cells, not necessarily contiguous
  * ones. Please see the README's Library section for details.
  */
-internal fun hexSizeForLineCount(
+fun hexSizeForLineCount(
     lineCount: Int,
     isHorizontal: Boolean,
     available: Float,
@@ -36,7 +54,7 @@ internal fun hexSizeForLineCount(
  * This function defines lines as collinear cells, not necessarily contiguous
  * ones. Please see the README's Library section for details.
  */
-internal fun hexEdgeForLineCount(
+fun hexEdgeForLineCount(
     lineCount: Int,
     available: Float,
     margin: Float,
@@ -60,7 +78,7 @@ internal fun hexEdgeForLineCount(
  * This function defines lines as collinear cells, not necessarily contiguous
  * ones. Please see the README's Library section for details.
  */
-internal fun lineCountForHexEdge(
+fun lineCountForHexEdge(
     hexEdge: Float,
     available: Float,
     margin: Float,
@@ -82,31 +100,13 @@ internal fun lineCountForHexEdge(
  * Returns the rectangular size of a hexagon with edge length [hexEdge], and
  * orientation determined by [isHorizontal].
  */
-internal fun hexSizeForHexEdge(
+fun hexSizeForHexEdge(
     hexEdge: Float,
     isHorizontal: Boolean
 ): SizeF = when {
     isHorizontal -> SizeF(2 * hexEdge, Sqrt3F * hexEdge)
     else -> SizeF(Sqrt3F * hexEdge, 2 * hexEdge)
 }
-
-/**
- * Returns the length of a regular hexagon's major axis if its edge has length
- * [hexEdge].
- *
- * I don't know that you'll ever need this; it's included mainly as info.
- */
-@Suppress("unused")
-internal fun hexMajorForHexEdge(hexEdge: Float): Float = 2 * hexEdge
-
-/**
- * Returns the length of a regular hexagon's minor axis if its edge has length
- * of [hexEdge].
- *
- * I don't know that you'll ever need this; it's included mainly as info.
- */
-@Suppress("unused")
-internal fun hexMinorForHexEdge(hexEdge: Float): Float = Sqrt3F * hexEdge
 
 /**
  * For the start-to-end and top-to-bottom build sequence used in the these
@@ -128,7 +128,7 @@ internal fun hexMinorForHexEdge(hexEdge: Float): Float = Sqrt3F * hexEdge
  * to [LAYOUT_DIRECTION_LTR][android.view.View.LAYOUT_DIRECTION_LTR], and
  * [row] is the index of the current row.
  */
-internal fun naturalRowStartAngle(
+fun naturalRowStartAngle(
     isHorizontal: Boolean,
     isLtr: Boolean,
     row: Int
@@ -160,7 +160,7 @@ internal fun naturalRowStartAngle(
  * to [LAYOUT_DIRECTION_LTR][android.view.View.LAYOUT_DIRECTION_LTR], and
  * [column] is the index of the current column.
  */
-internal fun naturalRowTailAngle(
+fun naturalRowTailAngle(
     isHorizontal: Boolean,
     isLtr: Boolean,
     column: Int

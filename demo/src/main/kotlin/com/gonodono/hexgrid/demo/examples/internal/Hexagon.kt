@@ -18,7 +18,7 @@ import androidx.constraintlayout.compose.ConstraintLayoutScope
  * This is the Compose version's analog of [HexagonDrawable].
  */
 @Composable
-internal fun ConstraintLayoutScope.Hexagon(
+fun ConstraintLayoutScope.Hexagon(
     ref: ConstrainedLayoutReference,
     size: DpSize,
     shape: HexagonShape,

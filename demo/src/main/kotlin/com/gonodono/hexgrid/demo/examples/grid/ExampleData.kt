@@ -7,7 +7,7 @@ import com.gonodono.hexgrid.demo.examples.internal.hexSizeForHexEdge
 import com.gonodono.hexgrid.demo.examples.internal.lineCountForHexEdge
 import kotlin.math.roundToInt
 
-internal data class ExampleData(
+data class ExampleData(
     val rowCount: Int,
     val columnCount: Int,
     val hexWidth: Float,
@@ -15,7 +15,7 @@ internal data class ExampleData(
     val radius: Int,
 )
 
-internal fun calculateExampleData(
+fun calculateExampleData(
     fitMode: FitMode,
     isHorizontal: Boolean,
     availableWidth: Int,
@@ -50,7 +50,6 @@ internal fun calculateExampleData(
                 isMajor = !isHorizontal
             )
         }
-
         FitMode.FitColumns -> {
             rowCount = ROW_COUNT
             columnCount = COLUMN_COUNT
@@ -61,7 +60,6 @@ internal fun calculateExampleData(
                 isMajor = isHorizontal
             )
         }
-
         else -> {
             rowCount = ROW_COUNT
             columnCount = COLUMN_COUNT

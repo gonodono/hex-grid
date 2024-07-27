@@ -56,14 +56,12 @@ class DualPaneView @JvmOverloads constructor(
                 inRightAnimation.setAnimationListener(null)
                 inLeftAnimation.setAnimationListener(animationListener)
             }
-
             CHILD_TWO -> {
                 inAnimation = inRightAnimation
                 outAnimation = outLeftAnimation
                 inRightAnimation.setAnimationListener(animationListener)
                 inLeftAnimation.setAnimationListener(null)
             }
-
             else -> {
                 inAnimation = null
                 outAnimation = null
